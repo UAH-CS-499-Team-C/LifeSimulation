@@ -23,6 +23,7 @@
 hs_err_pid*
 
 # Netbeans project settings
+**/nbproject/project.properties
 **/nbproject/private/
 **/nbproject/Makefile-*.mk
 **/nbproject/Package-*.bash
