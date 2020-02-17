@@ -13,9 +13,11 @@ import java.util.ArrayList;
  */
 public class Grazer extends SimulationObject implements LivingCreature{
     
-    int xDirection = 1;
-    int yDirection = 1;
-
+    /**
+     * Grazer Movement direction variables
+     */
+    int xDirection = 1, yDirection = 1;
+    
     /**
      * 
      * @param x Starting x location
