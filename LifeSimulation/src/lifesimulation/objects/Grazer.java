@@ -6,15 +6,23 @@
 package lifesimulation.objects;
 
 /**
- *
+ * Implementation class of the Grazer Creature
  * @author sam
  */
 public class Grazer extends SimulationObject implements LivingCreature{
 
+    /**
+     * 
+     * @param x Starting x location
+     * @param y Starting y location
+     */
     public Grazer(float x, float y) {
         super(x, y);
     }
 
+    /**
+     * Grazer implementation of the update function
+     */
     @Override
     public void Update() {
         /*

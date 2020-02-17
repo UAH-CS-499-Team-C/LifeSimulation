@@ -6,9 +6,12 @@
 package lifesimulation.objects;
 
 /**
- *
+ * Interface that all living, breathing, and moving creatures must implement
  * @author sam
  */
 public interface LivingCreature{
+    /**
+     * Method that all concrete classes must implement
+     */
     public void Update();
 }
