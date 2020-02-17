@@ -17,6 +17,8 @@ public class LifeSimulation extends StateBasedGame{
     public static String gameName = "A Game of Life";
     public int gameState = 0;
     
+    public static int gameSpeed = 100; // Demo Code
+    
     public LifeSimulation(String gameName){
         super(gameName);
         this.addState(new Game(gameState)); 
@@ -36,7 +38,13 @@ public class LifeSimulation extends StateBasedGame{
             AppGameContainer appgc = new AppGameContainer(new LifeSimulation(gameName));
             
             appgc.setDisplayMode(700, 500, false);
-            //appgc.setShowFPS(false);
+            
+            // Start Demo Code
+            appgc.setShowFPS(false); // Turn off FPS counter
+            appgc.setMaximumLogicUpdateInterval(1000); // Max. 1000 miliseconds can pass
+            appgc.setMinimumLogicUpdateInterval(1000/gameSpeed); // Min. 10 miliseconds must pass
+            // End Demo Code
+            
             appgc.start();
             
         } catch(SlickException e){

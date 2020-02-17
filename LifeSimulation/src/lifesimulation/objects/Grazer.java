@@ -37,8 +37,8 @@ public class Grazer extends SimulationObject implements LivingCreature{
         */
         
         // Start Demo Code
-        x += 0.05 * xDirection;
-        y += 0.05 * yDirection;
+        x += 5 * xDirection;
+        y += 5 * yDirection;
         
         if(x+7 >= 700 || x <= 0){
             xDirection *= -1;
