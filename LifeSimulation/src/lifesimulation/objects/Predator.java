@@ -5,6 +5,8 @@
  */
 package lifesimulation.objects;
 
+import java.util.ArrayList;
+
 /**
  * Implementation class of the Predator Creature
  * @author sam
@@ -24,7 +26,7 @@ public class Predator extends SimulationObject implements LivingCreature{
      * Grazer implementation of the update function
      */
     @Override
-    public void Update() {
+    public void Update(ArrayList<Obstacle> o, ArrayList<Grazer> g, ArrayList<Predator> p){
         // Start Demo Code
         y -= 0.01;
         // End Demo Code

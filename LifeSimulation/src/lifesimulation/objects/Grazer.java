@@ -5,11 +5,16 @@
  */
 package lifesimulation.objects;
 
+import java.util.ArrayList;
+
 /**
  * Implementation class of the Grazer Creature
  * @author sam
  */
 public class Grazer extends SimulationObject implements LivingCreature{
+    
+    int xDirection = 1;
+    int yDirection = 1;
 
     /**
      * 
@@ -20,19 +25,32 @@ public class Grazer extends SimulationObject implements LivingCreature{
         super(x, y);
     }
 
-    /**
+     /**
      * Grazer implementation of the update function
      */
     @Override
-    public void Update() {
+    public void Update(ArrayList<Obstacle> o, ArrayList<Grazer> g, ArrayList<Predator> p) {
         /*
         Grazer specifc update code goes here
         */
         
         // Start Demo Code
-        x += 0.005;
-        y += 0.005;
+        x += 0.05 * xDirection;
+        y += 0.05 * yDirection;
+        
+        if(x+7 >= 700 || x <= 0){
+            xDirection *= -1;
+        }
+        if(y+7 >= 500 || y <= 0){
+            yDirection *= -1;
+        }
+        
+        for(Obstacle q : o){
+            if(x+7 >= q.getX() && x <= q.getX()+q.getSize() && y+7 >= q.getY() && y <= q.getY()+q.getSize()){
+                xDirection *= -1;
+                yDirection *= -1;
+            }
+        }
         // End Demo Code
     }
-    
 }

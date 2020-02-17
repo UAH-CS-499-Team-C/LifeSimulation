@@ -36,7 +36,7 @@ public class LifeSimulation extends StateBasedGame{
             AppGameContainer appgc = new AppGameContainer(new LifeSimulation(gameName));
             
             appgc.setDisplayMode(700, 500, false);
-            appgc.setShowFPS(false);
+            //appgc.setShowFPS(false);
             appgc.start();
             
         } catch(SlickException e){

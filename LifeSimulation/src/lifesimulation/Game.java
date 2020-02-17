@@ -31,15 +31,15 @@ public class Game extends BasicGameState{
         Random r = new Random();
         
         for(int i=0; i < 10; i++) {
-            int x = r.nextInt(700);
-            int y = r.nextInt(500);
+            int x = r.nextInt(693);
+            int y = r.nextInt(493);
             int s = r.nextInt(20) + 10;
             obstacles.add(new Obstacle(x, y, s));
         }
         
         for(int i=0; i < 10; i++) {
-            int x = r.nextInt(700);
-            int y = r.nextInt(500);
+            int x = r.nextInt(693);
+            int y = r.nextInt(493);
             grazers.add(new Grazer(x, y));
         }
         
@@ -88,8 +88,8 @@ public class Game extends BasicGameState{
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         
         // Start Demo Code
-        grazers.forEach(x -> x.Update());
-        predators.forEach(x -> x.Update());
+        grazers.forEach(x -> x.Update(obstacles, grazers, predators));
+        predators.forEach(x -> x.Update(obstacles, grazers, predators));
         // End Demo Code
     }
     

@@ -5,13 +5,18 @@
  */
 package lifesimulation.objects;
 
+import java.util.ArrayList;
+
 /**
  * Interface that all living, breathing, and moving creatures must implement
  * @author sam
  */
 public interface LivingCreature{
     /**
-     * Method that all concrete classes must implement
+     * 
+     * @param o All obstacle objects
+     * @param g All grazer object
+     * @param p All predator objects
      */
-    public void Update();
+    public void Update(ArrayList<Obstacle> o, ArrayList<Grazer> g, ArrayList<Predator> p);
 }
