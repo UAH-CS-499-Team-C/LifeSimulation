@@ -5,6 +5,9 @@
  */
 package lifesimulation.objects;
 
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+
 /**
  * Simulation Obstacle objects
  * @author sam
@@ -32,6 +35,12 @@ public class Obstacle extends SimulationObject{
      */
     public float getSize() {
         return size;
+    }
+    
+    @Override
+    public void draw(Graphics g) {
+        g.setColor(Color.white);
+        g.fillOval(x, y, size, size);
     }
     
 }

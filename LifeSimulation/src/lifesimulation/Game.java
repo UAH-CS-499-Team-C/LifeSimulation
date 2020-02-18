@@ -21,9 +21,11 @@ import org.newdawn.slick.state.*;
  */
 public class Game extends BasicGameState{
     
+    // Start Demo Code
     ArrayList<Obstacle> obstacles = new ArrayList<>(); // Demo Code
     ArrayList<Grazer> grazers = new ArrayList<>(); // Demo Code
     ArrayList<Predator> predators = new ArrayList<>(); // Demo Code
+    // End Demo Code
     
     public Game(int State) {
         // Start Demo Code
@@ -64,23 +66,9 @@ public class Game extends BasicGameState{
         */
         
         // Start Demo Code
-        
-        for (Grazer q : grazers){
-            g.setColor(Color.green);
-            g.drawRect(q.getX(), q.getY(), 7, 7);
-            g.setColor(Color.white);
-        }
-        
-        for (Predator q : predators){
-            g.setColor(Color.red);
-            g.drawRect(q.getX(), q.getY(), 7, 7);
-            g.setColor(Color.white);
-        }
-        
-        for (Obstacle q : obstacles){
-            g.drawOval(q.getX(), q.getY(), q.getSize(), q.getSize());
-        }
-        
+        grazers.forEach(x -> x.draw(g));
+        predators.forEach(x -> x.draw(g));
+        obstacles.forEach(x -> x.draw(g));
         // End Demo Code
         
     }

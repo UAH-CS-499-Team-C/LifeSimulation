@@ -5,6 +5,8 @@
  */
 package lifesimulation.objects;
 
+import org.newdawn.slick.Graphics;
+
 /**
  * Class which all objects in the simulation shall extend
  * @author sam
@@ -44,4 +46,10 @@ public abstract class SimulationObject {
     public float getY() {
         return y;
     }
+    
+    /**
+     * Function that each child class must implement
+     * @param g Graphics object to be drawn to
+     */
+    public abstract void draw(Graphics g);
  }

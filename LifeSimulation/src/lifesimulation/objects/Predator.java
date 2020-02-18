@@ -6,6 +6,8 @@
 package lifesimulation.objects;
 
 import java.util.ArrayList;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 
 /**
  * Implementation class of the Predator Creature
@@ -30,6 +32,12 @@ public class Predator extends SimulationObject implements LivingCreature{
         // Start Demo Code
         y -= 1;
         // End Demo Code
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        g.setColor(Color.red);
+        g.drawRect(x, y, 7, 7);
     }
     
 }

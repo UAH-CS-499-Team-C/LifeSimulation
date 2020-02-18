@@ -17,7 +17,7 @@ public class LifeSimulation extends StateBasedGame{
     public static String gameName = "A Game of Life";
     public int gameState = 0;
     
-    public static int gameSpeed = 100; // Demo Code
+    public static int gameSpeed = 10; // Demo Code
     
     public LifeSimulation(String gameName){
         super(gameName);
