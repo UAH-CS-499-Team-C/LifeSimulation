@@ -5,9 +5,11 @@
  */
 package lifesimulation;
 
+import java.io.File;
+import javax.swing.JFileChooser;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
-import pkgLifeSimDataParser.LifeSimDataParserMain;
+import pkgLifeSimDataParser.LifeSimDataParser;
 
 /**
  *
@@ -36,16 +38,31 @@ public class LifeSimulation extends StateBasedGame{
      */
     public static void main(String[] args) {
         
-        LifeSimDataParserMain lfdp = new LifeSimDataParserMain("/Users/sam/Documents/repos/LifeSimulation/LifeSimulation01.xml");
+        // Create a file chooser
+        final JFileChooser fc = new JFileChooser();
+        // Get the selected file's name
+        String filePath = "";
+        int returnVal = fc.showDialog(fc, "Open");
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            filePath = file.getAbsolutePath();
+        } else {
+            System.exit(0);
+        }
+        System.err.println(filePath);
         
-        /*
+        // Setup Parser Stuff
+        LifeSimDataParser lsdp = LifeSimDataParser.getInstance();
+        lsdp.initDataParser(filePath);
+        
+        // Slick Game code
         try {
             AppGameContainer appgc = new AppGameContainer(new LifeSimulation(gameName));
             
-            appgc.setDisplayMode(700, 500, false);
+            appgc.setDisplayMode((int)lsdp.getWorldWidth(), (int)lsdp.getWorldHeight(), false);
             
             // Start Demo Code
-            //appgc.setShowFPS(false); // Turn off FPS counter
+            appgc.setShowFPS(false); // Turn off FPS counter
             appgc.setMaximumLogicUpdateInterval(1000); // Max. 1000 miliseconds can pass
             appgc.setMinimumLogicUpdateInterval(1000/gameSpeed); // Min. 10 miliseconds must pass
             // End Demo Code
@@ -55,7 +72,6 @@ public class LifeSimulation extends StateBasedGame{
         } catch(SlickException e){
             e.printStackTrace();
         }
-        */
         
     }
     
