@@ -5,8 +5,13 @@
  */
 package lifesimulation;
 
+import java.util.ArrayList;
+
+import lifesimulation.objects.Obstacle;
+
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
+import pkgLifeSimDataParser.LifeSimDataParser;
 
 /**
  *
@@ -14,22 +19,37 @@ import org.newdawn.slick.state.*;
  */
 public class Game extends BasicGameState{
     
+    Image bg;
+    ArrayList<Obstacle> obstacles = new ArrayList<>();
+    
     public Game(int State) {
+        
+        // Setup code
+        LifeSimDataParser lsdp = LifeSimDataParser.getInstance();
+        int iObstacleCount = lsdp.getObstacleCount();
+        for(int i=0; i< iObstacleCount; i++)
+        {
+            if(lsdp.getObstacleData()) {
+                obstacles.add(new Obstacle(lsdp.ObstacleX, lsdp.ObstacleY, lsdp.ObstacleDiameter, lsdp.ObstacleHeight));
+            } else {
+                System.out.println("Error reading data for obstacle " + i);
+            }
+        }
         
     }
     
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
-        
+        bg = new Image("images/grid.png");
     }
     
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException{
         
-        /* Original code
-        g.drawString("A Game of Life", 250, 0);
-        g.drawOval(250, 100, 70, 70);
-        */
+        // Draw background
+        g.drawImage(bg, 0, 0);
+        // Draw each obstacle
+        obstacles.forEach(x -> x.draw(g));
         
     }
     

@@ -29,9 +29,7 @@ public class Predator extends SimulationObject implements LivingCreature{
      */
     @Override
     public void Update(ArrayList<Obstacle> o, ArrayList<Grazer> g, ArrayList<Predator> p){
-        // Start Demo Code
-        y -= 1;
-        // End Demo Code
+        
     }
 
     @Override

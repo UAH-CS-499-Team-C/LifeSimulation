@@ -38,18 +38,15 @@ public class LifeSimulation extends StateBasedGame{
      */
     public static void main(String[] args) {
         
-        // Create a file chooser
-        final JFileChooser fc = new JFileChooser();
-        // Get the selected file's name
-        String filePath = "";
+        // Create a file chooser window
+        final JFileChooser fc = new JFileChooser(System.getProperty("user.dir") + "/..");
+        String filePath = ""; // xml filePath to be recorded shortly
         int returnVal = fc.showDialog(fc, "Open");
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fc.getSelectedFile();
-            filePath = file.getAbsolutePath();
-        } else {
-            System.exit(0);
+        if (returnVal == JFileChooser.APPROVE_OPTION) { // If we selected a file
+            filePath = fc.getSelectedFile().getAbsolutePath(); // Get it's absolute path
+        } else { // If we didn't select a file
+            System.exit(0); // Close immediately
         }
-        System.err.println(filePath);
         
         // Setup Parser Stuff
         LifeSimDataParser lsdp = LifeSimDataParser.getInstance();
@@ -57,16 +54,17 @@ public class LifeSimulation extends StateBasedGame{
         
         // Slick Game code
         try {
+            // Create an app container
             AppGameContainer appgc = new AppGameContainer(new LifeSimulation(gameName));
             
+            // Set the width/height to values from parser
             appgc.setDisplayMode((int)lsdp.getWorldWidth(), (int)lsdp.getWorldHeight(), false);
             
-            // Start Demo Code
             appgc.setShowFPS(false); // Turn off FPS counter
             appgc.setMaximumLogicUpdateInterval(1000); // Max. 1000 miliseconds can pass
             appgc.setMinimumLogicUpdateInterval(1000/gameSpeed); // Min. 10 miliseconds must pass
-            // End Demo Code
             
+            // Start the app
             appgc.start();
             
         } catch(SlickException e){

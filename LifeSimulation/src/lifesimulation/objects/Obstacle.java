@@ -16,31 +16,48 @@ public class Obstacle extends SimulationObject{
     /**
      * The size/scale of the obstacle
      */
-    private float size;
+    private float diameter;
+    /**
+     * The height of the obstacle
+     */
+    private float height;
 
     /**
      * Constructor
      * @param x Starting x location
      * @param y Starting y location
-     * @param size Size of the obstacle
+     * @param diameter Size of the obstacle
+     * @param height Height of the obstacle
      */
-    public Obstacle(float x, float y, float size) {
+    public Obstacle(float x, float y, float diameter, float height) {
         super(x, y);
-        this.size = size;
+        this.diameter = diameter;
+        this.height = height;
     }
 
     /**
      *
      * @return Size of the obstacle
      */
-    public float getSize() {
-        return size;
+    public float getDiameter() {
+        return diameter;
+    }
+    
+    /**
+     *
+     * @return Height of the obstacle
+     */
+    public float getHeight() {
+        return height;
     }
     
     @Override
     public void draw(Graphics g) {
-        g.setColor(Color.white);
-        g.fillOval(x, y, size, size);
+        g.setColor(new Color(92, 91, 87));
+        g.fillOval(x-diameter/2, y-diameter/2, diameter, diameter);
+        g.setLineWidth(2);
+        g.setColor(Color.black);
+        g.drawOval(x-diameter/2, y-diameter/2, diameter, diameter);
     }
     
 }
