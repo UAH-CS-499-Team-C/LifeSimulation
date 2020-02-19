@@ -24,6 +24,7 @@ public class LifeSimulation extends StateBasedGame{
         this.addState(new Game(gameState)); 
     }
     
+    @Override
     public void initStatesList(GameContainer gc) throws SlickException {
         this.getState(gameState).init(gc, this);
         this.enterState(gameState);

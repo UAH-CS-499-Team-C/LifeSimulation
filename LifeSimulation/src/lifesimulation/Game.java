@@ -54,10 +54,12 @@ public class Game extends BasicGameState{
         // End Demo Code
     }
     
+    @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
         
     }
     
+    @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException{
         
         /* Original code
@@ -73,6 +75,7 @@ public class Game extends BasicGameState{
         
     }
     
+    @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         
         // Start Demo Code
@@ -81,6 +84,7 @@ public class Game extends BasicGameState{
         // End Demo Code
     }
     
+    @Override
     public int getID() {
         return 0;
     }
