@@ -7,6 +7,7 @@ package lifesimulation;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
+import pkgLifeSimDataParser.LifeSimDataParserMain;
 
 /**
  *
@@ -35,6 +36,9 @@ public class LifeSimulation extends StateBasedGame{
      */
     public static void main(String[] args) {
         
+        LifeSimDataParserMain lfdp = new LifeSimDataParserMain("/Users/sam/Documents/repos/LifeSimulation/LifeSimulation01.xml");
+        
+        /*
         try {
             AppGameContainer appgc = new AppGameContainer(new LifeSimulation(gameName));
             
@@ -51,6 +55,7 @@ public class LifeSimulation extends StateBasedGame{
         } catch(SlickException e){
             e.printStackTrace();
         }
+        */
         
     }
     
