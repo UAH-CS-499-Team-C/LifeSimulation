@@ -32,7 +32,7 @@ public class Game extends BasicGameState implements InputProviderListener{
     // Testing Code
     private boolean paused = false;
     private InputProvider provider;
-    private Command pauseCommand = new BasicCommand("pauseCommand");
+    private final Command pauseCommand = new BasicCommand("pauseCommand");
     // End Testing Code
     
     public Game(int State) {
