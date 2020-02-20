@@ -5,14 +5,14 @@
  */
 package lifesimulation;
 
-import java.io.File;
 import javax.swing.JFileChooser;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 import pkgLifeSimDataParser.LifeSimDataParser;
 
 /**
- *
+ * The Primary class of the simulation.
+ * Creates important variables then loads up a {@link lifesimulation.Game} object
  * @author d4g0n
  */
 public class LifeSimulation extends StateBasedGame{
