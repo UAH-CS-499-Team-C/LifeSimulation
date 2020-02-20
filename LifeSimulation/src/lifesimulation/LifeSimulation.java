@@ -33,8 +33,13 @@ public class LifeSimulation extends StateBasedGame{
     
     @Override
     public void initStatesList(GameContainer gc) throws SlickException {
-        this.getState(gameState).init(gc, this);
-        this.enterState(gameState);
+        // Turns out the following code shouldn't be here
+        // This causes the init function to be called twice (which is wrong)
+        // Refer to this:
+        // http://www.java-gaming.org/index.php/topic,26825
+        
+        //this.getState(gameState).init(gc, this);
+        //this.enterState(gameState);
     }
     
     /**
