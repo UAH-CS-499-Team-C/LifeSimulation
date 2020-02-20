@@ -15,7 +15,7 @@ public class LifeSimDataParser
 {
 	private static LifeSimDataParser theInstance = new LifeSimDataParser();
 	
-	private String 			m_sFileName;
+	public String 			m_sFileName;
 	private FileReader		inFile;
 	private	BufferedReader	bufReader = null;
 

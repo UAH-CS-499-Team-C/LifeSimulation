@@ -12,14 +12,7 @@ import org.newdawn.slick.Graphics;
  * Implementation class of the Grazer Creature
  * @author sam
  */
-public class Grazer extends SimulationObject implements LivingCreature{
-    
-    /**
-     * Grazer Movement direction variables
-     */
-    int xDirection = 1, yDirection = 1;
-    
-    /**
+public class Grazer extends SimulationObject implements LivingCreature{ /**
      * 
      * @param x Starting x location
      * @param y Starting y location
@@ -38,7 +31,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
 
     @Override
     public void Update(Environment e) {
-        x++;
-        y++;
+        x+=3.0;
+        y+=3.0;
     }
 }

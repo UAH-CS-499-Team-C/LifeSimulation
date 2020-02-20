@@ -19,8 +19,7 @@ public class LifeSimulation extends StateBasedGame{
 
     public static String gameName = "Coleman's Game of Life";
     public int gameState = 0;
-    
-    public static int gameSpeed = 1;
+   
     
     // Testing Code
     static int bonusWidth = 350;
@@ -71,7 +70,7 @@ public class LifeSimulation extends StateBasedGame{
             
             appgc.setShowFPS(false); // Turn off FPS counter
             appgc.setMaximumLogicUpdateInterval(1000); // Max. 1000 miliseconds can pass
-            appgc.setMinimumLogicUpdateInterval(1000/gameSpeed); // Min. 10 miliseconds must pass
+            appgc.setMinimumLogicUpdateInterval(1000); // Min. 10 miliseconds must pass
             
             // Start the app
             appgc.start();
