@@ -383,7 +383,7 @@ public class LifeSimDataParser
 	//----------------------------------------------
 	// Get plant growth rate in Distance Units (DU)
 	//----------------------------------------------
-	double getPlantGrowthRate()
+	public double getPlantGrowthRate()
 	{
 		return m_dPlantGrowthRate;
 	}

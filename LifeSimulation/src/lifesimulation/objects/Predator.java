@@ -31,7 +31,7 @@ public class Predator extends SimulationObject implements LivingCreature{
     }
 
     @Override
-    public void Update(Environement e) {
+    public void Update(Environment e) {
         
     }
     

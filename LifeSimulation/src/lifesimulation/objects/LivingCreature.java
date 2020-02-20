@@ -14,5 +14,5 @@ public interface LivingCreature{
      * 
      * @param e 
      */
-    public void Update(Environement e);
+    public void Update(Environment e);
 }

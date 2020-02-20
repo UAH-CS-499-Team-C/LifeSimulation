@@ -13,12 +13,16 @@ import pkgLifeSimDataParser.LifeSimDataParser;
  *  point of contact for all of the needed functions.
  * @author sam
  */
-public class Environement {
+public class Environment {
     
     /**
      * All Obstacle objects
      */
     private ArrayList<Obstacle> obstacles;
+    /**
+     * All Plant objects
+     */
+    private ArrayList<Plant> plants;
     /**
      * All Grazer objects
      */
@@ -31,8 +35,9 @@ public class Environement {
     /**
      * Constructor
      */
-    public Environement() {
+    public Environment() {
         obstacles = new ArrayList<>();
+        plants = new ArrayList<>();
         grazers = new ArrayList<>();
         predators = new ArrayList<>();
         LoadData();
@@ -47,7 +52,7 @@ public class Environement {
         
         // Load all obstacles from parser
         int iObstacleCount = lsdp.getObstacleCount();
-        for(int i=0; i< iObstacleCount; i++)
+        for(int i=0; i < iObstacleCount; i++)
         {
             if(lsdp.getObstacleData()) {
                 obstacles.add(new Obstacle(lsdp.ObstacleX, lsdp.ObstacleY, lsdp.ObstacleDiameter, lsdp.ObstacleHeight));
@@ -56,7 +61,17 @@ public class Environement {
             }
         }
         
-                
+        // Load all plants from the parser
+        int iPlantCount = lsdp.getInitialPlantCount();
+        for(int i = 0; i < iPlantCount; i++) {
+            if(lsdp.getPlantData()) {
+                plants.add(new Plant(lsdp.PlantX, lsdp.PlantY, lsdp.PlantDiameter));
+            } else {
+                System.out.println("Error reading data for obstacle " + i);
+            }
+        }
+        
+        // One test grazer
         grazers.add(new Grazer(0, 0));
     }
     
@@ -66,6 +81,14 @@ public class Environement {
      */
     public int getNumObstacles() {
         return obstacles.size();
+    }
+    
+    /**
+     * 
+     * @return The number of plants in the simulation
+     */
+    public int getNumPlants() {
+        return plants.size();
     }
     
     /**
@@ -90,6 +113,14 @@ public class Environement {
      */
     public ArrayList<Obstacle> getObstacles() {
         return obstacles;
+    }
+    
+    /**
+     * 
+     * @return The ArrayList of plants
+     */
+    public ArrayList<Plant> getPlants() {
+        return plants;
     }
 
     /**

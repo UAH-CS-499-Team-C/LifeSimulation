@@ -20,7 +20,7 @@ public class LifeSimulation extends StateBasedGame{
     public static String gameName = "Coleman's Game of Life";
     public int gameState = 0;
     
-    public static int gameSpeed = 100;
+    public static int gameSpeed = 1;
     
     // Testing Code
     static int bonusWidth = 350;

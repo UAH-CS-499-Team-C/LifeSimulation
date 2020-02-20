@@ -5,7 +5,7 @@
  */
 package lifesimulation;
 
-import lifesimulation.objects.Environement;
+import lifesimulation.objects.Environment;
 import org.newdawn.slick.*;
 import org.newdawn.slick.command.BasicCommand;
 import org.newdawn.slick.command.Command;
@@ -27,12 +27,13 @@ public class Game extends BasicGameState implements InputProviderListener{
     /**
      * All objects in the simulation
      */
-    Environement environment;
+    Environment environment;
     
     // Testing Code
     private boolean paused = false;
     private InputProvider provider;
     private final Command pauseCommand = new BasicCommand("pauseCommand");
+    private final Command resetCommand = new BasicCommand("resetCommand");
     // End Testing Code
     
     public Game(int State) {
@@ -43,11 +44,12 @@ public class Game extends BasicGameState implements InputProviderListener{
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
         bg = new Image("images/grid.png");
         
-        environment = new Environement();
+        environment = new Environment();
         
         provider = new InputProvider(gc.getInput());
 	provider.addListener(this);
         provider.bindCommand(new KeyControl(Input.KEY_A), pauseCommand);
+        provider.bindCommand(new KeyControl(Input.KEY_R), resetCommand);
     }
     
     @Override
@@ -57,13 +59,14 @@ public class Game extends BasicGameState implements InputProviderListener{
         g.drawImage(bg, 0, 0);
         // Draw each obstacle
         environment.getObstacles().forEach(x -> x.draw(g));
+        environment.getPlants().forEach(x -> x.draw(g));
         environment.getGrazers().forEach(x -> x.draw(g));
         environment.getPredators().forEach(x -> x.draw(g));
         
         
         // Testing Code
         g.setColor(Color.white);
-        g.drawString("GUI Test Controls:\n[a] Pause the game", 1000, 0);
+        g.drawString("GUI Test Controls:\n[a] Pause the simulatio \n[r] Reset the simulation", 1000, 0);
         if(paused) {
             g.setColor(Color.red);
             g.drawString("Game Paused", 0, 0);
@@ -75,6 +78,7 @@ public class Game extends BasicGameState implements InputProviderListener{
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         if(!paused) {
+            environment.getPlants().forEach(x -> x.Update(environment));
             environment.getGrazers().forEach(x -> x.Update(environment));
             environment.getPredators().forEach(x -> x.Update(environment));
         }
@@ -96,6 +100,8 @@ public class Game extends BasicGameState implements InputProviderListener{
             paused = true;
         } else if (cmnd == pauseCommand && paused) {
             paused = false;
+        } else if (cmnd == resetCommand) {
+            environment = new Environment();
         }
     }
 
