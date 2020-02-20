@@ -37,6 +37,11 @@ public class Grazer extends SimulationObject implements LivingCreature{
         /*
         Grazer specifc update code goes here
         */
+        
+        // Testing Code
+        x++;
+        y++;
+        // Testing Code
     }
     
     @Override

@@ -20,7 +20,11 @@ public class LifeSimulation extends StateBasedGame{
     public static String gameName = "Coleman's Game of Life";
     public int gameState = 0;
     
-    public static int gameSpeed = 100; // Demo Code
+    public static int gameSpeed = 100;
+    
+    // Testing Code
+    static int bonusWidth = 350;
+    // End Testing Code
     
     public LifeSimulation(String gameName){
         super(gameName);
@@ -58,7 +62,7 @@ public class LifeSimulation extends StateBasedGame{
             AppGameContainer appgc = new AppGameContainer(new LifeSimulation(gameName));
             
             // Set the width/height to values from parser
-            appgc.setDisplayMode((int)lsdp.getWorldWidth(), (int)lsdp.getWorldHeight(), false);
+            appgc.setDisplayMode((int)lsdp.getWorldWidth() + bonusWidth, (int)lsdp.getWorldHeight(), false);
             
             appgc.setShowFPS(false); // Turn off FPS counter
             appgc.setMaximumLogicUpdateInterval(1000); // Max. 1000 miliseconds can pass
