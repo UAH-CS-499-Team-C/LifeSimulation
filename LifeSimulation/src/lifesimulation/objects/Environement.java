@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import pkgLifeSimDataParser.LifeSimDataParser;
 
 /**
- *
+ * A utilities class that holds all simulation objects. Provides a nice, clean
+ *  point of contact for all of the needed functions.
  * @author sam
  */
 public class Environement {

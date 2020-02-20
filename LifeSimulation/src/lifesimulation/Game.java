@@ -85,6 +85,11 @@ public class Game extends BasicGameState implements InputProviderListener{
         return 0;
     }
 
+    /**
+     * Watches for user input.
+     * Allows us to pause the game.
+     * @param cmnd 
+     */
     @Override
     public void controlPressed(Command cmnd) {
         if (cmnd == pauseCommand && !paused) {
