@@ -5,44 +5,26 @@
  */
 package lifesimulation;
 
-import java.util.ArrayList;
-import lifesimulation.objects.Grazer;
-
-import lifesimulation.objects.Obstacle;
-import lifesimulation.objects.Predator;
-
+import lifesimulation.objects.Environement;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
-import pkgLifeSimDataParser.LifeSimDataParser;
 
 /**
  *
  * @author d4g0n
  */
-public class Game extends BasicGameState{
+public class Game extends BasicGameState implements InputListener{
     
+    /**
+     * Background image for simulation
+     */
     Image bg;
-    ArrayList<Obstacle> obstacles = new ArrayList<>();
-    ArrayList<Grazer> grazers = new ArrayList<>();
-    ArrayList<Predator> predators = new ArrayList<>();
+    /**
+     * All objects in the simulation
+     */
+    Environement environment = new Environement();
     
     public Game(int State) {
-        
-        // Setup parser
-        LifeSimDataParser lsdp = LifeSimDataParser.getInstance();
-        
-        // Load all obstacles from parser
-        int iObstacleCount = lsdp.getObstacleCount();
-        for(int i=0; i< iObstacleCount; i++)
-        {
-            if(lsdp.getObstacleData()) {
-                obstacles.add(new Obstacle(lsdp.ObstacleX, lsdp.ObstacleY, lsdp.ObstacleDiameter, lsdp.ObstacleHeight));
-            } else {
-                System.out.println("Error reading data for obstacle " + i);
-            }
-        }
-        
-        grazers.add(new Grazer(0, 0));
         
     }
     
@@ -57,9 +39,9 @@ public class Game extends BasicGameState{
         // Draw background
         g.drawImage(bg, 0, 0);
         // Draw each obstacle
-        obstacles.forEach(x -> x.draw(g));
-        grazers.forEach(x -> x.draw(g));
-        predators.forEach(x -> x.draw(g));
+        environment.getObstacles().forEach(x -> x.draw(g));
+        environment.getGrazers().forEach(x -> x.draw(g));
+        environment.getPredators().forEach(x -> x.draw(g));
         
         
         // Testing Code
@@ -76,10 +58,9 @@ public class Game extends BasicGameState{
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         if(!gc.isPaused()) {
-            grazers.forEach(x -> x.Update(obstacles, grazers, predators));
-            predators.forEach(x -> x.Update(obstacles, grazers, predators));
+            environment.getGrazers().forEach(x -> x.Update(environment));
+            environment.getPredators().forEach(x -> x.Update(environment));
         }
-        gc.pause();
     }
     
     @Override

@@ -5,7 +5,6 @@
  */
 package lifesimulation.objects;
 
-import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -29,24 +28,17 @@ public class Grazer extends SimulationObject implements LivingCreature{
         super(x, y);
     }
 
-     /**
-     * Grazer implementation of the update function
-     */
-    @Override
-    public void Update(ArrayList<Obstacle> o, ArrayList<Grazer> g, ArrayList<Predator> p) {
-        /*
-        Grazer specifc update code goes here
-        */
-        
-        // Testing Code
-        x++;
-        y++;
-        // Testing Code
-    }
+     
     
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.green);
         g.drawRect(x, y, 7, 7);
+    }
+
+    @Override
+    public void Update(Environement e) {
+        x++;
+        y++;
     }
 }

@@ -24,18 +24,15 @@ public class Predator extends SimulationObject implements LivingCreature{
         super(x, y);
     }
 
-    /**
-     * Grazer implementation of the update function
-     */
-    @Override
-    public void Update(ArrayList<Obstacle> o, ArrayList<Grazer> g, ArrayList<Predator> p){
-        
-    }
-
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.red);
         g.drawRect(x, y, 7, 7);
+    }
+
+    @Override
+    public void Update(Environement e) {
+        
     }
     
 }
