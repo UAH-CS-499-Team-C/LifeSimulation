@@ -106,9 +106,7 @@ public class Simulation extends BasicGameState implements InputProviderListener{
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         if(!paused) {
-            environment.getPlants().forEach(x -> x.Update(environment));
-            environment.getGrazers().forEach(x -> x.Update(environment));
-            environment.getPredators().forEach(x -> x.Update(environment));
+            environment.update();
             
             // If speed needs updated
             if(logicNeedUpdate) {

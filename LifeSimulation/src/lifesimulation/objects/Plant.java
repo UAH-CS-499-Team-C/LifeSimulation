@@ -27,13 +27,15 @@ public class Plant extends SimulationObject implements LivingCreature {
     private float maxSeedNumber;
     private float maxSeedCastDistance;
     private float seedViability;
-    private ArrayList<Point2D.Float> seedLocations = new ArrayList<>();
-    private int secondsElapsed = 0;
+    private ArrayList<Point2D.Float> seedLocations;
+    private int secondsElapsed;
 
     public Plant(float x, float y, float diameter) {
         super(x, y);
         this.diameter = diameter;
         height = diameter / 2;
+        seedLocations = new ArrayList<>();
+        secondsElapsed = 0;
         
         
         // Setup parser
@@ -78,13 +80,14 @@ public class Plant extends SimulationObject implements LivingCreature {
         }
         
         // Reproduce
-        if(secondsElapsed == 60) {
+        if(secondsElapsed == 5) {
             secondsElapsed = 0;
             Reproduce();
         }
     }
     
     private void Reproduce() {
+        
         
     }
     

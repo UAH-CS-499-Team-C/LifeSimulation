@@ -37,6 +37,11 @@ public class Environment {
      */
     private ArrayList<Predator> predators;
     
+    /**
+     * Plants to be added to array
+     */
+    private ArrayList<Plant> plantsToAdd;
+    
     public static Environment GetInstance() 
     { 
         if (instance == null) 
@@ -53,6 +58,9 @@ public class Environment {
         plants = new ArrayList<>();
         grazers = new ArrayList<>();
         predators = new ArrayList<>();
+        
+        plantsToAdd = new ArrayList<>();
+        
         LoadData();
     }
     
@@ -86,6 +94,19 @@ public class Environment {
         
         // One test grazer
         grazers.add(new Grazer(0, 0));
+    }
+    
+    /**
+     * Update all objects in environment
+     */
+    public void update() {
+        plants.forEach(x -> x.Update(this));
+        grazers.forEach(x -> x.Update(this));
+        predators.forEach(x -> x.Update(this));
+        
+        plants.addAll(plantsToAdd);
+        
+        plantsToAdd.clear();
     }
     
     /**
@@ -150,6 +171,14 @@ public class Environment {
      */
     public ArrayList<Predator> getPredators() {
         return predators;
+    }
+    
+    /**
+     * 
+     * @param p Plant to be added
+     */
+    public void addPlant(Plant p) {
+        plantsToAdd.add(p);
     }
     
 }
