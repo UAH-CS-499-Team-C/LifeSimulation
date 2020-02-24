@@ -48,7 +48,7 @@ public class Simulation extends BasicGameState implements InputProviderListener{
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
         bg = new Image("images/grid.png");
         
-        environment = new Environment();
+        environment = Environment.GetInstance();
         
         // Temporary Keyboard Inputs
         provider = new InputProvider(gc.getInput());

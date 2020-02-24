@@ -16,6 +16,11 @@ import pkgLifeSimDataParser.LifeSimDataParser;
 public class Environment {
     
     /**
+     * Singleton instance
+     */
+    private static Environment instance = null;
+    
+    /**
      * All Obstacle objects
      */
     private ArrayList<Obstacle> obstacles;
@@ -31,11 +36,19 @@ public class Environment {
      * All Predator objects
      */
     private ArrayList<Predator> predators;
+    
+    public static Environment GetInstance() 
+    { 
+        if (instance == null) 
+            instance = new Environment(); 
+  
+        return instance; 
+    } 
 
     /**
      * Constructor
      */
-    public Environment() {
+    private Environment() {
         obstacles = new ArrayList<>();
         plants = new ArrayList<>();
         grazers = new ArrayList<>();
