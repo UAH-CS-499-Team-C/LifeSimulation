@@ -18,7 +18,7 @@ import org.newdawn.slick.state.*;
  *
  * @author d4g0n
  */
-public class Game extends BasicGameState implements InputProviderListener{
+public class Simulation extends BasicGameState implements InputProviderListener{
     
     /**
      * Background image for simulation
@@ -40,7 +40,7 @@ public class Game extends BasicGameState implements InputProviderListener{
     private final Command time10Command = new BasicCommand("time10Command");
     private final Command time100Command = new BasicCommand("time100Command");
     
-    public Game(int State) {
+    public Simulation(int State) {
         
     }
     
@@ -77,6 +77,9 @@ public class Game extends BasicGameState implements InputProviderListener{
         g.drawString("[1] 1x speed", 1000, 75);
         g.drawString("[2] 10x speed", 1000, 100);
         g.drawString("[3] 100x speed", 1000, 125);
+        g.drawString("Number of Plants: "  + environment.getNumPlants(), 1000, 175);
+        g.drawString("Number of Grazers: " + environment.getNumGrazers(), 1000, 200);
+        g.drawString("Number of Predators: " + environment.getNumPredators(), 1000, 225);
         if(paused) {
             g.setColor(Color.red);
             g.drawString("Game Paused", 0, 0);

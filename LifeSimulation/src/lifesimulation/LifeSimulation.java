@@ -12,7 +12,7 @@ import pkgLifeSimDataParser.LifeSimDataParser;
 
 /**
  * The Primary class of the simulation.
- * Creates important variables then loads up a {@link lifesimulation.Game} object
+ * Creates important variables then loads up a {@link lifesimulation.Simulation} object
  * @author d4g0n
  */
 public class LifeSimulation extends StateBasedGame{
@@ -27,7 +27,7 @@ public class LifeSimulation extends StateBasedGame{
     
     public LifeSimulation(String gameName){
         super(gameName);
-        this.addState(new Game(gameState)); 
+        this.addState(new Simulation(gameState)); 
     }
     
     @Override
