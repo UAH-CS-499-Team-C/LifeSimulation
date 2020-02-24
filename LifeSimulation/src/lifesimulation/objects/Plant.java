@@ -87,8 +87,7 @@ public class Plant extends SimulationObject implements LivingCreature {
     }
     
     private void Reproduce() {
-        
-        
+        Environment.GetInstance().addPlant(new Plant(0, 0, 0.01f));
     }
     
 }

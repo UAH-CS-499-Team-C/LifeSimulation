@@ -69,7 +69,7 @@ public class LifeSimulation extends StateBasedGame{
             appgc.setDisplayMode((int)lsdp.getWorldWidth() + bonusWidth, (int)lsdp.getWorldHeight(), false);
             
             appgc.setShowFPS(false); // Turn off FPS counter
-            appgc.setMaximumLogicUpdateInterval(1000); // Max. 1000 miliseconds can pass
+            appgc.setMaximumLogicUpdateInterval(Integer.MAX_VALUE); // Max. 1000 miliseconds can pass
             appgc.setMinimumLogicUpdateInterval(1000); // Min. 10 miliseconds must pass
             
             // Start the app
