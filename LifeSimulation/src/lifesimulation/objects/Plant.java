@@ -5,6 +5,7 @@
  */
 package lifesimulation.objects;
 
+import java.awt.geom.Point2D;
 import java.util.Random;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -77,8 +78,18 @@ public class Plant extends SimulationObject implements LivingCreature {
         int numSeeds = r.nextInt((int)maxSeedNumber);
         for(int i = 0; i <= numSeeds; i++){
             if(r.nextInt(100)+1 <= seedViability * 100){
-                float tmpX = r.nextInt(1000);
-                float tmpY = r.nextInt(750);
+                // Find square around plant's center
+                float minX = x - maxSeedCastDistance;
+                float maxX = x + maxSeedCastDistance;
+                float minY = y - maxSeedCastDistance;
+                float maxY = y + maxSeedCastDistance;
+                
+                // Make tmp points impossible
+                float tmpX = -5000, tmpY = -5000;
+                while(new Point2D.Float(tmpX, tmpY).distance(new Point2D.Float(x, y)) > maxSeedCastDistance) {
+                    tmpX = r.nextInt((int)maxX-(int)minX) + minX;
+                    tmpY = r.nextInt((int)maxY-(int)minY) + minY;
+                }
                 Environment.GetInstance().addPlant(new Plant(tmpX, tmpY, 0.01f, growthRate, maxSize, maxSeedNumber, maxSeedCastDistance, seedViability));
             }
         }
