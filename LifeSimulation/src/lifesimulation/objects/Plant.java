@@ -76,7 +76,10 @@ public class Plant extends SimulationObject implements LivingCreature {
         // How many seeds to create
         Random r = new Random();
         int numSeeds = r.nextInt((int)maxSeedNumber);
+        
+        // For each seed being created
         for(int i = 0; i <= numSeeds; i++){
+            // If seed's random value falls in viability range
             if(r.nextInt(100)+1 <= seedViability * 100){
                 // Find square around plant's center
                 float minX = Math.max(x - maxSeedCastDistance, 0);
@@ -86,10 +89,14 @@ public class Plant extends SimulationObject implements LivingCreature {
                 
                 // Make tmp points impossible
                 float tmpX = -5000, tmpY = -5000;
+                
+                // Get random points until within distance
                 while(new Point2D.Float(tmpX, tmpY).distance(new Point2D.Float(x, y)) > maxSeedCastDistance) {
                     tmpX = r.nextInt((int)maxX-(int)minX) + minX;
                     tmpY = r.nextInt((int)maxY-(int)minY) + minY;
                 }
+                
+                // Add the new plant
                 Environment.GetInstance().addPlant(new Plant(tmpX, tmpY, 0.01f, growthRate, maxSize, maxSeedNumber, maxSeedCastDistance, seedViability));
             }
         }
