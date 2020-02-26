@@ -5,8 +5,6 @@
  */
 package lifesimulation.objects;
 
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import pkgLifeSimDataParser.LifeSimDataParser;
@@ -27,14 +25,12 @@ public class Plant extends SimulationObject implements LivingCreature {
     private float maxSeedNumber;
     private float maxSeedCastDistance;
     private float seedViability;
-    private ArrayList<Point2D.Float> seedLocations;
     private int secondsElapsed;
 
     public Plant(float x, float y, float diameter) {
         super(x, y);
         this.diameter = diameter;
         height = diameter / 2;
-        seedLocations = new ArrayList<>();
         secondsElapsed = 0;
         
         
@@ -45,14 +41,6 @@ public class Plant extends SimulationObject implements LivingCreature {
         maxSeedNumber = (float)lsdp.getMaxSeedNumber();
         maxSeedCastDistance = (float)lsdp.getMaxSeedCastDistance();
         seedViability = (float)lsdp.getSeedViability();
-        // Save all viable seed locations
-        for(float i = Math.max(x - maxSeedCastDistance, 0.0f);
-                i <= Math.min(x + maxSeedCastDistance, lsdp.getWorldWidth()); i++){
-            for(float j = Math.max(y - maxSeedCastDistance, 0.0f);
-                j <= Math.min(y + maxSeedCastDistance, lsdp.getWorldHeight()); j++){
-                seedLocations.add(new Point2D.Float(i, j));
-            }
-        }
     }
 
     @Override
