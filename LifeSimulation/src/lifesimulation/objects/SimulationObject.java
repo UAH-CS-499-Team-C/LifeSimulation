@@ -6,6 +6,7 @@
 package lifesimulation.objects;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Shape;
 
 /**
  * Class which all objects in the simulation shall extend
@@ -20,6 +21,11 @@ public abstract class SimulationObject {
      * Location y value
      */
     protected float y;
+    
+    /**
+     * Collision shape of the object
+     */
+    protected Shape collision;
     
     /**
      * Constructor class for basic SimulationObject
