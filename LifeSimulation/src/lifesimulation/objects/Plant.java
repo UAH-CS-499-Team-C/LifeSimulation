@@ -79,10 +79,10 @@ public class Plant extends SimulationObject implements LivingCreature {
         for(int i = 0; i <= numSeeds; i++){
             if(r.nextInt(100)+1 <= seedViability * 100){
                 // Find square around plant's center
-                float minX = x - maxSeedCastDistance;
-                float maxX = x + maxSeedCastDistance;
-                float minY = y - maxSeedCastDistance;
-                float maxY = y + maxSeedCastDistance;
+                float minX = Math.max(x - maxSeedCastDistance, 0);
+                float maxX = Math.min(x + maxSeedCastDistance, 1000);
+                float minY = Math.max(y - maxSeedCastDistance, 0);
+                float maxY = Math.min(y + maxSeedCastDistance, 750);
                 
                 // Make tmp points impossible
                 float tmpX = -5000, tmpY = -5000;
