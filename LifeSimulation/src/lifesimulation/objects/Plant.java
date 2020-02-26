@@ -67,13 +67,13 @@ public class Plant extends SimulationObject implements LivingCreature {
         }
         
         // Reproduce
-        if(secondsElapsed == 5) {
+        if(secondsElapsed == 5*60) {
             secondsElapsed = 0;
-            Reproduce();
+            Reproduce(e);
         }
     }
     
-    private void Reproduce() {
+    private void Reproduce(Environment e) {
         // How many seeds to create
         Random r = new Random();
         int numSeeds = r.nextInt((int)maxSeedNumber);
@@ -102,7 +102,14 @@ public class Plant extends SimulationObject implements LivingCreature {
                 }
                 
                 // Add the new plant
-                Environment.GetInstance().addPlant(new Plant(tmpX, tmpY, 0.01f, growthRate, maxSize, maxSeedNumber, maxSeedCastDistance, seedViability));
+                boolean c = false;
+                for(int j = 0; j < e.getNumObstacles(); j++){
+                    if(e.getObstacles().get(j).collision.intersects(new Circle(tmpX, tmpY, 1))){
+                        c = true;
+                    }
+                }
+                
+                e.addPlant(new Plant(tmpX, tmpY, 0.01f, growthRate, maxSize, maxSeedNumber, maxSeedCastDistance, seedViability));
             }
         }
     }

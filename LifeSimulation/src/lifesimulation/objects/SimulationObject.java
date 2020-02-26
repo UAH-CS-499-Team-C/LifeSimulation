@@ -25,7 +25,7 @@ public abstract class SimulationObject {
     /**
      * Collision shape of the object
      */
-    protected Shape collision;
+    public Shape collision;
     
     /**
      * Constructor class for basic SimulationObject
