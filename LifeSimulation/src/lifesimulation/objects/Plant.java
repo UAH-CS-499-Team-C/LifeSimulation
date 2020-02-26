@@ -5,9 +5,9 @@
  */
 package lifesimulation.objects;
 
+import java.util.Random;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import pkgLifeSimDataParser.LifeSimDataParser;
 
 /**
  *
@@ -72,7 +72,16 @@ public class Plant extends SimulationObject implements LivingCreature {
     }
     
     private void Reproduce() {
-        Environment.GetInstance().addPlant(new Plant(0, 0, 0.01f, growthRate, maxSize, maxSeedNumber, maxSeedCastDistance, seedViability));
+        // How many seeds to create
+        Random r = new Random();
+        int numSeeds = r.nextInt((int)maxSeedNumber);
+        for(int i = 0; i <= numSeeds; i++){
+            if(r.nextInt(100)+1 <= seedViability * 100){
+                float tmpX = r.nextInt(1000);
+                float tmpY = r.nextInt(750);
+                Environment.GetInstance().addPlant(new Plant(tmpX, tmpY, 0.01f, growthRate, maxSize, maxSeedNumber, maxSeedCastDistance, seedViability));
+            }
+        }
     }
     
 }
