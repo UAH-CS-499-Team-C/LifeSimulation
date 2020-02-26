@@ -84,9 +84,14 @@ public class Environment {
         
         // Load all plants from the parser
         int iPlantCount = lsdp.getInitialPlantCount();
+        float fGrowthRate = (float)lsdp.getPlantGrowthRate();
+        float fMaxSize = (float)lsdp.getMaxPlantSize();
+        float fMaxSeedNumber = (float)lsdp.getMaxSeedNumber();
+        float fMaxSeedCastDistance = (float)lsdp.getMaxSeedCastDistance();
+        float fSeedViability = (float)lsdp.getSeedViability();
         for(int i = 0; i < iPlantCount; i++) {
             if(lsdp.getPlantData()) {
-                plants.add(new Plant(lsdp.PlantX, lsdp.PlantY, lsdp.PlantDiameter));
+                plants.add(new Plant(lsdp.PlantX, lsdp.PlantY, lsdp.PlantDiameter, fGrowthRate, fMaxSize, fMaxSeedNumber, fMaxSeedCastDistance, fSeedViability));
             } else {
                 System.out.println("Error reading data for obstacle " + i);
             }

@@ -27,20 +27,17 @@ public class Plant extends SimulationObject implements LivingCreature {
     private float seedViability;
     private int secondsElapsed;
 
-    public Plant(float x, float y, float diameter) {
+    public Plant(float x, float y, float diameter, float growthRate, float maxSize, float maxSeedNumber, float maxSeedCastDistance, float seedViability) {
         super(x, y);
         this.diameter = diameter;
         height = diameter / 2;
+        this.growthRate = growthRate;
+        this.maxSize = maxSize;
+        this.maxSeedNumber = maxSeedNumber;
+        this.maxSeedCastDistance = maxSeedCastDistance;
+        this.seedViability = seedViability;
         secondsElapsed = 0;
         
-        
-        // Setup parser
-        LifeSimDataParser lsdp = LifeSimDataParser.getInstance();
-        growthRate = (float)lsdp.getPlantGrowthRate();
-        maxSize = (float)lsdp.getMaxPlantSize();
-        maxSeedNumber = (float)lsdp.getMaxSeedNumber();
-        maxSeedCastDistance = (float)lsdp.getMaxSeedCastDistance();
-        seedViability = (float)lsdp.getSeedViability();
     }
 
     @Override
@@ -75,7 +72,7 @@ public class Plant extends SimulationObject implements LivingCreature {
     }
     
     private void Reproduce() {
-        Environment.GetInstance().addPlant(new Plant(0, 0, 0.01f));
+        Environment.GetInstance().addPlant(new Plant(0, 0, 0.01f, growthRate, maxSize, maxSeedNumber, maxSeedCastDistance, seedViability));
     }
     
 }
