@@ -5,6 +5,8 @@
  */
 package lifesimulation;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lifesimulation.objects.Environment;
 import org.newdawn.slick.*;
 import org.newdawn.slick.command.BasicCommand;
@@ -44,8 +46,11 @@ public class Simulation extends BasicGameState implements InputProviderListener{
         
     }
     
+   
+    
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
+        
         bg = new Image("images/grid.png");
         
         environment = new Environment();
