@@ -30,6 +30,7 @@ public class LifeSimulation extends StateBasedGame{
         this.enterState(gameState);
     }
     
+    
     /**
      * @param args the command line arguments
      */
