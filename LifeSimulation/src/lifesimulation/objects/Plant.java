@@ -12,23 +12,62 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
 
 /**
- *
+ * The behavior class for Plant objects
  * @author sam
  */
 public class Plant extends SimulationObject implements LivingCreature {
     
-    // Variables used for displaying and possibly other class
+    /**
+     * The diameter of the plant
+     */
     private float diameter;
+    
+    /**
+     * The height of the plant - 1/2 of the diameter
+     */
     private float height;
     
-    // Variables used for other functions
-    private float growthRate;
-    private float maxSize;
-    private float maxSeedNumber;
-    private float maxSeedCastDistance;
-    private float seedViability;
+    /**
+     * The rate at which the plant grows
+     */
+    private final float growthRate;
+    
+    /**
+     * The maximum size of the plant
+     */
+    private final float maxSize;
+    
+    /**
+     * The maximum number of seeds it can create each hour
+     */
+    private final float maxSeedNumber;
+    
+    /**
+     * The maximum distance the plant can spread its seeds
+     */
+    private final float maxSeedCastDistance;
+    
+    /**
+     * The percentage of seeds that will proceed to growth
+     */
+    private final float seedViability;
+    
+    /**
+     * Used to keep track of how much time has passed since last action
+     */
     private int secondsElapsed;
 
+    /**
+     * Constructor
+     * @param x {@link Plant#x}
+     * @param y {@link Plant#y}
+     * @param diameter {@link Plant#diameter}
+     * @param growthRate {@link Plant#growthRate}
+     * @param maxSize {@link Plant#maxSize}
+     * @param maxSeedNumber {@link Plant#maxSeedNumber}
+     * @param maxSeedCastDistance {@link Plant#maxSeedCastDistance}
+     * @param seedViability {@link Plant#seedViability}
+     */
     public Plant(float x, float y, float diameter, float growthRate, float maxSize, float maxSeedNumber, float maxSeedCastDistance, float seedViability) {
         super(x, y);
         this.diameter = diameter;
@@ -45,14 +84,23 @@ public class Plant extends SimulationObject implements LivingCreature {
     @Override
     public void draw(Graphics g) {
         g.setColor(new Color(18, 97, 29));
-        g.fillOval(x-diameter/2, y-diameter/2, diameter, diameter);
+        g.fill(collision);
         g.setLineWidth(2);
         g.setColor(Color.black);
-        g.drawOval(x-diameter/2, y-diameter/2, diameter, diameter);
+        g.draw(collision);
     }
 
     @Override
     public void Update(Environment e) {
+        // Spawn delay
+        if(diameter == 0.01f && secondsElapsed < 10) {
+            secondsElapsed++;
+            return;
+        }
+        if(diameter == 0.01f && secondsElapsed == 10){
+            secondsElapsed = 0;
+        }
+        
         // Growth
         if(diameter < maxSize) {
             diameter += growthRate * maxSize;
@@ -60,19 +108,26 @@ public class Plant extends SimulationObject implements LivingCreature {
                 diameter = maxSize;
             }
         }
-        
+
         // Wait for reproduction
         if(diameter == maxSize) {
             secondsElapsed++;
         }
-        
+
         // Reproduce
-        if(secondsElapsed == 5*60) {
+        if(secondsElapsed == 60 * 60) {
             secondsElapsed = 0;
             Reproduce(e);
         }
+
+        collision = new Circle(x, y, diameter/2);
+        height = diameter/2;
     }
     
+    /**
+     * Reproduction logic - called by {@link Plant#Update(lifesimulation.objects.Environment)}
+     * @param e Environment object
+     */
     private void Reproduce(Environment e) {
         // How many seeds to create
         Random r = new Random();
@@ -94,21 +149,19 @@ public class Plant extends SimulationObject implements LivingCreature {
                 
                 // Make tmp points impossible
                 float tmpX = -5000, tmpY = -5000;
+                boolean c = false;
                 
                 // Get random points until within distance
-                while(new Point2D.Float(tmpX, tmpY).distance(new Point2D.Float(x, y)) > maxSeedCastDistance) {
+                while(new Point2D.Float(tmpX, tmpY).distance(new Point2D.Float(x, y)) > maxSeedCastDistance || c) {
                     tmpX = r.nextInt((int)maxX-(int)minX) + minX;
                     tmpY = r.nextInt((int)maxY-(int)minY) + minY;
-                }
-                
-                // Add the new plant
-                boolean c = false;
-                for(int j = 0; j < e.getNumObstacles(); j++){
-                    if(e.getObstacles().get(j).collision.intersects(new Circle(tmpX, tmpY, 1))){
-                        c = true;
+                    c = false;
+                    for(int j = 0; j < e.getNumObstacles(); j++){
+                        c = c || new Circle(tmpX, tmpY, 0.01f).intersects(e.getObstacles().get(j).getCollision());
                     }
                 }
                 
+                // Add the new plant
                 e.addPlant(new Plant(tmpX, tmpY, 0.01f, growthRate, maxSize, maxSeedNumber, maxSeedCastDistance, seedViability));
             }
         }

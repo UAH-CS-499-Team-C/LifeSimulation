@@ -72,6 +72,8 @@ public class Simulation extends BasicGameState implements InputProviderListener{
         
         
         // Testing Code
+        g.setColor(Color.black);
+        g.drawRect(1001, 0, 350, 750);
         g.setColor(Color.white);
         g.drawString("GUI Test Controls:\n[a] Pause the simulation", 1000, 0);
         g.drawString("[1] 1x speed", 1000, 75);

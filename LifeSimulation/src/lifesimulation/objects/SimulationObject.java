@@ -25,7 +25,7 @@ public abstract class SimulationObject {
     /**
      * Collision shape of the object
      */
-    public Shape collision;
+    protected Shape collision;
     
     /**
      * Constructor class for basic SimulationObject
@@ -51,6 +51,14 @@ public abstract class SimulationObject {
      */
     public float getY() {
         return y;
+    }
+    
+    /**
+     * 
+     * @return The collision box (or circle) of the object
+     */
+    public Shape getCollision() {
+        return collision;
     }
     
     /**

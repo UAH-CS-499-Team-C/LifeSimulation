@@ -42,6 +42,10 @@ public class Environment {
      */
     private ArrayList<Plant> plantsToAdd;
     
+    /**
+     * Singleton GetInstance function
+     * @return The instance
+     */
     public static Environment GetInstance() 
     { 
         if (instance == null) 
