@@ -72,6 +72,8 @@ public class Simulation extends BasicGameState implements InputProviderListener{
         
         
         // Testing Code
+        g.setColor(Color.black);
+        g.drawRect(1001, 0, 350, 750);
         g.setColor(Color.white);
         g.drawString("GUI Test Controls:\n[a] Pause the simulation", 1000, 0);
         g.drawString("[1] 1x speed", 1000, 75);
@@ -106,9 +108,7 @@ public class Simulation extends BasicGameState implements InputProviderListener{
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         if(!paused) {
-            environment.getPlants().forEach(x -> x.Update(environment));
-            environment.getGrazers().forEach(x -> x.Update(environment));
-            environment.getPredators().forEach(x -> x.Update(environment));
+            environment.update();
             
             // If speed needs updated
             if(logicNeedUpdate) {

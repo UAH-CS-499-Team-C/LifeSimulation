@@ -7,6 +7,7 @@ package lifesimulation.objects;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Circle;
 
 /**
  * Simulation Obstacle objects
@@ -33,6 +34,7 @@ public class Obstacle extends SimulationObject{
         super(x, y);
         this.diameter = diameter;
         this.height = height;
+        this.collision = new Circle(x, y, diameter/2);
     }
 
     /**
@@ -54,10 +56,10 @@ public class Obstacle extends SimulationObject{
     @Override
     public void draw(Graphics g) {
         g.setColor(new Color(92, 91, 87));
-        g.fillOval(x-diameter/2, y-diameter/2, diameter, diameter);
+        g.fill(collision);
         g.setLineWidth(2);
         g.setColor(Color.black);
-        g.drawOval(x-diameter/2, y-diameter/2, diameter, diameter);
+        g.draw(collision);
     }
     
 }

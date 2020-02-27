@@ -37,6 +37,15 @@ public class Environment {
      */
     private ArrayList<Predator> predators;
     
+    /**
+     * Plants to be added to array
+     */
+    private ArrayList<Plant> plantsToAdd;
+    
+    /**
+     * Singleton GetInstance function
+     * @return The instance
+     */
     public static Environment GetInstance() 
     { 
         if (instance == null) 
@@ -53,6 +62,9 @@ public class Environment {
         plants = new ArrayList<>();
         grazers = new ArrayList<>();
         predators = new ArrayList<>();
+        
+        plantsToAdd = new ArrayList<>();
+        
         LoadData();
     }
     
@@ -76,9 +88,14 @@ public class Environment {
         
         // Load all plants from the parser
         int iPlantCount = lsdp.getInitialPlantCount();
+        float fGrowthRate = (float)lsdp.getPlantGrowthRate();
+        float fMaxSize = (float)lsdp.getMaxPlantSize();
+        float fMaxSeedNumber = (float)lsdp.getMaxSeedNumber();
+        float fMaxSeedCastDistance = (float)lsdp.getMaxSeedCastDistance();
+        float fSeedViability = (float)lsdp.getSeedViability();
         for(int i = 0; i < iPlantCount; i++) {
             if(lsdp.getPlantData()) {
-                plants.add(new Plant(lsdp.PlantX, lsdp.PlantY, lsdp.PlantDiameter));
+                plants.add(new Plant(lsdp.PlantX, lsdp.PlantY, lsdp.PlantDiameter, fGrowthRate, fMaxSize, fMaxSeedNumber, fMaxSeedCastDistance, fSeedViability));
             } else {
                 System.out.println("Error reading data for obstacle " + i);
             }
@@ -86,6 +103,19 @@ public class Environment {
         
         // One test grazer
         grazers.add(new Grazer(0, 0));
+    }
+    
+    /**
+     * Update all objects in environment
+     */
+    public void update() {
+        plants.forEach(x -> x.Update(this));
+        grazers.forEach(x -> x.Update(this));
+        predators.forEach(x -> x.Update(this));
+        
+        plants.addAll(plantsToAdd);
+        
+        plantsToAdd.clear();
     }
     
     /**
@@ -150,6 +180,14 @@ public class Environment {
      */
     public ArrayList<Predator> getPredators() {
         return predators;
+    }
+    
+    /**
+     * 
+     * @param p Plant to be added
+     */
+    public void addPlant(Plant p) {
+        plantsToAdd.add(p);
     }
     
 }
