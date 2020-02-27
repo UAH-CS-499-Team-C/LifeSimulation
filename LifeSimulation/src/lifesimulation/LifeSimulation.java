@@ -9,6 +9,7 @@ import javax.swing.JFileChooser;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 import pkgLifeSimDataParser.LifeSimDataParser;
+import java.util.regex.*;
 
 /**
  * The Primary class of the simulation.
@@ -30,6 +31,51 @@ public class LifeSimulation extends StateBasedGame{
         this.addState(new Simulation(gameState)); 
     }
     
+    // This will adjust your java library path to use the libraries that are
+    // necessary for the simulation. It will alter the path based on your OS.
+    public static void setup(){
+        
+        String os = System.getProperty("os.name");
+        
+        if (os == "Linux"){
+            
+            String regex = "slick_lib/lwjgl-2.9.3/native/linux";
+            Pattern lib = Pattern.compile(regex);
+            String path = System.getProperty("java.library.path");
+            Matcher match = lib.matcher(System.getProperty("java.library.path"));
+            
+            if(!match.find()){
+                System.setProperty("java.library.path", System.getProperty("java.library.path") + ":../../slick_lib/lwjgl-2.9.3/native/linux");
+            }
+            
+        }
+        else if(os == "Mac"){
+            
+            String regex = "slick_lib/lwjgl-2.9.3/native/macosx";
+            Pattern lib = Pattern.compile(regex);
+            String path = System.getProperty("java.library.path");
+            Matcher match = lib.matcher(System.getProperty("java.library.path"));
+            
+            if(!match.find()){
+                System.setProperty("java.library.path", System.getProperty("java.library.path") + ":../../slick_lib/lwjgl-2.9.3/native/macosx");
+            }
+            
+        }
+        else if(os == "Windows"){
+            
+            String regex = "slick_lib\\lwjgl-2.9.3\\native\\windows";
+            Pattern lib = Pattern.compile(regex);
+            String path = System.getProperty("java.library.path");
+            Matcher match = lib.matcher(System.getProperty("java.library.path"));
+            
+            if(!match.find()){
+                System.setProperty("java.library.path", System.getProperty("java.library.path") + ":..\\..\\slick_lib\\lwjgl-2.9.3\\native\\windows");
+            }
+            
+        }
+        
+    }
+    
     @Override
     public void initStatesList(GameContainer gc) throws SlickException {
         // Turns out the following code shouldn't be here
@@ -45,6 +91,8 @@ public class LifeSimulation extends StateBasedGame{
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        
         
         // Create a file chooser window
         final JFileChooser fc = new JFileChooser(System.getProperty("user.dir") + "/..");
