@@ -10,6 +10,7 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 import pkgLifeSimDataParser.LifeSimDataParser;
 import java.util.regex.*;
+import javax.swing.JFrame;
 
 /**
  * The Primary class of the simulation.

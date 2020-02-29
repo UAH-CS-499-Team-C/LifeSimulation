@@ -5,8 +5,7 @@
  */
 package lifesimulation;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 import lifesimulation.objects.Environment;
 import org.newdawn.slick.*;
 import org.newdawn.slick.command.BasicCommand;
@@ -15,6 +14,7 @@ import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.command.InputProviderListener;
 import org.newdawn.slick.command.KeyControl;
 import org.newdawn.slick.state.*;
+import org.lwjgl.input.Mouse;
 
 /**
  *
@@ -26,6 +26,10 @@ public class Simulation extends BasicGameState implements InputProviderListener{
      * Background image for simulation
      */
     Image bg;
+    Image pause;
+    Image x1;
+    Image x10;
+    Image x100;
     /**
      * All objects in the simulation
      */
@@ -52,6 +56,11 @@ public class Simulation extends BasicGameState implements InputProviderListener{
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
         
         bg = new Image("images/grid.png");
+        pause = new Image("images/pause.png");
+        x1 = new Image("images/x1.png");
+        x10 = new Image("images/x10.png");
+        x100 = new Image("images/x100.png");
+        
         
         environment = new Environment();
         
@@ -78,13 +87,17 @@ public class Simulation extends BasicGameState implements InputProviderListener{
         
         // Testing Code
         g.setColor(Color.white);
-        g.drawString("GUI Test Controls:\n[a] Pause the simulation", 1000, 0);
-        g.drawString("[1] 1x speed", 1000, 75);
-        g.drawString("[2] 10x speed", 1000, 100);
-        g.drawString("[3] 100x speed", 1000, 125);
-        g.drawString("Number of Plants: "  + environment.getNumPlants(), 1000, 175);
-        g.drawString("Number of Grazers: " + environment.getNumGrazers(), 1000, 200);
-        g.drawString("Number of Predators: " + environment.getNumPredators(), 1000, 225);
+        //g.drawString("GUI Test Controls:\n[a] Pause the simulation", 1000, 0);
+        g.drawImage(pause, 1000, 0);
+        //g.drawString("[1] 1x speed", 1000, 75);
+        g.drawImage(x1,1000, 100);
+        //g.drawString("[2] 10x speed", 1000, 100);
+        g.drawImage(x10, 1000, 135);
+        //g.drawString("[3] 100x speed", 1000, 125);
+        g.drawImage(x100, 1000, 165);
+        g.drawString("Number of Plants: "  + environment.getNumPlants(), 1000, 195);
+        g.drawString("Number of Grazers: " + environment.getNumGrazers(), 1000, 220);
+        g.drawString("Number of Predators: " + environment.getNumPredators(), 1000, 245);
         if(paused) {
             g.setColor(Color.red);
             g.drawString("Game Paused", 0, 0);
@@ -93,15 +106,15 @@ public class Simulation extends BasicGameState implements InputProviderListener{
         switch (timeSpeed) {
             case 1:
                 g.setColor(Color.red);
-                g.drawString("[1] 1x speed", 1000, 75);
+                g.drawString("1x speed", 1000, 75);
                 break;
             case 10:
                 g.setColor(Color.red);
-                g.drawString("[2] 10x speed", 1000, 100);
+                g.drawString("10x speed", 1000, 75);
                 break;
             default:
                 g.setColor(Color.red);
-                g.drawString("[3] 100x speed", 1000, 125);
+                g.drawString("100x speed", 1000, 75);
                 break;
         }
         // End Testing Code
@@ -121,6 +134,8 @@ public class Simulation extends BasicGameState implements InputProviderListener{
                 logicNeedUpdate = false;
             }
         }
+        
+        
     }
     
     @Override
@@ -133,7 +148,7 @@ public class Simulation extends BasicGameState implements InputProviderListener{
      * Allows us to pause the game.
      * @param cmnd 
      */
-    @Override
+   /* @Override
     public void controlPressed(Command cmnd) {
         // Temporary Keyboard Inputs
         if (cmnd == pauseCommand && !paused) {
@@ -153,5 +168,33 @@ public class Simulation extends BasicGameState implements InputProviderListener{
     }
 
     @Override
-    public void controlReleased(Command cmnd) {}
+    public void controlReleased(Command cmnd) {}*/
+    
+    @Override
+    public void mouseClicked(int button, int x, int y, int ClickCount){
+        
+        if(button == Input.MOUSE_LEFT_BUTTON){
+            
+            if((x >1000 && x < 1000 + pause.getWidth()) && (y > 0 && y < 0 + pause.getHeight()) && !paused){
+                paused = true;
+            }
+            else if((x >1000 && x < 1000 + pause.getWidth()) && (y > 0 && y < 0 + pause.getHeight()) && paused){
+                paused = false;
+            }
+            else if((x > 1000 && x < 1000 + x1.getWidth()) && (y > 100 && y < 100 + x1.getHeight())){
+                timeSpeed = 1;
+                logicNeedUpdate = true;
+            }
+            else if((x > 1000 && x < 1000 + x10.getWidth()) && (y > 135 && y < 135 + x10.getHeight())){
+                timeSpeed = 10;
+                logicNeedUpdate = true;
+            }
+            else if((x > 1000 && x < 1000 + x100.getWidth()) && (y > 165 && y < 165 + x100.getHeight())){
+                timeSpeed = 100;
+                logicNeedUpdate = true;
+            }
+            
+        }
+        
+    }
 }
