@@ -12,21 +12,33 @@ import org.newdawn.slick.Graphics;
  * Implementation class of the Grazer Creature
  * @author sam
  */
-public class Grazer extends SimulationObject implements LivingCreature{ /**
-     * 
-     * @param x Starting x location
-     * @param y Starting y location
-     */
-    public Grazer(float x, float y) {
+public class Grazer extends SimulationObject implements LivingCreature{
+    
+    protected final int EU;
+    
+    private final float energyInput;
+    private final float energyOutput;
+    private final float energyToReproduce;
+    private final float maintainSpeed;
+    private final float maxSpeed;
+    
+    
+    public Grazer(float x, float y, int EU, float energyInput, float energyOutput, float energyToReproduce, float maintainSpeed, float maxSpeed) {
         super(x, y);
+        this.EU = EU;
+        this.energyInput = energyInput;
+        this.energyOutput = energyOutput;
+        this.energyToReproduce = energyToReproduce;
+        this.maintainSpeed = maintainSpeed;
+        this.maxSpeed = maxSpeed;
     }
 
      
     
     @Override
     public void draw(Graphics g) {
-        g.setColor(Color.green);
-        g.drawRect(x, y, 7, 7);
+        g.setColor(Color.blue);
+        g.draw(collision);
     }
 
     @Override

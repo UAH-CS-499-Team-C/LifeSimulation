@@ -100,9 +100,6 @@ public class Environment {
                 System.out.println("Error reading data for obstacle " + i);
             }
         }
-        
-        // One test grazer
-        grazers.add(new Grazer(0, 0));
     }
     
     /**
