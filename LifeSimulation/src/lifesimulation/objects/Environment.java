@@ -97,7 +97,23 @@ public class Environment {
             if(lsdp.getPlantData()) {
                 plants.add(new Plant(lsdp.PlantX, lsdp.PlantY, lsdp.PlantDiameter, fGrowthRate, fMaxSize, fMaxSeedNumber, fMaxSeedCastDistance, fSeedViability));
             } else {
-                System.out.println("Error reading data for obstacle " + i);
+                System.out.println("Error reading data for plant " + i);
+            }
+        }
+        
+        // Load all grazers from the parser
+        int iGrazerCount = lsdp.getInitialGrazerCount();
+        float fEnergyInput = lsdp.getGrazerEnergyInputRate();
+        float fEnergyOutput = lsdp.getGrazerEnergyOutputRate();
+        float fEnergyToReproduce = lsdp.getGrazerEnergyToReproduce();
+        float fMaintainSpeed = (float)lsdp.getGrazerMaintainSpeedTime();
+        float fMaxSpeed = (float)lsdp.getGrazerMaxSpeed();
+        for(int i = 0; i < iGrazerCount; i++){
+            if(lsdp.getGrazerData()) {
+                System.out.println("added");
+                grazers.add(new Grazer(lsdp.GrazerX, lsdp.GrazerY, lsdp.GrazerEnergy, fEnergyInput, fEnergyOutput, fEnergyToReproduce, fMaintainSpeed, fMaxSpeed));
+                } else {
+                System.out.println("Error reading data for grazer " + i);
             }
         }
     }

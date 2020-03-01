@@ -7,6 +7,7 @@ package lifesimulation.objects;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Circle;
 
 /**
  * Implementation class of the Grazer Creature
@@ -31,6 +32,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
         this.energyToReproduce = energyToReproduce;
         this.maintainSpeed = maintainSpeed;
         this.maxSpeed = maxSpeed;
+        this.collision = new Circle(x, y, 7);
     }
 
      
@@ -38,6 +40,9 @@ public class Grazer extends SimulationObject implements LivingCreature{
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.blue);
+        g.fill(collision);
+        g.setLineWidth(2);
+        g.setColor(Color.black);
         g.draw(collision);
     }
 
