@@ -9,6 +9,8 @@ import javax.swing.JFileChooser;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 import pkgLifeSimDataParser.LifeSimDataParser;
+import java.util.regex.*;
+import javax.swing.JFrame;
 
 /**
  * The Primary class of the simulation.
@@ -30,6 +32,8 @@ public class LifeSimulation extends StateBasedGame{
         this.addState(new Simulation(gameState)); 
     }
     
+    
+    
     @Override
     public void initStatesList(GameContainer gc) throws SlickException {
         // Turns out the following code shouldn't be here
@@ -45,6 +49,8 @@ public class LifeSimulation extends StateBasedGame{
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        
         
         // Create a file chooser window
         final JFileChooser fc = new JFileChooser(System.getProperty("user.dir") + "/..");
