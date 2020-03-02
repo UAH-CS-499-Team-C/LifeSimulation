@@ -20,7 +20,7 @@ import org.lwjgl.input.Mouse;
  *
  * @author d4g0n
  */
-public class Simulation extends BasicGameState implements InputProviderListener{
+public class Simulation extends BasicGameState{
     
     /**
      * Background image for simulation
@@ -64,13 +64,7 @@ public class Simulation extends BasicGameState implements InputProviderListener{
         
         environment = new Environment();
         
-        // Temporary Keyboard Inputs
-        provider = new InputProvider(gc.getInput());
-	provider.addListener(this);
-        provider.bindCommand(new KeyControl(Input.KEY_A), pauseCommand);
-        provider.bindCommand(new KeyControl(Input.KEY_1), time1Command);
-        provider.bindCommand(new KeyControl(Input.KEY_2), time10Command);
-        provider.bindCommand(new KeyControl(Input.KEY_3), time100Command);
+        
     }
     
     @Override
@@ -87,13 +81,13 @@ public class Simulation extends BasicGameState implements InputProviderListener{
         
         // Testing Code
         g.setColor(Color.white);
-        //g.drawString("GUI Test Controls:\n[a] Pause the simulation", 1000, 0);
+        
         g.drawImage(pause, 1000, 0);
-        //g.drawString("[1] 1x speed", 1000, 75);
+        
         g.drawImage(x1,1000, 100);
-        //g.drawString("[2] 10x speed", 1000, 100);
+        
         g.drawImage(x10, 1000, 135);
-        //g.drawString("[3] 100x speed", 1000, 125);
+        
         g.drawImage(x100, 1000, 165);
         g.drawString("Number of Plants: "  + environment.getNumPlants(), 1000, 195);
         g.drawString("Number of Grazers: " + environment.getNumGrazers(), 1000, 220);
@@ -143,32 +137,9 @@ public class Simulation extends BasicGameState implements InputProviderListener{
         return 0;
     }
 
-    /**
-     * Watches for user input.
-     * Allows us to pause the game.
-     * @param cmnd 
-     */
-   /* @Override
-    public void controlPressed(Command cmnd) {
-        // Temporary Keyboard Inputs
-        if (cmnd == pauseCommand && !paused) {
-            paused = true;
-        } else if (cmnd == pauseCommand && paused) {
-            paused = false;
-        } else if (cmnd == time1Command) {
-            timeSpeed = 1;
-            logicNeedUpdate = true;
-        } else if (cmnd == time10Command) {
-            timeSpeed = 10;
-            logicNeedUpdate = true;
-        } else if (cmnd == time100Command) {
-            timeSpeed = 100;
-            logicNeedUpdate = true;
-        }
-    }
+   
 
-    @Override
-    public void controlReleased(Command cmnd) {}*/
+    // Control the simulation via GUI buttons
     
     @Override
     public void mouseClicked(int button, int x, int y, int ClickCount){
