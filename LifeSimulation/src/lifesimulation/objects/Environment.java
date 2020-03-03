@@ -116,6 +116,27 @@ public class Environment {
                 System.out.println("Error reading data for grazer " + i);
             }
         }
+        
+        // Load all predators from parser
+        int iPredatorCount = lsdp.getInitialPredatorCount();
+        float fHOD = (float)lsdp.getPredatorMaxSpeedHOD();
+        float fHED = (float)lsdp.getPredatorMaxSpeedHED();
+        float fHOR = (float)lsdp.getPredatorMaxSpeedHOR();
+        fMaintainSpeed = (float)lsdp.getPredatorMaintainSpeedTime();
+        fEnergyOutput = lsdp.getPredatorEnergyOutputRate();
+        fEnergyToReproduce = lsdp.getPredatorEnergyToReproduce();
+        int iMaxOffspring = lsdp.getPredatorMaxOffspring();
+        float fGestation = (float)lsdp.getPredatorGestationPeriod();
+        float fOffspringEnergy = lsdp.getPredatorOffspringEnergyLevel();
+        for(int i=0; i < iPredatorCount; i++) {
+            if(lsdp.getPredatorData()){
+                System.out.println("added");
+                predators.add(new Predator(lsdp.PredatorX, lsdp.PredatorY, lsdp.PredatorEnergy, lsdp.PredatorGenotype, fHOD, fHED, fHOR, fMaintainSpeed, fEnergyOutput, fEnergyToReproduce, iMaxOffspring, fGestation, fOffspringEnergy));
+            } else{
+                System.out.println("Error reading data for predator " + i);
+            }
+        }
+        
     }
     
     /**
