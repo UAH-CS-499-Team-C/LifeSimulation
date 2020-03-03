@@ -9,8 +9,6 @@ import javax.swing.JFileChooser;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 import pkgLifeSimDataParser.LifeSimDataParser;
-import java.util.regex.*;
-import javax.swing.JFrame;
 
 /**
  * The Primary class of the simulation.
@@ -24,7 +22,7 @@ public class LifeSimulation extends StateBasedGame{
    
     
     // Testing Code
-    static int bonusWidth = 350;
+    static int bonusWidth = 250;
     // End Testing Code
     
     public LifeSimulation(String gameName){
