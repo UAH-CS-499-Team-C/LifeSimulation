@@ -8,13 +8,9 @@ package lifesimulation;
 
 import lifesimulation.objects.Environment;
 import org.newdawn.slick.*;
-import org.newdawn.slick.command.BasicCommand;
-import org.newdawn.slick.command.Command;
 import org.newdawn.slick.command.InputProvider;
-import org.newdawn.slick.command.InputProviderListener;
-import org.newdawn.slick.command.KeyControl;
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.state.*;
-import org.lwjgl.input.Mouse;
 
 /**
  *
@@ -27,6 +23,7 @@ public class Simulation extends BasicGameState{
      */
     Image bg;
     Image pause;
+    Image play;
     Image x1;
     Image x10;
     Image x100;
@@ -38,13 +35,10 @@ public class Simulation extends BasicGameState{
     private boolean paused = false;
     private int timeSpeed = 1;
     private boolean logicNeedUpdate = false;
+    private int t;
     
     // Temporary Keyboard Inputs
     private InputProvider provider;
-    private final Command pauseCommand = new BasicCommand("pauseCommand");
-    private final Command time1Command = new BasicCommand("time1Command");
-    private final Command time10Command = new BasicCommand("time10Command");
-    private final Command time100Command = new BasicCommand("time100Command");
     
     public Simulation(int State) {
         
@@ -56,11 +50,13 @@ public class Simulation extends BasicGameState{
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
         
         bg = new Image("images/grid.png");
-        pause = new Image("images/pause.png");
-        x1 = new Image("images/x1.png");
-        x10 = new Image("images/x10.png");
-        x100 = new Image("images/x100.png");
+        pause = new Image("images/button_pause.png");
+        play = new Image("images/button_play.png");
+        x1 = new Image("images/button_1x-speed.png");
+        x10 = new Image("images/button_10x-speed.png");
+        x100 = new Image("images/button_100x-speed.png");
         
+        t = 0;
         
         environment = Environment.GetInstance();
         
@@ -79,47 +75,61 @@ public class Simulation extends BasicGameState{
         environment.getPredators().forEach(x -> x.draw(g));
         
         
-        // Testing Code
+        // ============================ UI Code ==================================
+        
+        // Draw background rect
         g.setColor(Color.black);
-        g.drawRect(1001, 0, 350, 750);
-        g.setColor(Color.white);
+        g.drawRect(1000, 0, 350, 750);
         
-        g.drawImage(pause, 1000, 0);
-        
-        g.drawImage(x1,1000, 100);
-        
-        g.drawImage(x10, 1000, 135);
-        
-        g.drawImage(x100, 1000, 165);
-        g.drawString("Number of Plants: "  + environment.getNumPlants(), 1000, 195);
-        g.drawString("Number of Grazers: " + environment.getNumGrazers(), 1000, 220);
-        g.drawString("Number of Predators: " + environment.getNumPredators(), 1000, 245);
-        if(paused) {
-            g.setColor(Color.red);
-            g.drawString("Game Paused", 0, 0);
+        // Draw pause/play button
+        if(paused){
+            g.drawImage(play, 1000, 0);
+        } else {
+            g.drawImage(pause, 1000, 0);
         }
         
-        switch (timeSpeed) {
+        // Draw time
+        g.setColor(Color.white);
+        g.drawString("Seconds passed: " + t, 1000, 75);
+        
+        // Draw number of each object
+        g.setColor(Color.white);
+        g.drawString("Number of Plants: "  + environment.getNumPlants(), 1000, 125);
+        g.drawString("Number of Grazers: " + environment.getNumGrazers(), 1000, 150);
+        g.drawString("Number of Predators: " + environment.getNumPredators(), 1000, 175);
+        
+        // Draw time controls
+        g.drawImage(x1, 1000, 250);
+        g.drawImage(x10, 1000, 305);
+        g.drawImage(x100, 1000, 360);
+        switch(timeSpeed){
             case 1:
-                g.setColor(Color.red);
-                g.drawString("1x speed", 1000, 75);
+                g.drawString("<-", 1155, 270);
                 break;
             case 10:
-                g.setColor(Color.red);
-                g.drawString("10x speed", 1000, 75);
+                g.drawString("<-", 1155, 325);
                 break;
-            default:
-                g.setColor(Color.red);
-                g.drawString("100x speed", 1000, 75);
-                break;
+            case 100:
+                g.drawString("<-", 1155, 380);
         }
-        // End Testing Code
+        
+        // Draw key
+        g.setColor(Color.white);
+        g.drawString("--- Key ---", 1000, 500);
+        g.drawString("Grazer:", 1000, 525);
+        g.setColor(Color.blue);
+        g.fill(new Circle(1100, 535, 7, 7));
+        g.setColor(Color.white);
+        g.drawString("Predator:", 1000, 550);
+        g.setColor(Color.red);
+        g.fill(new Circle(1100, 560, 7, 7));
         
     }
     
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         if(!paused) {
+            t++;
             environment.update();
             
             // If speed needs updated
@@ -152,15 +162,15 @@ public class Simulation extends BasicGameState{
             else if((x >1000 && x < 1000 + pause.getWidth()) && (y > 0 && y < 0 + pause.getHeight()) && paused){
                 paused = false;
             }
-            else if((x > 1000 && x < 1000 + x1.getWidth()) && (y > 100 && y < 100 + x1.getHeight())){
+            else if((x > 1000 && x < 1000 + x1.getWidth()) && (y > 250 && y < 250 + x1.getHeight())){
                 timeSpeed = 1;
                 logicNeedUpdate = true;
             }
-            else if((x > 1000 && x < 1000 + x10.getWidth()) && (y > 135 && y < 135 + x10.getHeight())){
+            else if((x > 1000 && x < 1000 + x10.getWidth()) && (y > 305 && y < 305 + x10.getHeight())){
                 timeSpeed = 10;
                 logicNeedUpdate = true;
             }
-            else if((x > 1000 && x < 1000 + x100.getWidth()) && (y > 165 && y < 165 + x100.getHeight())){
+            else if((x > 1000 && x < 1000 + x100.getWidth()) && (y > 360 && y < 360 + x100.getHeight())){
                 timeSpeed = 100;
                 logicNeedUpdate = true;
             }
