@@ -22,7 +22,7 @@ public class SimReportGenerator {
     
     public void Generate(Environment e) {
         try {
-            FileWriter writer = new FileWriter("../Reports/SimReport_.txt", true);
+            FileWriter writer = new FileWriter("../Reports/SimReport.txt", true);
             writer.write(xmlFilePath + "\n");
             writer.write("Good Bye!");
             writer.close();
