@@ -181,7 +181,7 @@ public class Simulation extends BasicGameState{
                 logicNeedUpdate = true;
             }
             else if((x > 1000 && x < 1000 + printReport.getWidth()) && (y > 650 && y < 650 + printReport.getHeight())){
-                
+                simReportGenerator.Generate(environment);
             }
             
         }

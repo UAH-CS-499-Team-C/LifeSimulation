@@ -5,6 +5,9 @@
  */
 package lifesimulation.utilities;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  * Frame that contains the printout information about the simulation
  * @author sam
@@ -18,6 +21,13 @@ public class SimReportGenerator {
     }
     
     public void Generate(Environment e) {
-        
+        try {
+            FileWriter writer = new FileWriter("../Reports/SimReport_.txt", true);
+            writer.write(xmlFilePath + "\n");
+            writer.write("Good Bye!");
+            writer.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 }
