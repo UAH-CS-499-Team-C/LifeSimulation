@@ -5,6 +5,7 @@
  */
 package lifesimulation.objects;
 
+import lifesimulation.utilities.Environment;
 import java.awt.geom.Point2D;
 import java.util.Random;
 import org.newdawn.slick.Color;

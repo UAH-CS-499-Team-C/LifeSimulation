@@ -5,6 +5,7 @@
  */
 package lifesimulation.objects;
 
+import lifesimulation.utilities.Environment;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;

@@ -8,7 +8,7 @@ package lifesimulation;
 import javax.swing.JFileChooser;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
-import pkgLifeSimDataParser.LifeSimDataParser;
+import lifesimulation.utilities.LifeSimDataParser;
 
 /**
  * The Primary class of the simulation.

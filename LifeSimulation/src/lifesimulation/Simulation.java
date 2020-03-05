@@ -6,7 +6,8 @@
 package lifesimulation;
 
 
-import lifesimulation.objects.Environment;
+import lifesimulation.utilities.Environment;
+import lifesimulation.utilities.SimReportGenerator;
 import org.newdawn.slick.*;
 import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.geom.Circle;

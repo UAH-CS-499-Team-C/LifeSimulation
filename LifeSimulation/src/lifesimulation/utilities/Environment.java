@@ -3,10 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lifesimulation.objects;
+package lifesimulation.utilities;
 
 import java.util.ArrayList;
-import pkgLifeSimDataParser.LifeSimDataParser;
+import lifesimulation.objects.Grazer;
+import lifesimulation.objects.Obstacle;
+import lifesimulation.objects.Plant;
+import lifesimulation.objects.Predator;
+import lifesimulation.utilities.LifeSimDataParser;
 
 /**
  * A utilities class that holds all simulation objects. Provides a nice, clean

@@ -5,6 +5,8 @@
  */
 package lifesimulation.objects;
 
+import lifesimulation.utilities.Environment;
+
 /**
  * Interface that all living, breathing, and moving creatures must implement
  * @author sam
