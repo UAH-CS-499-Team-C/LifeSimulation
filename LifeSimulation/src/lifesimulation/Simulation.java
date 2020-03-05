@@ -38,7 +38,6 @@ public class Simulation extends BasicGameState{
     private boolean paused = true;
     private int timeSpeed = 1;
     private boolean logicNeedUpdate = false;
-    private int t;
     private final SimReportGenerator simReportGenerator;
     
     // Temporary Keyboard Inputs
@@ -60,8 +59,6 @@ public class Simulation extends BasicGameState{
         x10 = new Image("images/button_10x-speed.png");
         x100 = new Image("images/button_100x-speed.png");
         printReport = new Image("images/button_print-report.png");
-        
-        t = 0;
         
         environment = new Environment();
         
@@ -94,7 +91,7 @@ public class Simulation extends BasicGameState{
         
         // Draw time
         g.setColor(Color.white);
-        g.drawString("Seconds passed: " + t, 1000, 75);
+        g.drawString("Seconds passed: " + environment.getTime(), 1000, 75);
         
         // Draw number of each object
         g.setColor(Color.white);
@@ -135,7 +132,6 @@ public class Simulation extends BasicGameState{
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         if(!paused) {
-            t++;
             environment.update();
             
             // If speed needs updated

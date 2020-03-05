@@ -38,6 +38,8 @@ public class Environment {
      * Plants to be added to array
      */
     private ArrayList<Plant> plantsToAdd;
+    
+    private int t;
 
     /**
      * Constructor
@@ -51,6 +53,8 @@ public class Environment {
         plantsToAdd = new ArrayList<>();
         
         LoadData();
+        
+        t = 0;
     }
     
     /**
@@ -135,6 +139,8 @@ public class Environment {
         plants.addAll(plantsToAdd);
         
         plantsToAdd.clear();
+        
+        t++;
     }
     
     /**
@@ -207,6 +213,10 @@ public class Environment {
      */
     public void addPlant(Plant p) {
         plantsToAdd.add(p);
+    }
+    
+    public int getTime() {
+        return t;
     }
     
 }
