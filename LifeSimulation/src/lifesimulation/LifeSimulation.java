@@ -8,7 +8,7 @@ package lifesimulation;
 import javax.swing.JFileChooser;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
-import pkgLifeSimDataParser.LifeSimDataParser;
+import lifesimulation.utilities.LifeSimDataParser;
 
 /**
  * The Primary class of the simulation.
@@ -25,9 +25,9 @@ public class LifeSimulation extends StateBasedGame{
     static int bonusWidth = 250;
     // End Testing Code
     
-    public LifeSimulation(String gameName){
+    public LifeSimulation(String gameName, String s){
         super(gameName);
-        this.addState(new Simulation(gameState)); 
+        this.addState(new Simulation(gameState, s)); 
     }
     
     
@@ -67,7 +67,7 @@ public class LifeSimulation extends StateBasedGame{
         // Slick Game code
         try {
             // Create an app container
-            AppGameContainer appgc = new AppGameContainer(new LifeSimulation(gameName));
+            AppGameContainer appgc = new AppGameContainer(new LifeSimulation(gameName, filePath));
             
             // Set the width/height to values from parser
             appgc.setDisplayMode((int)lsdp.getWorldWidth() + bonusWidth, (int)lsdp.getWorldHeight(), false);

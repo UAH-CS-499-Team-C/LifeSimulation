@@ -5,6 +5,7 @@
  */
 package lifesimulation.objects;
 
+import lifesimulation.utilities.Environment;
 import java.awt.geom.Point2D;
 import java.util.Random;
 import org.newdawn.slick.Color;
@@ -165,6 +166,10 @@ public class Plant extends SimulationObject implements LivingCreature {
                 e.addPlant(new Plant(tmpX, tmpY, 0.01f, growthRate, maxSize, maxSeedNumber, maxSeedCastDistance, seedViability));
             }
         }
+    }
+    
+    public float getDiameter() {
+        return diameter;
     }
     
 }

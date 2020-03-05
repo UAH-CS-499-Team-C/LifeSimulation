@@ -5,6 +5,7 @@
  */
 package lifesimulation.objects;
 
+import lifesimulation.utilities.Environment;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
@@ -50,5 +51,9 @@ public class Grazer extends SimulationObject implements LivingCreature{
     public void Update(Environment e) {
         x+=3.0;
         y+=3.0;
+    }
+    
+    public int getEnergy() {
+        return EU;
     }
 }

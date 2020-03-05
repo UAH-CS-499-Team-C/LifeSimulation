@@ -6,7 +6,8 @@
 package lifesimulation;
 
 
-import lifesimulation.objects.Environment;
+import lifesimulation.utilities.Environment;
+import lifesimulation.utilities.SimReportGenerator;
 import org.newdawn.slick.*;
 import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.geom.Circle;
@@ -27,6 +28,8 @@ public class Simulation extends BasicGameState{
     Image x1;
     Image x10;
     Image x100;
+    Image printReport;
+    
     /**
      * All objects in the simulation
      */
@@ -35,13 +38,13 @@ public class Simulation extends BasicGameState{
     private boolean paused = true;
     private int timeSpeed = 1;
     private boolean logicNeedUpdate = false;
-    private int t;
+    private final SimReportGenerator simReportGenerator;
     
     // Temporary Keyboard Inputs
     private InputProvider provider;
     
-    public Simulation(int State) {
-        
+    public Simulation(int State, String s) {
+        simReportGenerator = new SimReportGenerator(s);
     }
     
    
@@ -55,10 +58,9 @@ public class Simulation extends BasicGameState{
         x1 = new Image("images/button_1x-speed.png");
         x10 = new Image("images/button_10x-speed.png");
         x100 = new Image("images/button_100x-speed.png");
+        printReport = new Image("images/button_print-report.png");
         
-        t = 0;
-        
-        environment = Environment.GetInstance();
+        environment = new Environment();
         
         
     }
@@ -89,7 +91,7 @@ public class Simulation extends BasicGameState{
         
         // Draw time
         g.setColor(Color.white);
-        g.drawString("Seconds passed: " + t, 1000, 75);
+        g.drawString("Seconds passed: " + environment.getTime(), 1000, 75);
         
         // Draw number of each object
         g.setColor(Color.white);
@@ -123,12 +125,13 @@ public class Simulation extends BasicGameState{
         g.setColor(Color.red);
         g.fill(new Circle(1100, 560, 7, 7));
         
+        g.drawImage(printReport, 1000, 650);
+        
     }
     
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         if(!paused) {
-            t++;
             environment.update();
             
             // If speed needs updated
@@ -172,6 +175,9 @@ public class Simulation extends BasicGameState{
             else if((x > 1000 && x < 1000 + x100.getWidth()) && (y > 360 && y < 360 + x100.getHeight())){
                 timeSpeed = 100;
                 logicNeedUpdate = true;
+            }
+            else if((x > 1000 && x < 1000 + printReport.getWidth()) && (y > 650 && y < 650 + printReport.getHeight())){
+                simReportGenerator.Generate(environment);
             }
             
         }
