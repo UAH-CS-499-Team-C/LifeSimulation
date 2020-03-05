@@ -16,7 +16,7 @@ import org.newdawn.slick.geom.Circle;
  */
 public class Predator extends SimulationObject implements LivingCreature{
     
-    private float EU;
+    private int EU;
     private String genotype;
     private float maxSpeedHOD;
     private float maxSpeedHED;
@@ -28,7 +28,7 @@ public class Predator extends SimulationObject implements LivingCreature{
     private float gestaion;
     private float offspringEnergy;
 
-    public Predator(float x, float y, float EU, String genotype, float maxSpeedHOD, float maxSpeedHED, float maxSpeedHOR, float maintainSpeed, float energyOutput, float energyToReProduce, int maxOffspring, float gestaion, float offspringEnergy) {
+    public Predator(float x, float y, int EU, String genotype, float maxSpeedHOD, float maxSpeedHED, float maxSpeedHOR, float maintainSpeed, float energyOutput, float energyToReProduce, int maxOffspring, float gestaion, float offspringEnergy) {
         super(x, y);
         this.EU = EU;
         this.genotype = genotype;
@@ -58,6 +58,14 @@ public class Predator extends SimulationObject implements LivingCreature{
     @Override
     public void Update(Environment e) {
         
+    }
+    
+    public int getEnergy() {
+        return EU;
+    }
+    
+    public String getGenotype() {
+        return genotype;
     }
     
 }

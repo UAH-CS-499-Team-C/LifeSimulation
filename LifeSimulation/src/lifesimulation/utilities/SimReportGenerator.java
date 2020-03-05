@@ -10,6 +10,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import lifesimulation.objects.Grazer;
+import lifesimulation.objects.Plant;
+import lifesimulation.objects.Predator;
 
 /**
  * Frame that contains the printout information about the simulation
@@ -45,10 +48,29 @@ public class SimReportGenerator {
             writer.write("Number of Grazers: " + e.getNumGrazers() + "\n");
             writer.write("Number of Predators: " + e.getNumPredators() + "\n");
             
-            writer.write("\n=============== Obstacle Info ===============\n");
-            for (int i = 0; i < e.getNumObstacles(); i++) {
-                writer.write("Obstacle " + i + ":\n");
-                writer.write("\t" + e.getObstacles().get(i).toString() + "\n");
+            writer.write("\n=============== Plant Info ===============\n");
+            for (int i = 0; i < e.getNumPlants(); i++) {
+                Plant p = e.getPlants().get(i);
+                writer.write("Plant " + i + ":\n");
+                writer.write("\tLocation: (" + (int)p.getX() + ", " + (int)p.getY() + ")\n");
+                writer.write("\tDiameter: " + p.getDiameter() + "\n");
+            }
+            
+            writer.write("\n=============== Grazer Info ===============\n");
+            for (int i = 0; i < e.getNumGrazers(); i++) {
+                Grazer g = e.getGrazers().get(i);
+                writer.write("Grazer " + i + ":\n");
+                writer.write("\tLocation: (" + (int)g.getX() + ", " + (int)g.getY() + ")\n");
+                writer.write("\tEnergy: " + g.getEnergy()+ "\n");
+            }
+            
+            writer.write("\n=============== Predator Info ===============\n");
+            for (int i = 0; i < e.getNumPredators(); i++) {
+                Predator p = e.getPredators().get(i);
+                writer.write("Predator " + i + ":\n");
+                writer.write("\tLocation: (" + (int)p.getX() + ", " + (int)p.getY() + ")\n");
+                writer.write("\tEnergy: " + p.getEnergy()+ "\n");
+                writer.write("\tGenotype: " + p.getGenotype() + "\n");
             }
             
             // Close the file

@@ -52,4 +52,8 @@ public class Grazer extends SimulationObject implements LivingCreature{
         x+=3.0;
         y+=3.0;
     }
+    
+    public int getEnergy() {
+        return EU;
+    }
 }

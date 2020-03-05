@@ -168,4 +168,8 @@ public class Plant extends SimulationObject implements LivingCreature {
         }
     }
     
+    public float getDiameter() {
+        return diameter;
+    }
+    
 }

@@ -120,7 +120,7 @@ public class Environment {
         for(int i=0; i < iPredatorCount; i++) {
             if(lsdp.getPredatorData()){
                 System.out.println("added");
-                predators.add(new Predator(lsdp.PredatorX, lsdp.PredatorY, lsdp.PredatorEnergy, lsdp.PredatorGenotype, fHOD, fHED, fHOR, fMaintainSpeed, fEnergyOutput, fEnergyToReproduce, iMaxOffspring, fGestation, fOffspringEnergy));
+                predators.add(new Predator(lsdp.PredatorX, lsdp.PredatorY, (int)lsdp.PredatorEnergy, lsdp.PredatorGenotype, fHOD, fHED, fHOR, fMaintainSpeed, fEnergyOutput, fEnergyToReproduce, iMaxOffspring, fGestation, fOffspringEnergy));
             } else{
                 System.out.println("Error reading data for predator " + i);
             }
