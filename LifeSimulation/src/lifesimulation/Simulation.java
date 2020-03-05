@@ -28,6 +28,8 @@ public class Simulation extends BasicGameState{
     Image x1;
     Image x10;
     Image x100;
+    Image printReport;
+    
     /**
      * All objects in the simulation
      */
@@ -37,12 +39,13 @@ public class Simulation extends BasicGameState{
     private int timeSpeed = 1;
     private boolean logicNeedUpdate = false;
     private int t;
+    private final SimReportGenerator simReportGenerator;
     
     // Temporary Keyboard Inputs
     private InputProvider provider;
     
-    public Simulation(int State) {
-        
+    public Simulation(int State, String s) {
+        simReportGenerator = new SimReportGenerator(s);
     }
     
    
@@ -56,6 +59,7 @@ public class Simulation extends BasicGameState{
         x1 = new Image("images/button_1x-speed.png");
         x10 = new Image("images/button_10x-speed.png");
         x100 = new Image("images/button_100x-speed.png");
+        printReport = new Image("images/button_print-report.png");
         
         t = 0;
         
@@ -124,6 +128,8 @@ public class Simulation extends BasicGameState{
         g.setColor(Color.red);
         g.fill(new Circle(1100, 560, 7, 7));
         
+        g.drawImage(printReport, 1000, 650);
+        
     }
     
     @Override
@@ -173,6 +179,9 @@ public class Simulation extends BasicGameState{
             else if((x > 1000 && x < 1000 + x100.getWidth()) && (y > 360 && y < 360 + x100.getHeight())){
                 timeSpeed = 100;
                 logicNeedUpdate = true;
+            }
+            else if((x > 1000 && x < 1000 + printReport.getWidth()) && (y > 650 && y < 650 + printReport.getHeight())){
+                
             }
             
         }

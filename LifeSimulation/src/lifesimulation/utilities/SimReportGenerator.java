@@ -11,9 +11,13 @@ package lifesimulation.utilities;
  */
 public class SimReportGenerator {
 
-    Environment e;
+    String xmlFilePath;
     
-    public SimReportGenerator(Environment e) {
-        this.e = e;
+    public SimReportGenerator(String s) {
+        this.xmlFilePath = s;
+    }
+    
+    public void Generate(Environment e) {
+        
     }
 }
