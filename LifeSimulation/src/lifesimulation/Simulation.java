@@ -59,7 +59,7 @@ public class Simulation extends BasicGameState{
         
         t = 0;
         
-        environment = Environment.GetInstance();
+        environment = new Environment();
         
         
     }

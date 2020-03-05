@@ -10,7 +10,6 @@ import lifesimulation.objects.Grazer;
 import lifesimulation.objects.Obstacle;
 import lifesimulation.objects.Plant;
 import lifesimulation.objects.Predator;
-import lifesimulation.utilities.LifeSimDataParser;
 
 /**
  * A utilities class that holds all simulation objects. Provides a nice, clean
@@ -18,12 +17,6 @@ import lifesimulation.utilities.LifeSimDataParser;
  * @author sam
  */
 public class Environment {
-    
-    /**
-     * Singleton instance
-     */
-    private static Environment instance = null;
-    
     /**
      * All Obstacle objects
      */
@@ -45,23 +38,11 @@ public class Environment {
      * Plants to be added to array
      */
     private ArrayList<Plant> plantsToAdd;
-    
-    /**
-     * Singleton GetInstance function
-     * @return The instance
-     */
-    public static Environment GetInstance() 
-    { 
-        if (instance == null) 
-            instance = new Environment(); 
-  
-        return instance; 
-    } 
 
     /**
      * Constructor
      */
-    private Environment() {
+    public Environment() {
         obstacles = new ArrayList<>();
         plants = new ArrayList<>();
         grazers = new ArrayList<>();
