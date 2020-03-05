@@ -32,7 +32,7 @@ public class Simulation extends BasicGameState{
      */
     Environment environment;
     
-    private boolean paused = false;
+    private boolean paused = true;
     private int timeSpeed = 1;
     private boolean logicNeedUpdate = false;
     private int t;
@@ -76,10 +76,9 @@ public class Simulation extends BasicGameState{
         
         
         // ============================ UI Code ==================================
-        
         // Draw background rect
         g.setColor(Color.black);
-        g.drawRect(1000, 0, 350, 750);
+        g.fillRect(1000, 0, 250, 750);
         
         // Draw pause/play button
         if(paused){
