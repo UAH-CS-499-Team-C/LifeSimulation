@@ -5,7 +5,7 @@
 // Author: Dr. Rick Coleman
 // Date: January 2017
 //===================================================================================
-package pkgLifeSimDataParser;
+package lifesimulation.utilities;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
