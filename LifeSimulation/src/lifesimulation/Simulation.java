@@ -5,58 +5,64 @@
  */
 package lifesimulation;
 
-import lifesimulation.objects.Environment;
+
+import lifesimulation.utilities.Environment;
+import lifesimulation.utilities.SimReportGenerator;
 import org.newdawn.slick.*;
-import org.newdawn.slick.command.BasicCommand;
-import org.newdawn.slick.command.Command;
 import org.newdawn.slick.command.InputProvider;
-import org.newdawn.slick.command.InputProviderListener;
-import org.newdawn.slick.command.KeyControl;
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.state.*;
 
 /**
  *
  * @author d4g0n
  */
-public class Simulation extends BasicGameState implements InputProviderListener{
+public class Simulation extends BasicGameState{
     
     /**
      * Background image for simulation
      */
     Image bg;
+    Image pause;
+    Image play;
+    Image x1;
+    Image x10;
+    Image x100;
+    Image printReport;
+    
     /**
      * All objects in the simulation
      */
     Environment environment;
     
-    private boolean paused = false;
+    private boolean paused = true;
     private int timeSpeed = 1;
     private boolean logicNeedUpdate = false;
+    private final SimReportGenerator simReportGenerator;
     
     // Temporary Keyboard Inputs
     private InputProvider provider;
-    private final Command pauseCommand = new BasicCommand("pauseCommand");
-    private final Command time1Command = new BasicCommand("time1Command");
-    private final Command time10Command = new BasicCommand("time10Command");
-    private final Command time100Command = new BasicCommand("time100Command");
     
-    public Simulation(int State) {
-        
+    public Simulation(int State, String s) {
+        simReportGenerator = new SimReportGenerator(s);
     }
+    
+   
     
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
+        
         bg = new Image("images/grid.png");
+        pause = new Image("images/button_pause.png");
+        play = new Image("images/button_play.png");
+        x1 = new Image("images/button_1x-speed.png");
+        x10 = new Image("images/button_10x-speed.png");
+        x100 = new Image("images/button_100x-speed.png");
+        printReport = new Image("images/button_print-report.png");
         
-        environment = Environment.GetInstance();
+        environment = new Environment();
         
-        // Temporary Keyboard Inputs
-        provider = new InputProvider(gc.getInput());
-	provider.addListener(this);
-        provider.bindCommand(new KeyControl(Input.KEY_A), pauseCommand);
-        provider.bindCommand(new KeyControl(Input.KEY_1), time1Command);
-        provider.bindCommand(new KeyControl(Input.KEY_2), time10Command);
-        provider.bindCommand(new KeyControl(Input.KEY_3), time100Command);
+        
     }
     
     @Override
@@ -71,37 +77,55 @@ public class Simulation extends BasicGameState implements InputProviderListener{
         environment.getPredators().forEach(x -> x.draw(g));
         
         
-        // Testing Code
+        // ============================ UI Code ==================================
+        // Draw background rect
         g.setColor(Color.black);
-        g.drawRect(1001, 0, 350, 750);
-        g.setColor(Color.white);
-        g.drawString("GUI Test Controls:\n[a] Pause the simulation", 1000, 0);
-        g.drawString("[1] 1x speed", 1000, 75);
-        g.drawString("[2] 10x speed", 1000, 100);
-        g.drawString("[3] 100x speed", 1000, 125);
-        g.drawString("Number of Plants: "  + environment.getNumPlants(), 1000, 175);
-        g.drawString("Number of Grazers: " + environment.getNumGrazers(), 1000, 200);
-        g.drawString("Number of Predators: " + environment.getNumPredators(), 1000, 225);
-        if(paused) {
-            g.setColor(Color.red);
-            g.drawString("Game Paused", 0, 0);
+        g.fillRect(1000, 0, 250, 750);
+        
+        // Draw pause/play button
+        if(paused){
+            g.drawImage(play, 1000, 0);
+        } else {
+            g.drawImage(pause, 1000, 0);
         }
         
-        switch (timeSpeed) {
+        // Draw time
+        g.setColor(Color.white);
+        g.drawString("Seconds passed: " + environment.getTime(), 1000, 75);
+        
+        // Draw number of each object
+        g.setColor(Color.white);
+        g.drawString("Number of Plants: "  + environment.getNumPlants(), 1000, 125);
+        g.drawString("Number of Grazers: " + environment.getNumGrazers(), 1000, 150);
+        g.drawString("Number of Predators: " + environment.getNumPredators(), 1000, 175);
+        
+        // Draw time controls
+        g.drawImage(x1, 1000, 250);
+        g.drawImage(x10, 1000, 305);
+        g.drawImage(x100, 1000, 360);
+        switch(timeSpeed){
             case 1:
-                g.setColor(Color.red);
-                g.drawString("[1] 1x speed", 1000, 75);
+                g.drawString("<-", 1155, 270);
                 break;
             case 10:
-                g.setColor(Color.red);
-                g.drawString("[2] 10x speed", 1000, 100);
+                g.drawString("<-", 1155, 325);
                 break;
-            default:
-                g.setColor(Color.red);
-                g.drawString("[3] 100x speed", 1000, 125);
-                break;
+            case 100:
+                g.drawString("<-", 1155, 380);
         }
-        // End Testing Code
+        
+        // Draw key
+        g.setColor(Color.white);
+        g.drawString("--- Key ---", 1000, 500);
+        g.drawString("Grazer:", 1000, 525);
+        g.setColor(Color.blue);
+        g.fill(new Circle(1100, 535, 7, 7));
+        g.setColor(Color.white);
+        g.drawString("Predator:", 1000, 550);
+        g.setColor(Color.red);
+        g.fill(new Circle(1100, 560, 7, 7));
+        
+        g.drawImage(printReport, 1000, 650);
         
     }
     
@@ -116,6 +140,8 @@ public class Simulation extends BasicGameState implements InputProviderListener{
                 logicNeedUpdate = false;
             }
         }
+        
+        
     }
     
     @Override
@@ -123,30 +149,38 @@ public class Simulation extends BasicGameState implements InputProviderListener{
         return 0;
     }
 
-    /**
-     * Watches for user input.
-     * Allows us to pause the game.
-     * @param cmnd 
-     */
-    @Override
-    public void controlPressed(Command cmnd) {
-        // Temporary Keyboard Inputs
-        if (cmnd == pauseCommand && !paused) {
-            paused = true;
-        } else if (cmnd == pauseCommand && paused) {
-            paused = false;
-        } else if (cmnd == time1Command) {
-            timeSpeed = 1;
-            logicNeedUpdate = true;
-        } else if (cmnd == time10Command) {
-            timeSpeed = 10;
-            logicNeedUpdate = true;
-        } else if (cmnd == time100Command) {
-            timeSpeed = 100;
-            logicNeedUpdate = true;
-        }
-    }
+   
 
+    // Control the simulation via GUI buttons
+    
     @Override
-    public void controlReleased(Command cmnd) {}
+    public void mouseClicked(int button, int x, int y, int ClickCount){
+        
+        if(button == Input.MOUSE_LEFT_BUTTON){
+            
+            if((x >1000 && x < 1000 + pause.getWidth()) && (y > 0 && y < 0 + pause.getHeight()) && !paused){
+                paused = true;
+            }
+            else if((x >1000 && x < 1000 + pause.getWidth()) && (y > 0 && y < 0 + pause.getHeight()) && paused){
+                paused = false;
+            }
+            else if((x > 1000 && x < 1000 + x1.getWidth()) && (y > 250 && y < 250 + x1.getHeight())){
+                timeSpeed = 1;
+                logicNeedUpdate = true;
+            }
+            else if((x > 1000 && x < 1000 + x10.getWidth()) && (y > 305 && y < 305 + x10.getHeight())){
+                timeSpeed = 10;
+                logicNeedUpdate = true;
+            }
+            else if((x > 1000 && x < 1000 + x100.getWidth()) && (y > 360 && y < 360 + x100.getHeight())){
+                timeSpeed = 100;
+                logicNeedUpdate = true;
+            }
+            else if((x > 1000 && x < 1000 + printReport.getWidth()) && (y > 650 && y < 650 + printReport.getHeight())){
+                simReportGenerator.Generate(environment);
+            }
+            
+        }
+        
+    }
 }

@@ -3,10 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lifesimulation.objects;
+package lifesimulation.utilities;
 
 import java.util.ArrayList;
-import pkgLifeSimDataParser.LifeSimDataParser;
+import lifesimulation.objects.Grazer;
+import lifesimulation.objects.Obstacle;
+import lifesimulation.objects.Plant;
+import lifesimulation.objects.Predator;
 
 /**
  * A utilities class that holds all simulation objects. Provides a nice, clean
@@ -14,12 +17,6 @@ import pkgLifeSimDataParser.LifeSimDataParser;
  * @author sam
  */
 public class Environment {
-    
-    /**
-     * Singleton instance
-     */
-    private static Environment instance = null;
-    
     /**
      * All Obstacle objects
      */
@@ -42,22 +39,12 @@ public class Environment {
      */
     private ArrayList<Plant> plantsToAdd;
     
-    /**
-     * Singleton GetInstance function
-     * @return The instance
-     */
-    public static Environment GetInstance() 
-    { 
-        if (instance == null) 
-            instance = new Environment(); 
-  
-        return instance; 
-    } 
+    private int t;
 
     /**
      * Constructor
      */
-    private Environment() {
+    public Environment() {
         obstacles = new ArrayList<>();
         plants = new ArrayList<>();
         grazers = new ArrayList<>();
@@ -66,6 +53,8 @@ public class Environment {
         plantsToAdd = new ArrayList<>();
         
         LoadData();
+        
+        t = 0;
     }
     
     /**
@@ -97,12 +86,46 @@ public class Environment {
             if(lsdp.getPlantData()) {
                 plants.add(new Plant(lsdp.PlantX, lsdp.PlantY, lsdp.PlantDiameter, fGrowthRate, fMaxSize, fMaxSeedNumber, fMaxSeedCastDistance, fSeedViability));
             } else {
-                System.out.println("Error reading data for obstacle " + i);
+                System.out.println("Error reading data for plant " + i);
             }
         }
         
-        // One test grazer
-        grazers.add(new Grazer(0, 0));
+        // Load all grazers from the parser
+        int iGrazerCount = lsdp.getInitialGrazerCount();
+        float fEnergyInput = lsdp.getGrazerEnergyInputRate();
+        float fEnergyOutput = lsdp.getGrazerEnergyOutputRate();
+        float fEnergyToReproduce = lsdp.getGrazerEnergyToReproduce();
+        float fMaintainSpeed = (float)lsdp.getGrazerMaintainSpeedTime();
+        float fMaxSpeed = (float)lsdp.getGrazerMaxSpeed();
+        for(int i = 0; i < iGrazerCount; i++){
+            if(lsdp.getGrazerData()) {
+                System.out.println("added");
+                grazers.add(new Grazer(lsdp.GrazerX, lsdp.GrazerY, lsdp.GrazerEnergy, fEnergyInput, fEnergyOutput, fEnergyToReproduce, fMaintainSpeed, fMaxSpeed));
+                } else {
+                System.out.println("Error reading data for grazer " + i);
+            }
+        }
+        
+        // Load all predators from parser
+        int iPredatorCount = lsdp.getInitialPredatorCount();
+        float fHOD = (float)lsdp.getPredatorMaxSpeedHOD();
+        float fHED = (float)lsdp.getPredatorMaxSpeedHED();
+        float fHOR = (float)lsdp.getPredatorMaxSpeedHOR();
+        fMaintainSpeed = (float)lsdp.getPredatorMaintainSpeedTime();
+        fEnergyOutput = lsdp.getPredatorEnergyOutputRate();
+        fEnergyToReproduce = lsdp.getPredatorEnergyToReproduce();
+        int iMaxOffspring = lsdp.getPredatorMaxOffspring();
+        float fGestation = (float)lsdp.getPredatorGestationPeriod();
+        float fOffspringEnergy = lsdp.getPredatorOffspringEnergyLevel();
+        for(int i=0; i < iPredatorCount; i++) {
+            if(lsdp.getPredatorData()){
+                System.out.println("added");
+                predators.add(new Predator(lsdp.PredatorX, lsdp.PredatorY, (int)lsdp.PredatorEnergy, lsdp.PredatorGenotype, fHOD, fHED, fHOR, fMaintainSpeed, fEnergyOutput, fEnergyToReproduce, iMaxOffspring, fGestation, fOffspringEnergy));
+            } else{
+                System.out.println("Error reading data for predator " + i);
+            }
+        }
+        
     }
     
     /**
@@ -116,6 +139,8 @@ public class Environment {
         plants.addAll(plantsToAdd);
         
         plantsToAdd.clear();
+        
+        t++;
     }
     
     /**
@@ -188,6 +213,10 @@ public class Environment {
      */
     public void addPlant(Plant p) {
         plantsToAdd.add(p);
+    }
+    
+    public int getTime() {
+        return t;
     }
     
 }
