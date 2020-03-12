@@ -19,6 +19,9 @@ public class LifeSimulation extends StateBasedGame{
 
     public static String gameName = "Coleman's Game of Life";
     public int gameState = 0;
+    
+    // Instance of the simulation to grab the width and height
+    static Simulation sim;
    
     
     // Testing Code
@@ -27,7 +30,8 @@ public class LifeSimulation extends StateBasedGame{
     
     public LifeSimulation(String gameName, String s){
         super(gameName);
-        this.addState(new Simulation(gameState, s)); 
+        sim = new Simulation(gameState, s);
+        this.addState(sim); 
     }
     
     
@@ -63,6 +67,11 @@ public class LifeSimulation extends StateBasedGame{
         // Setup Parser Stuff
         LifeSimDataParser lsdp = LifeSimDataParser.getInstance();
         lsdp.initDataParser(filePath);
+        
+        // set the simulation width and height to be passed to environment
+        
+        sim.setDimensions((int) lsdp.getWorldWidth(), (int) lsdp.getWorldHeight());
+        
         
         // Slick Game code
         try {

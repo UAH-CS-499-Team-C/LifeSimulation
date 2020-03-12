@@ -12,6 +12,7 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.state.*;
+import lifesimulation.utilities.LifeSimDataParser;
 
 /**
  *
@@ -35,6 +36,12 @@ public class Simulation extends BasicGameState{
      */
     Environment environment;
     
+    // width and height to be passed to environment
+    int width;
+    int height;
+    
+    
+    
     private boolean paused = true;
     private int timeSpeed = 1;
     private boolean logicNeedUpdate = false;
@@ -45,6 +52,13 @@ public class Simulation extends BasicGameState{
     
     public Simulation(int State, String s) {
         simReportGenerator = new SimReportGenerator(s);
+       
+    }
+    
+    // set the width and height to be passed to environment
+    public void setDimensions(int w, int h){
+        width = w;
+        height = h;
     }
     
    
@@ -60,7 +74,7 @@ public class Simulation extends BasicGameState{
         x100 = new Image("images/button_100x-speed.png");
         printReport = new Image("images/button_print-report.png");
         
-        environment = new Environment();
+        environment = new Environment(width, height);
         
         
     }
@@ -139,6 +153,8 @@ public class Simulation extends BasicGameState{
                 gc.setMinimumLogicUpdateInterval(1000/timeSpeed);
                 logicNeedUpdate = false;
             }
+            
+            environment.getGrazers().forEach(x -> x.Update(environment));
         }
         
         
