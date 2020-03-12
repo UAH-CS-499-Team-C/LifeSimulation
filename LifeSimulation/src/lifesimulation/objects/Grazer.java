@@ -56,8 +56,8 @@ public class Grazer extends SimulationObject implements LivingCreature{
         int r = rand.nextInt(4) + 1;
         
         // don't allow the grazers to move out of bounds
-        if(((float) collision.getX() - (float) 3.0 > 0 && (float) collision.getX() + (float) 3.0 < e.getWidth())
-                && ((float) collision.getY() - (float) 3.0 > 0 && (float) collision.getY() + (float) 3.0 < e.getHeight())){
+        if(((float) collision.getX() - (float) 3.0 > 0 && (float) collision.getX() + (float) 3.0 < 1000)
+                && ((float) collision.getY() - (float) 3.0 > 0 && (float) collision.getY() + (float) 3.0 < 750)){
         
             // move left
             if (r == 1){

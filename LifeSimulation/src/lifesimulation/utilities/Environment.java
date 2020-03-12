@@ -41,14 +41,12 @@ public class Environment {
     
     private int t;
     
-    // width and height to be referred to by objects to avoid
-    // going out of bounds
-    int width, height;
+    
 
     /**
      * Constructor
      */
-    public Environment(int w, int h) {
+    public Environment() {
         obstacles = new ArrayList<>();
         plants = new ArrayList<>();
         grazers = new ArrayList<>();
@@ -59,9 +57,6 @@ public class Environment {
         LoadData();
         
         t = 0;
-        
-        width = w;
-        height = h;
     }
     
     /**
@@ -226,13 +221,5 @@ public class Environment {
         return t;
     }
     
-    // get the width and height of the simulation to pass to the objects
-    public int getWidth(){
-        return width;
-    }
-    
-    public int getHeight(){
-        return height;
-    }
     
 }

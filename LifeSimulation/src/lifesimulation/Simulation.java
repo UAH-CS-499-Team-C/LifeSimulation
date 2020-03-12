@@ -36,11 +36,6 @@ public class Simulation extends BasicGameState{
      */
     Environment environment;
     
-    // width and height to be passed to environment
-    int width;
-    int height;
-    
-    
     
     private boolean paused = true;
     private int timeSpeed = 1;
@@ -55,14 +50,7 @@ public class Simulation extends BasicGameState{
        
     }
     
-    // set the width and height to be passed to environment
-    public void setDimensions(int w, int h){
-        width = w;
-        height = h;
-    }
-    
    
-    
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
         
@@ -74,7 +62,7 @@ public class Simulation extends BasicGameState{
         x100 = new Image("images/button_100x-speed.png");
         printReport = new Image("images/button_print-report.png");
         
-        environment = new Environment(width, height);
+        environment = new Environment();
         
         
     }
