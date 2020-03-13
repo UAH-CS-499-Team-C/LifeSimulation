@@ -12,7 +12,7 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.state.*;
-import lifesimulation.utilities.LifeSimDataParser;
+
 
 /**
  *
@@ -42,9 +42,6 @@ public class Simulation extends BasicGameState{
     private boolean logicNeedUpdate = false;
     private final SimReportGenerator simReportGenerator;
     
-    // get the parser data
-    private LifeSimDataParser lsdp;
-    
     // Temporary Keyboard Inputs
     private InputProvider provider;
     
@@ -53,10 +50,7 @@ public class Simulation extends BasicGameState{
        
     }
     
-    // set the parser data so that it can be passed to the environment
-    public void setData(LifeSimDataParser l){
-        lsdp = l;
-    }
+   
    
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{

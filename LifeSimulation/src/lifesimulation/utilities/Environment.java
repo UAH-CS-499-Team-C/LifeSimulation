@@ -10,7 +10,6 @@ import lifesimulation.objects.Grazer;
 import lifesimulation.objects.Obstacle;
 import lifesimulation.objects.Plant;
 import lifesimulation.objects.Predator;
-import lifesimulation.utilities.LifeSimDataParser;
 
 /**
  * A utilities class that holds all simulation objects. Provides a nice, clean
@@ -220,13 +219,5 @@ public class Environment {
     
     public int getTime() {
         return t;
-    }
-    
-    public void setData(LifeSimDataParser l){
-        lsdp = l;
-    }
-    
-    public LifeSimDataParser getData(){
-        return lsdp;
     }
 }

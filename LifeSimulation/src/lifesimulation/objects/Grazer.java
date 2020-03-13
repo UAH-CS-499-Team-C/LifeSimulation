@@ -62,6 +62,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             if((float) collision.getX() - (float) 3.0 > 0){
                 collision.setX((float) collision.getX() - (float) 3.0);
                 dir = Direction.left;
+                this.x -= 3.0;
             }
         }
         // move right
@@ -69,6 +70,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             if((float) collision.getX() + (float) 3.0 < 1000){
                 collision.setX((float) collision.getX() + (float) 3.0);
                 dir = Direction.right;
+                this.x += 3.0;
             }
         }
         // move up
@@ -76,6 +78,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             if((float) collision.getY() - 3.0 > 0){
                 collision.setY((float) collision.getY() - (float) 3.0);
                 dir = Direction.up;
+                this.y -= 3.0;
             }
         }
         // move down
@@ -83,6 +86,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             if((float) collision.getY() + (float) 3.0 < 750){
                 collision.setY((float) collision.getY() + (float) 3.0);
                 dir = Direction.down;
+                this.y += 3.0;
             }
         }
         

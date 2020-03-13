@@ -20,7 +20,7 @@ public class LifeSimulation extends StateBasedGame{
     public static String gameName = "Coleman's Game of Life";
     public int gameState = 0;
     
-    private Simulation sim;
+    
    
     
     // Testing Code
@@ -29,8 +29,7 @@ public class LifeSimulation extends StateBasedGame{
     
     public LifeSimulation(String gameName, String s){
         super(gameName);
-        sim = new Simulation(gameState, s);
-        this.addState(sim); 
+        this.addState(new Simulation(gameState, s)); 
     }
     
     
@@ -67,8 +66,7 @@ public class LifeSimulation extends StateBasedGame{
         LifeSimDataParser lsdp = LifeSimDataParser.getInstance();
         lsdp.initDataParser(filePath);
         
-        // pass the parser data to the simulation
-        sim.setData(lsdp);
+        
         
         // Slick Game code
         try {
