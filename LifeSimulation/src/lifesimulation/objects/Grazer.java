@@ -5,7 +5,7 @@
  */
 package lifesimulation.objects;
 
-import com.sun.javafx.geom.Point2D;
+import java.awt.geom.Point2D;
 import lifesimulation.utilities.Environment;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
