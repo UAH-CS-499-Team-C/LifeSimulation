@@ -12,6 +12,7 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.state.*;
+import lifesimulation.utilities.LifeSimDataParser;
 
 /**
  *
@@ -35,6 +36,7 @@ public class Simulation extends BasicGameState{
      */
     Environment environment;
     
+    
     private boolean paused = true;
     private int timeSpeed = 1;
     private boolean logicNeedUpdate = false;
@@ -45,10 +47,10 @@ public class Simulation extends BasicGameState{
     
     public Simulation(int State, String s) {
         simReportGenerator = new SimReportGenerator(s);
+       
     }
     
    
-    
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
         
@@ -139,6 +141,8 @@ public class Simulation extends BasicGameState{
                 gc.setMinimumLogicUpdateInterval(1000/timeSpeed);
                 logicNeedUpdate = false;
             }
+            
+            environment.getGrazers().forEach(x -> x.Update(environment));
         }
         
         

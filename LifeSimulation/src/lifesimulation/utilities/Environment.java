@@ -40,6 +40,8 @@ public class Environment {
     private ArrayList<Plant> plantsToAdd;
     
     private int t;
+    
+    
 
     /**
      * Constructor
@@ -218,5 +220,6 @@ public class Environment {
     public int getTime() {
         return t;
     }
+    
     
 }
