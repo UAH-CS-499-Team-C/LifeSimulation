@@ -87,6 +87,7 @@ public class Predator extends SimulationObject implements LivingCreature{
     public void Update(Environment e) {
         findTargets(e);
         
+        this.collision = new Circle(x, y, 7);
     }
     
     /**
@@ -105,18 +106,27 @@ public class Predator extends SimulationObject implements LivingCreature{
         return genotype;
     }
     
+    /**
+     * Finds all valid targets within range and visible
+     * @param e The environment that contains the predators, grazers, and rocks
+     */
     private void findTargets(Environment e){
+        // Check all grazers
         e.getGrazers().forEach(g -> {
             if(Point2D.distance(x, y, g.x, g.y) <= 150) {
                 allTargets.add(g);
             }
         });
         
-        e.getPredators().forEach(p -> {
-            if(Point2D.distance(x, y, p.x, p.y) <= 150) {
-                allTargets.add(p);
-            }
-        });
+        // Only check predators if AA or Aa genotype
+        if(genotype.charAt(0) == 'A'){
+            e.getPredators().forEach(p -> {
+                if(Point2D.distance(x, y, p.x, p.y) <= 150) {
+                    allTargets.add(p);
+                }
+            });
+        }
     }
+    
     
 }
