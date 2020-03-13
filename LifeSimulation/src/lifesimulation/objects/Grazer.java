@@ -27,6 +27,8 @@ public class Grazer extends SimulationObject implements LivingCreature{
     
     // Movement variables
     private Random rand = new Random(); // variable to randomly decide the grazer's direction
+    private enum Direction {left, right, up, down};
+    Direction dir;
     
     
     public Grazer(float x, float y, int EU, float energyInput, float energyOutput, float energyToReproduce, float maintainSpeed, float maxSpeed) {
@@ -55,27 +57,35 @@ public class Grazer extends SimulationObject implements LivingCreature{
     public void Update(Environment e) {
         int r = rand.nextInt(4) + 1;
         
-        // don't allow the grazers to move out of bounds
-        if(((float) collision.getX() - (float) 3.0 > 0 && (float) collision.getX() + (float) 3.0 < 1000)
-                && ((float) collision.getY() - (float) 3.0 > 0 && (float) collision.getY() + (float) 3.0 < 750)){
-        
-            // move left
-            if (r == 1){
+        // move left
+        if (r == 1){
+            if((float) collision.getX() - (float) 3.0 > 0){
                 collision.setX((float) collision.getX() - (float) 3.0);
-            }
-            //move right
-            else if (r == 2){
-                collision.setX((float) collision.getX() + (float) 3.0);
-            }
-            // move up
-            else if (r == 3){
-                collision.setY((float) collision.getY() - (float) 3.0);
-            }
-            //move down
-            else if (r == 4){
-                collision.setY((float) collision.getY() + (float) 3.0);
+                dir = Direction.left;
             }
         }
+        // move right
+        else if (r == 2){
+            if((float) collision.getX() + (float) 3.0 < 1000){
+                collision.setX((float) collision.getX() + (float) 3.0);
+                dir = Direction.right;
+            }
+        }
+        // move up
+        else if (r == 3){
+            if((float) collision.getY() - 3.0 > 0){
+                collision.setY((float) collision.getY() - (float) 3.0);
+                dir = Direction.up;
+            }
+        }
+        // move down
+        else if (r == 4){
+            if((float) collision.getY() + (float) 3.0 < 750){
+                collision.setY((float) collision.getY() + (float) 3.0);
+                dir = Direction.down;
+            }
+        }
+        
         
         
         
