@@ -139,7 +139,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         });
         
         if(genotype.charAt(0) == 'A'){
-            // For all grazers
+            // For all predators
             e.getPredators().forEach(p -> {
                 // If within the visibile distance
                 if(Point2D.distance(x, y, p.getX(), p.getY()) <= 150) {
