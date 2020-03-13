@@ -6,9 +6,6 @@
 package lifesimulation.objects;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import lifesimulation.utilities.Environment;
 import org.newdawn.slick.Color;
@@ -91,7 +88,8 @@ public class Predator extends SimulationObject implements LivingCreature{
     public void Update(Environment e) {
         findTargets(e);
         
-        this.collision = new Circle(x, y, 7);
+        this.collision.setCenterX(x);
+        this.collision.setCenterY(y);
     }
     
     /**
@@ -121,9 +119,9 @@ public class Predator extends SimulationObject implements LivingCreature{
         // For all grazers
         e.getGrazers().forEach(g -> {
             // If within the visibile distance
-            if(Point2D.distance(x, y, g.x, g.y) <= 150) {
+            if(Point2D.distance(x, y, g.getX(), g.getY()) <= 150) {
                 // Make the tmp line of sight from pred to possbile target
-                Line tmp = new Line(x, y, g.x, g.y);
+                Line tmp = new Line(x, y, g.getX(), g.getY());
                 // Save blocked flag
                 boolean flag = true;
                 
@@ -135,18 +133,8 @@ public class Predator extends SimulationObject implements LivingCreature{
                     }
                 }
                 
-                // If not blocked by obstacle, see if blocked by plant
-                if(flag){
-                    for(int i = 0; i < e.getNumPlants(); i++) {
-                        if(tmp.intersects(e.getPlants().get(i).collision)){
-                            flag = false;
-                            break;
-                        }
-                    }
-                }
-                
                 // If not blocked by anything, add to possible targets
-                if(flag){ allTargets.put(Point2D.distance(x, y, g.x, g.y), g); }
+                if(flag){ allTargets.put(Point2D.distance(x, y, g.getX(), g.getY()), g); }
             }
         });
         
@@ -154,9 +142,9 @@ public class Predator extends SimulationObject implements LivingCreature{
             // For all grazers
             e.getPredators().forEach(p -> {
                 // If within the visibile distance
-                if(Point2D.distance(x, y, p.x, p.y) <= 150) {
+                if(Point2D.distance(x, y, p.getX(), p.getY()) <= 150) {
                     // Make the tmp line of sight from pred to possbile target
-                    Line tmp = new Line(x, y, p.x, p.y);
+                    Line tmp = new Line(x, y, p.getX(), p.getY());
                     // Save blocked flag
                     boolean flag = true;
 
@@ -168,18 +156,8 @@ public class Predator extends SimulationObject implements LivingCreature{
                         }
                     }
 
-                    // If not blocked by obstacle, see if blocked by plant
-                    if(flag){
-                        for(int i = 0; i < e.getNumPlants(); i++) {
-                            if(tmp.intersects(e.getPlants().get(i).collision)){
-                                flag = false;
-                                break;
-                            }
-                        }
-                    }
-
                     // If not blocked by anything, add to possible targets
-                    if(flag){ allTargets.put(Point2D.distance(x, y, p.x, p.y), p); }
+                    if(flag){ allTargets.put(Point2D.distance(x, y, p.getX(), p.getY()), p); }
                 }
             });
         }
