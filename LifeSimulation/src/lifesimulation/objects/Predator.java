@@ -7,10 +7,14 @@ package lifesimulation.objects;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import lifesimulation.utilities.Environment;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Line;
 
 /**
  * Implementation class of the Predator Creature
@@ -30,8 +34,8 @@ public class Predator extends SimulationObject implements LivingCreature{
     private float gestaion;
     private float offspringEnergy;
     
-    private ArrayList<SimulationObject> allTargets;
-    private LivingCreature currentTarget;
+    private HashMap<Double, SimulationObject> allTargets;
+    private SimulationObject currentTarget;
 
     /**
      * Constructor for predator class
@@ -64,7 +68,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         this.offspringEnergy = offspringEnergy;
         this.collision = new Circle(x, y, 7);
         
-        allTargets = new ArrayList<>();
+        allTargets = new HashMap<>();
         currentTarget = null;
     }
 
@@ -78,7 +82,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         g.setColor(Color.black);
         g.draw(collision);
         
-        allTargets.forEach(t -> {
+        allTargets.values().forEach(t -> {
             g.drawLine(x, y, t.x, t.y);
         });
     }
@@ -111,22 +115,74 @@ public class Predator extends SimulationObject implements LivingCreature{
      * @param e The environment that contains the predators, grazers, and rocks
      */
     private void findTargets(Environment e){
-        // Check all grazers
+        // Clear the possible targets
+        allTargets.clear();
+        
+        // For all grazers
         e.getGrazers().forEach(g -> {
+            // If within the visibile distance
             if(Point2D.distance(x, y, g.x, g.y) <= 150) {
-                allTargets.add(g);
+                // Make the tmp line of sight from pred to possbile target
+                Line tmp = new Line(x, y, g.x, g.y);
+                // Save blocked flag
+                boolean flag = true;
+                
+                // See if line of sight blocked by an obstacle
+                for(int i = 0; i < e.getNumObstacles(); i++) {
+                    if(tmp.intersects(e.getObstacles().get(i).collision)){
+                        flag = false;
+                        break;
+                    }
+                }
+                
+                // If not blocked by obstacle, see if blocked by plant
+                if(flag){
+                    for(int i = 0; i < e.getNumPlants(); i++) {
+                        if(tmp.intersects(e.getPlants().get(i).collision)){
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+                
+                // If not blocked by anything, add to possible targets
+                if(flag){ allTargets.put(Point2D.distance(x, y, g.x, g.y), g); }
             }
         });
         
-        // Only check predators if AA or Aa genotype
         if(genotype.charAt(0) == 'A'){
+            // For all grazers
             e.getPredators().forEach(p -> {
+                // If within the visibile distance
                 if(Point2D.distance(x, y, p.x, p.y) <= 150) {
-                    allTargets.add(p);
+                    // Make the tmp line of sight from pred to possbile target
+                    Line tmp = new Line(x, y, p.x, p.y);
+                    // Save blocked flag
+                    boolean flag = true;
+
+                    // See if line of sight blocked by an obstacle
+                    for(int i = 0; i < e.getNumObstacles(); i++) {
+                        if(tmp.intersects(e.getObstacles().get(i).collision)){
+                            flag = false;
+                            break;
+                        }
+                    }
+
+                    // If not blocked by obstacle, see if blocked by plant
+                    if(flag){
+                        for(int i = 0; i < e.getNumPlants(); i++) {
+                            if(tmp.intersects(e.getPlants().get(i).collision)){
+                                flag = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    // If not blocked by anything, add to possible targets
+                    if(flag){ allTargets.put(Point2D.distance(x, y, p.x, p.y), p); }
                 }
             });
         }
     }
-    
     
 }
