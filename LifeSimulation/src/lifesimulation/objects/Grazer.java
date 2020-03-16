@@ -63,8 +63,11 @@ public class Grazer extends SimulationObject implements LivingCreature{
     
     // check if the grazer can see food
     private boolean seesFood(Environment e){
+        
+        Plant p;
+        
         for (int i = 0; i < e.getPlants().size(); i++){
-            Plant p = e.getPlants().get(i);
+            p = e.getPlants().get(i);
             
             // if facing left
             if(dir == Direction.left){
@@ -252,6 +255,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
     public void Update(Environment e) {
         
         // wander the map in search of food
+        
         if(this.seesFood(e)){
             this.goToTarget();
         }
