@@ -11,6 +11,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
 import java.util.Random;
+import java.util.ArrayList;
 
 /**
  * Implementation class of the Grazer Creature
@@ -31,6 +32,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
     private enum Direction {left, right, up, down};
     private Direction dir;
     private Plant target;
+    private ArrayList <Plant> foodTargets = new ArrayList <Plant> ();
     private boolean found;
     
     
@@ -59,10 +61,14 @@ public class Grazer extends SimulationObject implements LivingCreature{
         else if(r == 4){
             this.dir = Direction.down;
         }
+        
+        
     }
     
     // check if the grazer can see food
     private boolean seesFood(Environment e){
+        
+        foodTargets.clear();
         
         Plant p;
         
@@ -70,34 +76,38 @@ public class Grazer extends SimulationObject implements LivingCreature{
             p = e.getPlants().get(i);
             
             // if facing left
-            if(dir == Direction.left){
+            if(this.dir == Direction.left){
                 if(Point2D.distance(x, y, p.x, p.y) <= 5 && x > p.x){
                     target = p;
                     found = true;
+                    foodTargets.add(p);
                     break;
                 }
             }
             // if facing right
-            else if(dir == Direction.right){
+            else if(this.dir == Direction.right){
                 if(Point2D.distance(x, y, p.x, p.y) <= 5 && x < p.x){
                     target = p;
                     found = true;
+                    foodTargets.add(p);
                     break;
                 }
             }
             // if facing up
-            else if(dir == Direction.up){
+            else if(this.dir == Direction.up){
                 if(Point2D.distance(x, y, p.x, p.y) <= 5 && y > p.y){
                     target = p;
                     found = true;
+                    foodTargets.add(p);
                     break;
                 }
             }
             // if facing down
-            else if(dir == Direction.down){
+            else if(this.dir == Direction.down){
                 if(Point2D.distance(x, y, p.x, p.y) <= 5 && y < p.y){
                     target = p;
                     found = true;
+                    foodTargets.add(p);
                     break;
                 }
             }
@@ -109,9 +119,11 @@ public class Grazer extends SimulationObject implements LivingCreature{
         }
         
         if(found){
+            System.out.println("Found Food");
             return true;
         }
         else{
+            System.out.println("No Food Found");
             return false;
         }
         
@@ -121,7 +133,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
     // move toward the target plant
     private void goToTarget(){
         // if target is left of grazer
-        if(dir == Direction.left && ((float) collision.getX() - (float) 3.0 > 0) && ((float) collision.getY() - 3.0 > 0) && ((float) collision.getY() + (float) 3.0 < 750)){
+        if(this.dir == Direction.left && ((float) collision.getX() - (float) 3.0 > 0) && ((float) collision.getY() - 3.0 > 0) && ((float) collision.getY() + (float) 3.0 < 750)){
             // heading north west
             if(y > target.y){
                 collision.setX((float) collision.getX() - (float) 3.0);
@@ -143,7 +155,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             }
         }
         // if target is right of grazer
-        else if(dir == Direction.right && ((float) collision.getX() + (float) 3.0 < 1000) && ((float) collision.getY() - 3.0 > 0) && ((float) collision.getY() + (float) 3.0 < 750)){
+        else if(this.dir == Direction.right && ((float) collision.getX() + (float) 3.0 < 1000) && ((float) collision.getY() - 3.0 > 0) && ((float) collision.getY() + (float) 3.0 < 750)){
             //heading north east
             if(y > target.y){
                 collision.setX((float) collision.getX() + (float) 3.0);
@@ -165,7 +177,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             }
         }
         // if target is above the grazer
-        else if(dir == Direction.up && ((float) collision.getY() - 3.0 > 0) && ((float) collision.getX() - (float) 3.0 > 0) && ((float) collision.getX() + (float) 3.0 < 1000)){
+        else if(this.dir == Direction.up && ((float) collision.getY() - 3.0 > 0) && ((float) collision.getX() - (float) 3.0 > 0) && ((float) collision.getX() + (float) 3.0 < 1000)){
             // heading north west
             if(x > target.x){
                 collision.setX((float) collision.getX() - (float) 3.0);
@@ -187,7 +199,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             }
         }
         // if target is below the grazer
-        else if(dir == Direction.down && ((float) collision.getY() + (float) 3.0 < 750) && ((float) collision.getX() - (float) 3.0 > 0) && ((float) collision.getX() + (float) 3.0 < 1000)){
+        else if(this.dir == Direction.down && ((float) collision.getY() + (float) 3.0 < 750) && ((float) collision.getX() - (float) 3.0 > 0) && ((float) collision.getX() + (float) 3.0 < 1000)){
             // heading south west
             if(x > target.x){
                 collision.setX((float) collision.getX() - (float) 3.0);
@@ -215,29 +227,59 @@ public class Grazer extends SimulationObject implements LivingCreature{
         int r1 = rand.nextInt(4) + 1;
         int r2 = rand.nextInt(5) + 1;
         
+        
         switch(r1){
-            case 1: dir = Direction.left;
-            case 2: dir = Direction.right;
-            case 3: dir = Direction.up;
-            case 4: dir = Direction.down;
+            case 1: this.dir = Direction.left;
+                    break;
+            case 2: this.dir = Direction.right;
+                    break;
+            case 3: this.dir = Direction.up;
+                    break;
+            case 4: this.dir = Direction.down;
+                    break;
         }
         
+        
         for(int i = 0; i < r2; i++){
-            if(dir == Direction.left && ((float) collision.getX() - (float) 3.0 > 0)){
-                collision.setX((float) collision.getX() - (float) 3.0);
-                if(this.seesFood(e)){ break;}
+            if(this.dir == Direction.left){
+                
+                
+                if ((float) collision.getX() - (float) 3.0 > (float) 0){
+                    collision.setX((float) collision.getX() - (float) 3.0);
+                
+                    if(this.seesFood(e)){ break;}
+                }
+                
             }
-            else if(dir == Direction.right && ((float) collision.getX() + (float) 3.0 < 1000)){
-                collision.setX((float) collision.getX() + (float) 3.0);
-                if(this.seesFood(e)){ break;}
+            else if(this.dir == Direction.right){
+                
+                
+                if((float) collision.getX() + (float) 3.0 < (float) 1000){
+                    collision.setX((float) collision.getX() + (float) 3.0);
+                
+                    if(this.seesFood(e)){ break;}
+                }
+                
             }
-            else if(dir == Direction.up && ((float) collision.getY() - 3.0 > 0)){
-                collision.setY((float) collision.getY() - (float) 3.0);
-                if(this.seesFood(e)){ break;}
+            else if(this.dir == Direction.up){
+                
+               
+                if((float) collision.getY() - 3.0 > (float) 0){
+                    collision.setY((float) collision.getY() - (float) 3.0);
+                
+                    if(this.seesFood(e)){ break;}
+                }
+            
             }
-            else if(dir == Direction.down && ((float) collision.getY() + (float) 3.0 < 750)){
-                collision.setY((float) collision.getY() + (float) 3.0);
-                if(this.seesFood(e)){ break;}
+            else if(this.dir == Direction.down){
+                
+                
+                if((float) collision.getY() + (float) 3.0 < (float) 750){
+                    collision.setY((float) collision.getY() + (float) 3.0);
+                
+                    if(this.seesFood(e)){ break;}
+                }
+                
             }
         }
     }
@@ -249,6 +291,8 @@ public class Grazer extends SimulationObject implements LivingCreature{
         g.setLineWidth(2);
         g.setColor(Color.black);
         g.draw(collision);
+        
+        foodTargets.forEach(p -> g.drawLine(x, y, p.x, p.y));
     }
 
     @Override
@@ -256,11 +300,14 @@ public class Grazer extends SimulationObject implements LivingCreature{
         
         // wander the map in search of food
         
+        
         if(this.seesFood(e)){
             this.goToTarget();
+            
         }
         else{
             this.wander(e);
+            
         }
     }
     
