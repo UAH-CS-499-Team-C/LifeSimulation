@@ -77,7 +77,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             
             // if facing left
             if(this.dir == Direction.left){
-                if(Point2D.distance(x, y, p.x, p.y) <= 5 && x > p.x){
+                if(Point2D.distance(x, y, p.x, p.y) <= this.x + 5 && x > p.x){
                     target = p;
                     found = true;
                     foodTargets.add(p);
@@ -86,7 +86,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             }
             // if facing right
             else if(this.dir == Direction.right){
-                if(Point2D.distance(x, y, p.x, p.y) <= 5 && x < p.x){
+                if(Point2D.distance(x, y, p.x, p.y) <= this.x + 5 && x < p.x){
                     target = p;
                     found = true;
                     foodTargets.add(p);
@@ -95,7 +95,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             }
             // if facing up
             else if(this.dir == Direction.up){
-                if(Point2D.distance(x, y, p.x, p.y) <= 5 && y > p.y){
+                if(Point2D.distance(x, y, p.x, p.y) <= this.y + 5 && y > p.y){
                     target = p;
                     found = true;
                     foodTargets.add(p);
@@ -104,7 +104,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             }
             // if facing down
             else if(this.dir == Direction.down){
-                if(Point2D.distance(x, y, p.x, p.y) <= 5 && y < p.y){
+                if(Point2D.distance(x, y, p.x, p.y) <= this.y + 5 && y < p.y){
                     target = p;
                     found = true;
                     foodTargets.add(p);
