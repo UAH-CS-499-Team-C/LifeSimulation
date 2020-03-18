@@ -35,6 +35,10 @@ public class Predator extends SimulationObject implements LivingCreature{
     
     private HashMap<Double, SimulationObject> allTargets;
     private SimulationObject currentTarget;
+    
+    // Variables used to give a smartish idle
+    private int lastXDelta;
+    private int lastYDelta;
 
     /**
      * Constructor for predator class
@@ -69,6 +73,9 @@ public class Predator extends SimulationObject implements LivingCreature{
         
         allTargets = new HashMap<>();
         currentTarget = null;
+        
+        lastXDelta = 0;
+        lastYDelta = 0;
     }
 
     
@@ -96,7 +103,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         findTargets(e);
         selectTarget();
         
-        moveTowards(currentTarget);
+        moveTowards(e);
         
         this.collision.setCenterX(x);
         this.collision.setCenterY(y);
@@ -186,55 +193,71 @@ public class Predator extends SimulationObject implements LivingCreature{
         }
     }
     
-    private void moveTowards(SimulationObject t){
+    private void moveTowards(Environment e){
         int xDelta = 0;
         int yDelta = 0;
         
         // If no target
-        if(t == null) {
+        if(currentTarget == null) {
             
         }
         // If there is a target
         else {
             // X direction
-            if(x < t.getX()){
-                if(t.getX() - x < maintainSpeed) {
-                    xDelta += t.getX() - x;
+            if(x < currentTarget.getX()){
+                if(currentTarget.getX() - x < maintainSpeed) {
+                    xDelta += currentTarget.getX() - x;
                 }
                 else {
                     xDelta += maintainSpeed;
                 }
+                lastXDelta = 1;
             }
-            else if(x > t.getX()) {
-                if(x - t.getX() < maintainSpeed) {
-                    xDelta -= x - t.getX();
+            else if(x > currentTarget.getX()) {
+                if(x - currentTarget.getX() < maintainSpeed) {
+                    xDelta -= x - currentTarget.getX();
                 }
                 else {
                     xDelta -= maintainSpeed;
                 }
+                lastXDelta = -1;
             }
+            else{lastXDelta = 0;}
             
             // Y direction
-            if(y < t.getY()){
-                if(t.getY() - y < maintainSpeed) {
-                    yDelta += t.getY() - y;
+            if(y < currentTarget.getY()){
+                if(currentTarget.getY() - y < maintainSpeed) {
+                    yDelta += currentTarget.getY() - y;
                 }
                 else {
                     yDelta += maintainSpeed;
                 }
+                lastYDelta = 1;
             }
-            else if(y > t.getY()) {
-                if(y - t.getY() < maintainSpeed) {
-                    yDelta -= y - t.getY();
+            else if(y > currentTarget.getY()) {
+                if(y - currentTarget.getY() < maintainSpeed) {
+                    yDelta -= y - currentTarget.getY();
                 }
                 else {
                     yDelta -= maintainSpeed;
                 }
+                lastYDelta = -1;
             }
+            else{lastYDelta = 0;}
         }
         
         x += xDelta;
         y += yDelta;
+        
+        // Testing eat code
+        if(currentTarget != null){
+            if(x == currentTarget.getX() && y == currentTarget.getY()){
+                if(currentTarget.getClass() == Grazer.class){
+                    e.getGrazers().remove((Grazer)currentTarget);
+                    currentTarget = null;
+                }
+            }
+        }
     }
     
 }
