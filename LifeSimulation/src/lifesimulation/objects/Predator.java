@@ -96,6 +96,8 @@ public class Predator extends SimulationObject implements LivingCreature{
         findTargets(e);
         selectTarget();
         
+        moveTowards(currentTarget);
+        
         this.collision.setCenterX(x);
         this.collision.setCenterY(y);
     }
@@ -181,6 +183,51 @@ public class Predator extends SimulationObject implements LivingCreature{
         }
         catch(NoSuchElementException e) {
             currentTarget = null;
+        }
+    }
+    
+    private void moveTowards(SimulationObject t){
+        // If no target
+        if(t == null) {
+            
+        }
+        // If there is a target
+        else {
+            // X direction
+            if(x < t.getX()){
+                if(t.getX() - x < maintainSpeed) {
+                    x += t.getX() - x;
+                }
+                else {
+                    x += maintainSpeed;
+                }
+            }
+            else if(x > t.getX()) {
+                if(x - t.getX() < maintainSpeed) {
+                    x -= x - t.getX();
+                }
+                else {
+                    x -= maintainSpeed;
+                }
+            }
+            
+            // Y direction
+            if(y < t.getY()){
+                if(t.getY() - y < maintainSpeed) {
+                    y += t.getY() - y;
+                }
+                else {
+                    y += maintainSpeed;
+                }
+            }
+            else if(y > t.getY()) {
+                if(y - t.getY() < maintainSpeed) {
+                    y -= y - t.getY();
+                }
+                else {
+                    y -= maintainSpeed;
+                }
+            }
         }
     }
     
