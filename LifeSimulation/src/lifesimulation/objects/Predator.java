@@ -40,7 +40,7 @@ public class Predator extends SimulationObject implements LivingCreature{
     // Variables used to give a smartish idle
     private int lastXDelta;
     private int lastYDelta;
-    private Random r;
+    private final Random r;
 
     /**
      * Constructor for predator class
@@ -81,35 +81,60 @@ public class Predator extends SimulationObject implements LivingCreature{
         r = new Random();
     }
 
-    
-
+    /**
+     * The drawing function for the predator
+     * @param g The graphics object
+     */
     @Override
     public void draw(Graphics g) {
+        // Draw this predator
         g.setColor(Color.red);
         g.fill(collision);
         g.setLineWidth(2);
         g.setColor(Color.black);
         g.draw(collision);
         
+        // Draw a black line to each valid target
+        g.setColor(Color.black);
         allTargets.values().forEach(t -> {
             g.drawLine(x, y, t.getX(), t.getY());
         });
         
+        // If there is a current target, draw a red line to it
         if(currentTarget != null){
             g.setColor(Color.red);
             g.drawLine(x,y, currentTarget.getX(), currentTarget.getY());
         }
     }
 
+    /**
+     * The update function for the predator
+     * @param e The environment
+     */
     @Override
     public void Update(Environment e) {
+        // Find all valid targets
         findTargets(e);
+        
+        // Out of those targets, select the closest as the target
         selectTarget();
         
-        moveTowards(e);
+        // Move towards the current taget
+        moveTowards();
         
+        // Move the actual shape
         this.collision.setCenterX(x);
         this.collision.setCenterY(y);
+        
+        // Testing eat code
+        if(currentTarget != null){
+            if(x == currentTarget.getX() && y == currentTarget.getY()){
+                if(currentTarget.getClass() == Grazer.class){
+                    e.getGrazers().remove((Grazer)currentTarget);
+                    currentTarget = null;
+                }
+            }
+        }
     }
     
     /**
@@ -158,6 +183,7 @@ public class Predator extends SimulationObject implements LivingCreature{
             }
         });
         
+        // If aggressive
         if(genotype.charAt(0) == 'A'){
             // For all predators
             e.getPredators().forEach(p -> {
@@ -196,11 +222,15 @@ public class Predator extends SimulationObject implements LivingCreature{
         }
     }
     
-    private void moveTowards(Environment e){
+    /**
+     * Move towards the objects current target
+     * @param e 
+     */
+    private void moveTowards(){
         int xDelta = 0;
         int yDelta = 0;
         
-        // If no target
+        // If no target, move semi-randomly
         if(currentTarget == null) {
             int coin = r.nextInt(100) + 1;
             // Only 20% chance to change
@@ -221,6 +251,7 @@ public class Predator extends SimulationObject implements LivingCreature{
             x += lastXDelta * maintainSpeed;
             y += lastYDelta * maintainSpeed;
         }
+        
         // If there is a target
         else {
             // X direction
@@ -266,16 +297,6 @@ public class Predator extends SimulationObject implements LivingCreature{
         
         x += xDelta;
         y += yDelta;
-        
-        // Testing eat code
-        if(currentTarget != null){
-            if(x == currentTarget.getX() && y == currentTarget.getY()){
-                if(currentTarget.getClass() == Grazer.class){
-                    e.getGrazers().remove((Grazer)currentTarget);
-                    currentTarget = null;
-                }
-            }
-        }
     }
     
 }
