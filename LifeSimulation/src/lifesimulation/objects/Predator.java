@@ -187,6 +187,9 @@ public class Predator extends SimulationObject implements LivingCreature{
     }
     
     private void moveTowards(SimulationObject t){
+        int xDelta = 0;
+        int yDelta = 0;
+        
         // If no target
         if(t == null) {
             
@@ -196,39 +199,42 @@ public class Predator extends SimulationObject implements LivingCreature{
             // X direction
             if(x < t.getX()){
                 if(t.getX() - x < maintainSpeed) {
-                    x += t.getX() - x;
+                    xDelta += t.getX() - x;
                 }
                 else {
-                    x += maintainSpeed;
+                    xDelta += maintainSpeed;
                 }
             }
             else if(x > t.getX()) {
                 if(x - t.getX() < maintainSpeed) {
-                    x -= x - t.getX();
+                    xDelta -= x - t.getX();
                 }
                 else {
-                    x -= maintainSpeed;
+                    xDelta -= maintainSpeed;
                 }
             }
             
             // Y direction
             if(y < t.getY()){
                 if(t.getY() - y < maintainSpeed) {
-                    y += t.getY() - y;
+                    yDelta += t.getY() - y;
                 }
                 else {
-                    y += maintainSpeed;
+                    yDelta += maintainSpeed;
                 }
             }
             else if(y > t.getY()) {
                 if(y - t.getY() < maintainSpeed) {
-                    y -= y - t.getY();
+                    yDelta -= y - t.getY();
                 }
                 else {
-                    y -= maintainSpeed;
+                    yDelta -= maintainSpeed;
                 }
             }
         }
+        
+        x += xDelta;
+        y += yDelta;
     }
     
 }
