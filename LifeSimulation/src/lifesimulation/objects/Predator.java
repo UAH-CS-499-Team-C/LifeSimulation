@@ -9,6 +9,7 @@ import java.awt.geom.Point2D;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import lifesimulation.utilities.Environment;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -39,6 +40,7 @@ public class Predator extends SimulationObject implements LivingCreature{
     // Variables used to give a smartish idle
     private int lastXDelta;
     private int lastYDelta;
+    private Random r;
 
     /**
      * Constructor for predator class
@@ -76,6 +78,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         
         lastXDelta = 0;
         lastYDelta = 0;
+        r = new Random();
     }
 
     
@@ -199,7 +202,24 @@ public class Predator extends SimulationObject implements LivingCreature{
         
         // If no target
         if(currentTarget == null) {
-            
+            int coin = r.nextInt(100) + 1;
+            // Only 20% chance to change
+            if(coin > 80){
+                coin = r.nextInt(3);
+                switch(coin){
+                    case 0:
+                        lastXDelta = -1 * lastXDelta;
+                        break;
+                    case 1:
+                        lastYDelta = -1 * lastYDelta;
+                        break;
+                    case 2:
+                        lastXDelta = -1 * lastXDelta;
+                        lastYDelta = -1 * lastYDelta;
+                }
+            }
+            x += lastXDelta * maintainSpeed;
+            y += lastYDelta * maintainSpeed;
         }
         // If there is a target
         else {
@@ -222,7 +242,6 @@ public class Predator extends SimulationObject implements LivingCreature{
                 }
                 lastXDelta = -1;
             }
-            else{lastXDelta = 0;}
             
             // Y direction
             if(y < currentTarget.getY()){
@@ -243,7 +262,6 @@ public class Predator extends SimulationObject implements LivingCreature{
                 }
                 lastYDelta = -1;
             }
-            else{lastYDelta = 0;}
         }
         
         x += xDelta;
