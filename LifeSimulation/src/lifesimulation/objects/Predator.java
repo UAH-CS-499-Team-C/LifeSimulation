@@ -6,7 +6,9 @@
 package lifesimulation.objects;
 
 import java.awt.geom.Point2D;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import lifesimulation.utilities.Environment;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -80,13 +82,19 @@ public class Predator extends SimulationObject implements LivingCreature{
         g.draw(collision);
         
         allTargets.values().forEach(t -> {
-            g.drawLine(x, y, t.x, t.y);
+            g.drawLine(x, y, t.getX(), t.getY());
         });
+        
+        if(currentTarget != null){
+            g.setColor(Color.red);
+            g.drawLine(x,y, currentTarget.getX(), currentTarget.getY());
+        }
     }
 
     @Override
     public void Update(Environment e) {
         findTargets(e);
+        selectTarget();
         
         this.collision.setCenterX(x);
         this.collision.setCenterY(y);
@@ -142,7 +150,7 @@ public class Predator extends SimulationObject implements LivingCreature{
             // For all predators
             e.getPredators().forEach(p -> {
                 // If within the visibile distance
-                if(Point2D.distance(x, y, p.getX(), p.getY()) <= 150) {
+                if(p != this && Point2D.distance(x, y, p.getX(), p.getY()) <= 150) {
                     // Make the tmp line of sight from pred to possbile target
                     Line tmp = new Line(x, y, p.getX(), p.getY());
                     // Save blocked flag
@@ -160,6 +168,19 @@ public class Predator extends SimulationObject implements LivingCreature{
                     if(flag){ allTargets.put(Point2D.distance(x, y, p.getX(), p.getY()), p); }
                 }
             });
+        }
+    }
+    
+    /**
+     * Selects which object from allTargets is the current target
+     */
+    private void selectTarget() {
+        try{
+            currentTarget = allTargets.get(Collections.min(allTargets.keySet()));
+            
+        }
+        catch(NoSuchElementException e) {
+            currentTarget = null;
         }
     }
     
