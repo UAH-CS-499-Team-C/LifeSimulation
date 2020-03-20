@@ -138,6 +138,10 @@ public class Predator extends SimulationObject implements LivingCreature{
                     e.getGrazers().remove((Grazer)currentTarget);
                     currentTarget = null;
                 }
+                else{
+                    e.getPredators().remove((Predator)currentTarget);
+                    currentTarget = null;
+                }
             }
         }
     }
