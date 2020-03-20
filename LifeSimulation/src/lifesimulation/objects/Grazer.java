@@ -11,7 +11,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
 import java.util.Random;
-import java.util.ArrayList;
+import java.lang.Math;
 
 /**
  * Implementation class of the Grazer Creature
@@ -32,7 +32,6 @@ public class Grazer extends SimulationObject implements LivingCreature{
     private enum Direction {left, right, up, down};
     private Direction dir;
     private Plant target;
-    private ArrayList <Plant> foodTargets = new ArrayList <Plant> ();
     private boolean found;
     
     
@@ -68,8 +67,6 @@ public class Grazer extends SimulationObject implements LivingCreature{
     // check if the grazer can see food
     private boolean seesFood(Environment e){
         
-        foodTargets.clear();
-        
         Plant p;
         
         for (int i = 0; i < e.getPlants().size(); i++){
@@ -80,7 +77,6 @@ public class Grazer extends SimulationObject implements LivingCreature{
                 if(Point2D.distance(x, y, p.x, p.y) <= this.x + 5 && x > p.x){
                     target = p;
                     found = true;
-                    foodTargets.add(p);
                     break;
                 }
             }
@@ -89,7 +85,6 @@ public class Grazer extends SimulationObject implements LivingCreature{
                 if(Point2D.distance(x, y, p.x, p.y) <= this.x + 5 && x < p.x){
                     target = p;
                     found = true;
-                    foodTargets.add(p);
                     break;
                 }
             }
@@ -98,7 +93,6 @@ public class Grazer extends SimulationObject implements LivingCreature{
                 if(Point2D.distance(x, y, p.x, p.y) <= this.y + 5 && y > p.y){
                     target = p;
                     found = true;
-                    foodTargets.add(p);
                     break;
                 }
             }
@@ -107,7 +101,6 @@ public class Grazer extends SimulationObject implements LivingCreature{
                 if(Point2D.distance(x, y, p.x, p.y) <= this.y + 5 && y < p.y){
                     target = p;
                     found = true;
-                    foodTargets.add(p);
                     break;
                 }
             }
@@ -119,11 +112,9 @@ public class Grazer extends SimulationObject implements LivingCreature{
         }
         
         if(found){
-            System.out.println("Found Food");
             return true;
         }
         else{
-            System.out.println("No Food Found");
             return false;
         }
         
@@ -132,7 +123,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
     
     // returns if the target has been reached or not
     private boolean reached(Plant target){
-        if(Point2D.distance(this.x, this.y, target.x, target.y) <= 3.0){
+        if(Point2D.distance(this.x, this.y, target.x, target.y) <= 7.0){
             return true;
         }
         else{
@@ -240,6 +231,8 @@ public class Grazer extends SimulationObject implements LivingCreature{
         
     }
     
+    
+    
     // wander around until the grazer finds some food
     private void wander(Environment e){
         int r1 = rand.nextInt(4) + 1;
@@ -258,6 +251,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
         }
         
         
+        
         for(int i = 0; i < r2; i++){
             if(this.dir == Direction.left){
                 
@@ -266,6 +260,12 @@ public class Grazer extends SimulationObject implements LivingCreature{
                     collision.setX((float) collision.getX() - (float) 3.0);
                 
                     if(this.seesFood(e)){ break;}
+                }
+                else{
+                    collision.setX((float) collision.getX() + (float) 3.0);
+                    x += 3.0;
+                    wander(e);
+                    break;
                 }
                 
             }
@@ -277,6 +277,12 @@ public class Grazer extends SimulationObject implements LivingCreature{
                 
                     if(this.seesFood(e)){ break;}
                 }
+                else{
+                    collision.setX((float) collision.getX() - (float) 3.0);
+                    x -= 3.0;
+                    wander(e);
+                    break;
+                }
                 
             }
             else if(this.dir == Direction.up){
@@ -287,7 +293,13 @@ public class Grazer extends SimulationObject implements LivingCreature{
                 
                     if(this.seesFood(e)){ break;}
                 }
-            
+                else{
+                    collision.setY((float) collision.getY() + (float) 3.0);
+                    y += 3.0;
+                    wander(e);
+                    break;
+                }
+                
             }
             else if(this.dir == Direction.down){
                 
@@ -296,6 +308,12 @@ public class Grazer extends SimulationObject implements LivingCreature{
                     collision.setY((float) collision.getY() + (float) 3.0);
                 
                     if(this.seesFood(e)){ break;}
+                }
+                else{
+                    collision.setY((float) collision.getY() - (float) 3.0);
+                    y -= 3.0;
+                    wander(e);
+                    break;
                 }
                 
             }
@@ -310,7 +328,10 @@ public class Grazer extends SimulationObject implements LivingCreature{
         g.setColor(Color.black);
         g.draw(collision);
         
-        foodTargets.forEach(p -> g.drawLine(x, y, p.x, p.y));
+        
+        if(found){
+            g.drawLine(this.x, this.y, target.x, target.y);
+        }
     }
 
     @Override
