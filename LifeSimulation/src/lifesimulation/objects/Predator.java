@@ -120,7 +120,12 @@ public class Predator extends SimulationObject implements LivingCreature{
         selectTarget();
         
         // Move towards the current taget
-        moveTowards();
+        if(currentTarget == null) {
+            idle();
+        }
+        else {
+            moveTowards();
+        }
         
         // Move the actual shape
         this.collision.setCenterX(x);
@@ -223,80 +228,82 @@ public class Predator extends SimulationObject implements LivingCreature{
     }
     
     /**
+     * Semi-random movement if there is not target
+     */
+    private void idle() {
+        int coin = r.nextInt(100) + 1;
+        // Only 20% chance to change
+        if(coin > 80){
+            coin = r.nextInt(3);
+            switch(coin){
+                case 0:
+                    lastXDelta = -1 * lastXDelta;
+                    break;
+                case 1:
+                    lastYDelta = -1 * lastYDelta;
+                    break;
+                case 2:
+                    lastXDelta = -1 * lastXDelta;
+                    lastYDelta = -1 * lastYDelta;
+            }
+        }
+        x += lastXDelta * maintainSpeed;
+        if(x > 1000){x = 1000;} else if(x < 0) { x = 0;}
+        y += lastYDelta * maintainSpeed;
+        if(y > 750){y = 750;} else if(y < 0) {y = 0;}
+
+    }
+    
+    /**
      * Move towards the objects current target
      * @param e 
      */
     private void moveTowards(){
         int xDelta = 0;
         int yDelta = 0;
-        
-        // If no target, move semi-randomly
-        if(currentTarget == null) {
-            int coin = r.nextInt(100) + 1;
-            // Only 20% chance to change
-            if(coin > 80){
-                coin = r.nextInt(3);
-                switch(coin){
-                    case 0:
-                        lastXDelta = -1 * lastXDelta;
-                        break;
-                    case 1:
-                        lastYDelta = -1 * lastYDelta;
-                        break;
-                    case 2:
-                        lastXDelta = -1 * lastXDelta;
-                        lastYDelta = -1 * lastYDelta;
-                }
+        // X direction
+        if(x < currentTarget.getX()){
+            if(currentTarget.getX() - x < maintainSpeed) {
+                xDelta += currentTarget.getX() - x;
             }
-            x += lastXDelta * maintainSpeed;
-            y += lastYDelta * maintainSpeed;
+            else {
+                xDelta += maintainSpeed;
+            }
+            lastXDelta = 1;
         }
-        
-        // If there is a target
-        else {
-            // X direction
-            if(x < currentTarget.getX()){
-                if(currentTarget.getX() - x < maintainSpeed) {
-                    xDelta += currentTarget.getX() - x;
-                }
-                else {
-                    xDelta += maintainSpeed;
-                }
-                lastXDelta = 1;
+        else if(x > currentTarget.getX()) {
+            if(x - currentTarget.getX() < maintainSpeed) {
+                xDelta -= x - currentTarget.getX();
             }
-            else if(x > currentTarget.getX()) {
-                if(x - currentTarget.getX() < maintainSpeed) {
-                    xDelta -= x - currentTarget.getX();
-                }
-                else {
-                    xDelta -= maintainSpeed;
-                }
-                lastXDelta = -1;
+            else {
+                xDelta -= maintainSpeed;
             }
-            
-            // Y direction
-            if(y < currentTarget.getY()){
-                if(currentTarget.getY() - y < maintainSpeed) {
-                    yDelta += currentTarget.getY() - y;
-                }
-                else {
-                    yDelta += maintainSpeed;
-                }
-                lastYDelta = 1;
-            }
-            else if(y > currentTarget.getY()) {
-                if(y - currentTarget.getY() < maintainSpeed) {
-                    yDelta -= y - currentTarget.getY();
-                }
-                else {
-                    yDelta -= maintainSpeed;
-                }
-                lastYDelta = -1;
-            }
+            lastXDelta = -1;
         }
-        
+
+        // Y direction
+        if(y < currentTarget.getY()){
+            if(currentTarget.getY() - y < maintainSpeed) {
+                yDelta += currentTarget.getY() - y;
+            }
+            else {
+                yDelta += maintainSpeed;
+            }
+            lastYDelta = 1;
+        }
+        else if(y > currentTarget.getY()) {
+            if(y - currentTarget.getY() < maintainSpeed) {
+                yDelta -= y - currentTarget.getY();
+            }
+            else {
+                yDelta -= maintainSpeed;
+            }
+            lastYDelta = -1;
+        }
         x += xDelta;
+        if(x > 1000){x = 1000;} else if(x < 0) { x = 0;}
         y += yDelta;
+        if(y > 750){y = 750;} else if(y < 0) {y = 0;}
     }
     
 }
