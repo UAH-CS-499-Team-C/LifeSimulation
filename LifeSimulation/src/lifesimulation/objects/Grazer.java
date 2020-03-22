@@ -12,6 +12,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
 import java.util.Random;
 import java.lang.Math;
+import java.util.ArrayList;
+import org.newdawn.slick.geom.Line;
 
 /**
  * Implementation class of the Grazer Creature
@@ -31,8 +33,10 @@ public class Grazer extends SimulationObject implements LivingCreature{
     private Random rand = new Random(); // variable to randomly decide the grazer's direction
     private enum Direction {left, right, up, down};
     private Direction dir;
+    private ArrayList <Plant> possibleTargets = new ArrayList <Plant> ();
     private Plant target;
     private boolean found;
+    Line line;
     
     
     public Grazer(float x, float y, int EU, float energyInput, float energyOutput, float energyToReproduce, float maintainSpeed, float maxSpeed) {
@@ -46,7 +50,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
         this.collision = new Circle(x, y, 7);
         
         // give the grazer a random starting direction
-        int r = rand.nextInt(4) + 1;
+        /*int r = rand.nextInt(4) + 1;
         
         if(r == 1){
             this.dir = Direction.left;
@@ -59,13 +63,13 @@ public class Grazer extends SimulationObject implements LivingCreature{
         }
         else if(r == 4){
             this.dir = Direction.down;
-        }
+        }*/
         
         
     }
     
     // check if the grazer can see food
-    private boolean seesFood(Environment e){
+   /* private boolean seesFood(Environment e){
         
         Plant p;
         
@@ -119,20 +123,224 @@ public class Grazer extends SimulationObject implements LivingCreature{
         }
         
         
+    }*/
+    
+    // ***** ATTEMPT NUMBER 2 BEGIN *****
+    
+    // new attempt at finding food
+    private void findFood(Environment e){
+        
+        // skip if food has already been found
+        if(found == true){
+            return;
+        }
+        
+        Plant p;
+        possibleTargets.clear();
+        
+        // find all possible targets for food
+        for(int i = 0; i < e.getPlants().size(); i++){
+            
+            p = e.getPlants().get(i);
+            
+            if(Point2D.distance(this.x, this.y, p.x, p.y) <= 5){
+                possibleTargets.add(p);
+            }
+            
+        }
+        
+        // exit subroutine if no targets are found
+        if(possibleTargets.size() == 0){
+            found = false;
+            return;
+        }
+        
+        // find the possible target with the shortest distance
+        for(int i = 0; i < possibleTargets.size(); i++){
+            if(i + 1 <= possibleTargets.size() - 1){
+                
+                // sort the possible targets by distance
+                if(Point2D.distance(this.x, this.y, possibleTargets.get(i).x, possibleTargets.get(i).y) > Point2D.distance(this.x, this.y, possibleTargets.get(i + 1).x, possibleTargets.get(i + 1).y)){
+                    p = possibleTargets.get(i);
+                    possibleTargets.set(i, possibleTargets.get(i + 1));
+                    possibleTargets.set (i + 1, p);
+                }
+                
+            }
+        }
+        
+        // find closest target that isn't blocked by an obstacle
+        for (int i = 0; i < possibleTargets.size(); i++){
+            
+            p = possibleTargets.get(i);
+            line = new Line(this.x, this.y, p.x, p.y);
+            
+            for(int j = 0; j < e.getObstacles().size(); j++){
+                if(line.intersects(e.getObstacles().get(j).collision)){
+                    possibleTargets.remove(i); // remove the target from the list
+                    line = null; // remove the line
+                }
+            }
+        }
+        
+        // second check if the there are no targets
+        if(possibleTargets.size() == 0){
+            found = false;
+            return;
+        }
+        else{
+            // assign the target
+            target = possibleTargets.get(0);
+            line = new Line(this.x, this.y, target.x, target.y);
+            found = true;
+        }
+        
     }
     
+    // move toward the target
+    private void moveToward(){
+        
+        // regular distance movement
+        if(this.x < target.x && Point2D.distance(this.x, this.y, target.x, target.y) >= 3.0){
+            this.collision.setX((float) collision.getX() + (float) 3.0);
+            this.x += 3.0;
+            line = null;
+            line = new Line(this.x, this.y, target.x, target.y);
+        }
+        else if(this.x > target.x && Point2D.distance(this.x, this.y, target.x, target.y) >= 3.0){
+            this.collision.setX((float) collision.getX() - (float) 3.0);
+            this.x -= 3.0;
+            line = null;
+            line = new Line(this.x, this.y, target.x, target.y);
+        }
+        
+        if(this.y < target.y && Point2D.distance(this.x, this.y, target.x, target.y) >= 3.0){
+            this.collision.setY((float) collision.getY() + (float) 3.0);
+            this.y += 3.0;
+            line = null;
+            line = new Line(this.x, this.y, target.x, target.y);
+        }
+        else if(this.y > target.y && Point2D.distance(this.x, this.y, target.x, target.y) >= 3.0){
+            this.collision.setY((float) collision.getY() - (float) 3.0);
+            this.y -= 3.0;
+            line = null;
+            line = new Line(this.x, this.y, target.x, target.y);
+        }
+        
+        // closing in
+        if(this.x < target.x && Point2D.distance(this.x, this.y, target.x, target.y) < 3.0){
+            this.collision.setX((float) collision.getX() + (float) 1.0);
+            this.x += 1.0;
+            line = null;
+            line = new Line(this.x, this.y, target.x, target.y);
+        }
+        else if(this.x > target.x && Point2D.distance(this.x, this.y, target.x, target.y) < 3.0){
+            this.collision.setX((float) collision.getX() - (float) 1.0);
+            this.x -= 1.0;
+            line = null;
+            line = new Line(this.x, this.y, target.x, target.y);
+        }
+        
+        if(this.y < target.y && Point2D.distance(this.x, this.y, target.x, target.y) < 3.0){
+            this.collision.setY((float) collision.getY() + (float) 1.0);
+            this.y += 1.0;
+            line = null;
+            line = new Line(this.x, this.y, target.x, target.y);
+        }
+        else if(this.y > target.y && Point2D.distance(this.x, this.y, target.x, target.y) < 3.0){
+            this.collision.setY((float) collision.getY() - (float) 1.0);
+            this.y -= 1.0;
+            line = null;
+            line = new Line(this.x, this.y, target.x, target.y);
+        }
+        
+    }
+    
+    private void wander(Environment e){
+        
+        int direction = rand.nextInt(4);
+        int distance = rand.nextInt(5) + 1;
+        
+        // moving left
+        if(direction == 0){
+            for(int i = 0; i < distance; i++){
+                
+                if(this.x - 3.0 > 0){
+                    this.collision.setX((float) collision.getX() - (float) 3.0);
+                    this.x -= 3.0;
+                    findFood(e);
+
+                    if(found == true){
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // moving right
+        else if(direction == 1){
+            for(int i = 0; i < distance; i++){
+                
+                if(this.x + 3.0 < 1000){
+                    this.collision.setX((float) collision.getX() + (float) 3.0);
+                    this.x += 3.0;
+                    findFood(e);
+
+                    if(found == true){
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // moving up
+        else if(direction == 2){
+            for(int i = 0; i < distance; i++){
+                
+                if(this.y - 3.0 > 0){
+                    this.collision.setY((float) collision.getY() - (float) 3.0);
+                    this.y -= 3.0;
+                    findFood(e);
+
+                    if(found == true){
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // moving down
+        else if(direction == 3){
+            for(int i = 0; i < distance; i++){
+                
+                if(this.y + 3.0 < 750){
+                    this.collision.setY((float) collision.getY() + (float) 3.0);
+                    this.y += 3.0;
+                    findFood(e);
+
+                    if(found == true){
+                        break;
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    // ***** ATTEMPT NUMBER 2 END *****
+    
     // returns if the target has been reached or not
-    private boolean reached(Plant target){
+   /* private boolean reached(Plant target){
         if(Point2D.distance(this.x, this.y, target.x, target.y) <= 7.0){
             return true;
         }
         else{
             return false;
         }
-    }
+    }*/
     
     // move toward the target plant
-    private void goToTarget(){
+   /* private void goToTarget(){
         if(!reached(target)){
         
             // if target is left of grazer
@@ -229,12 +437,12 @@ public class Grazer extends SimulationObject implements LivingCreature{
             
         }
         
-    }
+    }*/
     
     
     
     // wander around until the grazer finds some food
-    private void wander(Environment e){
+    /*private void wander(Environment e){
         int r1 = rand.nextInt(4) + 1;
         int r2 = rand.nextInt(5) + 1;
         
@@ -318,7 +526,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
                 
             }
         }
-    }
+    }*/
     
     @Override
     public void draw(Graphics g) {
@@ -329,7 +537,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
         g.draw(collision);
         
         
-        if(found){
+        if(found == true){
             g.drawLine(this.x, this.y, target.x, target.y);
         }
     }
@@ -337,19 +545,15 @@ public class Grazer extends SimulationObject implements LivingCreature{
     @Override
     public void Update(Environment e) {
         
-        // wander the map in search of food
+        findFood(e);
         
-        
-        if(this.seesFood(e)){
-            this.goToTarget();
-            
+        if(found == true){
+            moveToward();
         }
         else{
-            
-            this.wander(e);
-            
-            
+            wander(e);
         }
+        
     }
     
     
