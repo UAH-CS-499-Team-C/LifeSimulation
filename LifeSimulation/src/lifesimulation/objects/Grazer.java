@@ -36,7 +36,9 @@ public class Grazer extends SimulationObject implements LivingCreature{
     private ArrayList <Plant> possibleTargets = new ArrayList <Plant> ();
     private Plant target;
     private boolean found;
-    Line line;
+    private Line line;
+    private boolean reached = false;
+    private boolean eating = false;
     
     
     public Grazer(float x, float y, int EU, float energyInput, float energyOutput, float energyToReproduce, float maintainSpeed, float maxSpeed) {
@@ -74,7 +76,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
         }
         
         // exit subroutine if no targets are found
-        if(possibleTargets.size() == 0){
+        if(possibleTargets.isEmpty()){
             found = false;
             return;
         }
@@ -108,7 +110,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
         }
         
         // second check if the there are no targets
-        if(possibleTargets.size() == 0){
+        if(possibleTargets.isEmpty()){
             found = false;
             return;
         }
@@ -178,8 +180,38 @@ public class Grazer extends SimulationObject implements LivingCreature{
             line = new Line(this.x, this.y, target.x, target.y);
         }
         
+        // if the target has been reached
+        if(this.x == target.x && this.y == target.y){
+            reached = true;
+        }
+        
     }
     
+    // eat the target plant
+    private void eat(Environment e){
+        
+        // keep eating until the plant is gone
+        if(!target.needsDeleting()){
+            target.isBeingEaten();
+            eating = true;
+        }
+        // delete the plant once it is eaten
+        else{
+            for(int i = 0; i < e.getPlants().size(); i++){
+                if(e.getPlants().get(i) == target){
+                    e.getPlants().remove(i);
+                }
+            }
+            
+            // reset the boolean so that the grazer can find another target
+            eating = false;
+            reached = false;
+            found = false;
+        }
+        
+    }
+    
+    // wander around in search of food
     private void wander(Environment e){
         
         int direction = rand.nextInt(4);
@@ -302,8 +334,11 @@ public class Grazer extends SimulationObject implements LivingCreature{
         
         findFood(e);
         
-        if(found == true){
+        if(found == true && reached == false){
             moveToward();
+        }
+        else if(found == true && reached == true){
+            eat(e);
         }
         else{
             wander(e);
