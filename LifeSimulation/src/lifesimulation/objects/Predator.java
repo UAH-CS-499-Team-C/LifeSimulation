@@ -34,8 +34,10 @@ public class Predator extends SimulationObject implements LivingCreature{
     private float gestaion;
     private float offspringEnergy;
     
+    // Target finding
     private HashMap<Double, SimulationObject> allTargets;
     private SimulationObject currentTarget;
+    private Line line;
     
     // Variables used to give a smartish idle
     private int lastXDelta;
@@ -75,6 +77,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         
         allTargets = new HashMap<>();
         currentTarget = null;
+        
         
         lastXDelta = 0;
         lastYDelta = 0;
@@ -175,17 +178,18 @@ public class Predator extends SimulationObject implements LivingCreature{
             // If within the visibile distance
             if(Point2D.distance(x, y, g.getX(), g.getY()) <= 150) {
                 // Make the tmp line of sight from pred to possbile target
-                Line tmp = new Line(x, y, g.getX(), g.getY());
+                line = new Line(x, y, g.getX(), g.getY());
                 // Save blocked flag
                 boolean flag = true;
                 
                 // See if line of sight blocked by an obstacle
                 for(int i = 0; i < e.getNumObstacles(); i++) {
-                    if(tmp.intersects(e.getObstacles().get(i).collision)){
+                    if(line.intersects(e.getObstacles().get(i).collision)){
                         flag = false;
                         break;
                     }
                 }
+                line = null;
                 
                 // If not blocked by anything, add to possible targets
                 if(flag || Point2D.distance(x, y, g.getX(), g.getY()) <= 25){ allTargets.put(Point2D.distance(x, y, g.getX(), g.getY()), g); }
@@ -199,17 +203,19 @@ public class Predator extends SimulationObject implements LivingCreature{
                 // If within the visibile distance
                 if(p != this && Point2D.distance(x, y, p.getX(), p.getY()) <= 150) {
                     // Make the tmp line of sight from pred to possbile target
-                    Line tmp = new Line(x, y, p.getX(), p.getY());
+                    line = new Line(x, y, p.getX(), p.getY());
                     // Save blocked flag
                     boolean flag = true;
 
                     // See if line of sight blocked by an obstacle
                     for(int i = 0; i < e.getNumObstacles(); i++) {
-                        if(tmp.intersects(e.getObstacles().get(i).collision)){
+                        if(line.intersects(e.getObstacles().get(i).collision)){
                             flag = false;
                             break;
                         }
                     }
+                    
+                    line = null;
 
                     // If not blocked by anything, add to possible targets
                     if(flag || Point2D.distance(x, y, p.getX(), p.getY()) <= 25){ allTargets.put(Point2D.distance(x, y, p.getX(), p.getY()), p); }
