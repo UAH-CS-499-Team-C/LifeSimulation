@@ -121,10 +121,10 @@ public class Plant extends SimulationObject implements LivingCreature {
         }
         
         // Reduction from being eaten
-        else if(diameter < maxSize && diameter > 0 && beingEaten == true){
+        else if(diameter <= maxSize && beingEaten == true){
             
             if(diameter - growthRate > 0){
-                diameter -= growthRate;
+                diameter -= growthRate * maxSize;
             }
             else{
                 toBeDeleted = true;
