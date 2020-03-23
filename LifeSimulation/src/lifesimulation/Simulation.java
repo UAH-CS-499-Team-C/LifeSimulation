@@ -8,7 +8,11 @@ package lifesimulation;
 
 import java.util.ArrayList;
 import lifesimulation.gui.GuiComponent;
-import lifesimulation.gui.GuiEventListener;
+import lifesimulation.objects.Grazer;
+import lifesimulation.objects.LivingCreature;
+import lifesimulation.objects.Plant;
+import lifesimulation.objects.Predator;
+import lifesimulation.objects.SimulationObject;
 import lifesimulation.utilities.Environment;
 import lifesimulation.utilities.SimReportGenerator;
 import org.newdawn.slick.*;
@@ -16,6 +20,7 @@ import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.state.*;
 import lifesimulation.utilities.LifeSimDataParser;
+import org.newdawn.slick.geom.Shape;
 
 /**
  *
@@ -61,6 +66,8 @@ public class Simulation extends BasicGameState{
     private int timeSpeed = 1;
     private boolean logicNeedUpdate = false;
     private final SimReportGenerator simReportGenerator;
+    
+    private SimulationObject selection = null;
     
     // Temporary Keyboard Inputs
     private InputProvider provider;
@@ -192,6 +199,42 @@ public class Simulation extends BasicGameState{
         g.drawString("Number of Grazers: " + environment.getNumGrazers(), 1000, 150);
         g.drawString("Number of Predators: " + environment.getNumPredators(), 1000, 175);
         
+        // Draw selection info
+        
+        if(selection != null)
+        {
+            Shape baseShape = selection.getCollision();
+            float rad = baseShape.getBoundingCircleRadius();
+            
+            g.setLineWidth(2);
+            g.setColor(Color.black);
+            g.drawRect(baseShape.getMinX(), baseShape.getMinY(), baseShape.getWidth(), baseShape.getHeight());
+            
+            Class c = selection.getClass();
+            
+            g.setColor(Color.white);
+            g.drawString("Selected: " + c.getSimpleName(), 1000, 250);
+            g.drawString("Position: (" + selection.getX() + ", " + selection.getY() + ")", 1000, 275);
+            
+            // Class-specific information printed here
+            if(c == Plant.class)
+            {
+                Plant obj = (Plant)selection;
+                g.drawString("Diameter: " + obj.getDiameter(), 1000, 300);
+            }
+            else if(c == Grazer.class)
+            {
+                Grazer obj = (Grazer)selection;
+                g.drawString("Energy: " + obj.getEnergy(), 1000, 300);
+            }
+            else if(c == Predator.class)
+            {
+                Predator obj = (Predator)selection;
+                g.drawString("Energy: " + obj.getEnergy(), 1000, 300);
+                g.drawString("Genotype: " + obj.getGenotype(), 1000, 325);
+            }
+        }
+        
         // Draw key
         g.setColor(Color.white);
         g.drawString("--- Key ---", 1000, 500);
@@ -232,9 +275,28 @@ public class Simulation extends BasicGameState{
     
     @Override
     public void mouseClicked(int button, int x, int y, int ClickCount){
+        java.util.function.Consumer<SimulationObject> selector;
+        
         // Check all our GUI components to see if they've been clicked
         guiComps.forEach(comp -> {
             if(comp.pointCollide(x, y)) comp.click(button, x, y, ClickCount);
         });
+        
+        // Function to check if we're clicking a creature
+        selector = creature -> {
+            if(creature.getCollision().contains((float)x, (float)y)) selection = creature;
+        };
+        
+        // Clear out selection so we can deselect by clicking empty space,
+        // but save it in case we've clicked somewhere that's outside the simulation region.
+        SimulationObject s = selection;
+        selection = null;
+        
+        environment.getPlants().forEach(selector);
+        environment.getGrazers().forEach(selector);
+        environment.getPredators().forEach(selector);
+        
+        // Restore selection if we clicked over GUI regions
+        if(selection == null && (x >= 1000 || y >= 750)) selection = s; 
     }
 }
