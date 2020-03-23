@@ -135,11 +135,11 @@ public class Predator extends SimulationObject implements LivingCreature{
         if(currentTarget != null){
             if(x == currentTarget.getX() && y == currentTarget.getY()){
                 if(currentTarget.getClass() == Grazer.class){
-                    e.getGrazers().remove((Grazer)currentTarget);
+                    e.removeGrazer((Grazer)currentTarget);
                     currentTarget = null;
                 }
                 else{
-                    e.getPredators().remove((Predator)currentTarget);
+                    e.removePredator((Predator)currentTarget);
                     currentTarget = null;
                 }
             }
@@ -188,7 +188,7 @@ public class Predator extends SimulationObject implements LivingCreature{
                 }
                 
                 // If not blocked by anything, add to possible targets
-                if(flag){ allTargets.put(Point2D.distance(x, y, g.getX(), g.getY()), g); }
+                if(flag || Point2D.distance(x, y, g.getX(), g.getY()) <= 25){ allTargets.put(Point2D.distance(x, y, g.getX(), g.getY()), g); }
             }
         });
         
@@ -212,7 +212,7 @@ public class Predator extends SimulationObject implements LivingCreature{
                     }
 
                     // If not blocked by anything, add to possible targets
-                    if(flag){ allTargets.put(Point2D.distance(x, y, p.getX(), p.getY()), p); }
+                    if(flag || Point2D.distance(x, y, p.getX(), p.getY()) <= 25){ allTargets.put(Point2D.distance(x, y, p.getX(), p.getY()), p); }
                 }
             });
         }
