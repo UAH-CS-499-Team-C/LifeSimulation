@@ -40,9 +40,11 @@ public class Predator extends SimulationObject implements LivingCreature{
     private Line line;
     
     // Variables used to give a smartish idle
-    private int lastXDelta;
-    private int lastYDelta;
-    private final Random r;
+    boolean leftOpen;
+    boolean rightOpen;
+    boolean upOpen;
+    boolean downOpen;
+    Random r;
 
     /**
      * Constructor for predator class
@@ -77,10 +79,6 @@ public class Predator extends SimulationObject implements LivingCreature{
         
         allTargets = new HashMap<>();
         currentTarget = null;
-        
-        
-        lastXDelta = 0;
-        lastYDelta = 0;
         r = new Random();
     }
 
@@ -124,7 +122,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         
         // Move towards the current taget
         if(currentTarget == null) {
-            idle();
+            idle(e);
         }
         else {
             moveTowards();
@@ -240,26 +238,44 @@ public class Predator extends SimulationObject implements LivingCreature{
     /**
      * Semi-random movement if there is not target
      */
-    private void idle() {
-        int coin = r.nextInt(100) + 1;
-        // Only 20% chance to change
-        if(coin > 80){
-            coin = r.nextInt(3);
-            switch(coin){
-                case 0:
-                    lastXDelta = -1 * lastXDelta;
-                    break;
-                case 1:
-                    lastYDelta = -1 * lastYDelta;
-                    break;
-                case 2:
-                    lastXDelta = -1 * lastXDelta;
-                    lastYDelta = -1 * lastYDelta;
-            }
+    private void idle(Environment e) {
+        leftOpen = true;
+        rightOpen = true;
+        upOpen = true;
+        downOpen = true;
+        
+        float d = 3.5f + maintainSpeed;
+        
+        for(int i = 0; i < e.getNumObstacles(); i++){
+            Obstacle o = e.getObstacles().get(i);
+            if(o.collision.contains(x-d, y)){leftOpen = false;}
+            if(o.collision.contains(x+d, y)){rightOpen = false;}
+            if(o.collision.contains(x, y-d)){upOpen = false;}
+            if(o.collision.contains(x, y+d)){downOpen = false;}
+            if(!leftOpen && !rightOpen && !downOpen && !upOpen){break;}
         }
-        x += lastXDelta * maintainSpeed;
+        
+        float xDelta = 0;
+        if(leftOpen && rightOpen){
+            xDelta = r.nextInt(3) - 1f; // Range -1,1
+        } else if(leftOpen){
+            xDelta = r.nextInt(2) - 1f; // Range -1,0
+        } else if(rightOpen) {
+            xDelta = r.nextInt(2); // Range 0, 1
+        }
+        
+        float yDelta = 0;
+        if(downOpen && upOpen){
+            yDelta = r.nextInt(3) - 1f; // Range -1,1
+        } else if(upOpen){
+            yDelta = r.nextInt(2) - 1f; // Range -1,0
+        } else if (downOpen) {
+            yDelta = r.nextInt(2); // Range 0, 1
+        }
+        
+        x += xDelta * maintainSpeed;
         if(x > 1000){x = 1000;} else if(x < 0) { x = 0;}
-        y += lastYDelta * maintainSpeed;
+        y += yDelta * maintainSpeed;
         if(y > 750){y = 750;} else if(y < 0) {y = 0;}
 
     }
@@ -279,7 +295,6 @@ public class Predator extends SimulationObject implements LivingCreature{
             else {
                 xDelta += maintainSpeed;
             }
-            lastXDelta = 1;
         }
         else if(x > currentTarget.getX()) {
             if(x - currentTarget.getX() < maintainSpeed) {
@@ -288,7 +303,6 @@ public class Predator extends SimulationObject implements LivingCreature{
             else {
                 xDelta -= maintainSpeed;
             }
-            lastXDelta = -1;
         }
 
         // Y direction
@@ -299,7 +313,6 @@ public class Predator extends SimulationObject implements LivingCreature{
             else {
                 yDelta += maintainSpeed;
             }
-            lastYDelta = 1;
         }
         else if(y > currentTarget.getY()) {
             if(y - currentTarget.getY() < maintainSpeed) {
@@ -308,7 +321,6 @@ public class Predator extends SimulationObject implements LivingCreature{
             else {
                 yDelta -= maintainSpeed;
             }
-            lastYDelta = -1;
         }
         x += xDelta;
         if(x > 1000){x = 1000;} else if(x < 0) { x = 0;}
