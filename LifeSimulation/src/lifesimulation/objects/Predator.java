@@ -40,11 +40,8 @@ public class Predator extends SimulationObject implements LivingCreature{
     private Line line;
     
     // Variables used to give a smartish idle
-    boolean leftOpen;
-    boolean rightOpen;
-    boolean upOpen;
-    boolean downOpen;
     Random r;
+    float idleX, idleY;
 
     /**
      * Constructor for predator class
@@ -80,6 +77,8 @@ public class Predator extends SimulationObject implements LivingCreature{
         allTargets = new HashMap<>();
         currentTarget = null;
         r = new Random();
+        idleX = r.nextInt(1001);
+        idleY = r.nextInt(751);
     }
 
     /**
@@ -125,12 +124,9 @@ public class Predator extends SimulationObject implements LivingCreature{
             idle(e);
         }
         else {
-            moveTowards();
+            moveTowards(currentTarget.getX(), currentTarget.getY());
         }
         
-        // Move the actual shape
-        this.collision.setCenterX(x);
-        this.collision.setCenterY(y);
         
         // Testing eat code
         if(currentTarget != null){
@@ -239,66 +235,49 @@ public class Predator extends SimulationObject implements LivingCreature{
      * Semi-random movement if there is not target
      */
     private void idle(Environment e) {
-        leftOpen = true;
-        rightOpen = true;
-        upOpen = true;
-        downOpen = true;
+        float prevX = x;
+        float prevY = y;
         
-        float d = 3.5f + maintainSpeed;
+        moveTowards(idleX, idleY);
         
-        for(int i = 0; i < e.getNumObstacles(); i++){
-            Obstacle o = e.getObstacles().get(i);
-            if(o.collision.contains(x-d, y)){leftOpen = false;}
-            if(o.collision.contains(x+d, y)){rightOpen = false;}
-            if(o.collision.contains(x, y-d)){upOpen = false;}
-            if(o.collision.contains(x, y+d)){downOpen = false;}
-            if(!leftOpen && !rightOpen && !downOpen && !upOpen){break;}
+        boolean flag = false;
+        
+        for(int i = 0; i < e.getNumObstacles(); i++) {
+            if(collision.intersects(e.getObstacles().get(i).collision)){
+                flag = true;
+                x = prevX;
+                y = prevY;
+                this.collision.setCenterX(x);
+                this.collision.setCenterY(y);
+                break;
+            }
         }
         
-        float xDelta = 0;
-        if(leftOpen && rightOpen){
-            xDelta = r.nextInt(3) - 1f; // Range -1,1
-        } else if(leftOpen){
-            xDelta = r.nextInt(2) - 1f; // Range -1,0
-        } else if(rightOpen) {
-            xDelta = r.nextInt(2); // Range 0, 1
+        if((x==idleX && y==idleY) || flag){
+            idleX = r.nextInt(1001);
+            idleY = r.nextInt(751);
         }
-        
-        float yDelta = 0;
-        if(downOpen && upOpen){
-            yDelta = r.nextInt(3) - 1f; // Range -1,1
-        } else if(upOpen){
-            yDelta = r.nextInt(2) - 1f; // Range -1,0
-        } else if (downOpen) {
-            yDelta = r.nextInt(2); // Range 0, 1
-        }
-        
-        x += xDelta * maintainSpeed;
-        if(x > 1000){x = 1000;} else if(x < 0) { x = 0;}
-        y += yDelta * maintainSpeed;
-        if(y > 750){y = 750;} else if(y < 0) {y = 0;}
-
     }
     
     /**
      * Move towards the objects current target
      * @param e 
      */
-    private void moveTowards(){
+    private void moveTowards(float targetX, float targetY){
         int xDelta = 0;
         int yDelta = 0;
         // X direction
-        if(x < currentTarget.getX()){
-            if(currentTarget.getX() - x < maintainSpeed) {
-                xDelta += currentTarget.getX() - x;
+        if(x < targetX){
+            if(targetX - x < maintainSpeed) {
+                xDelta += targetX - x;
             }
             else {
                 xDelta += maintainSpeed;
             }
         }
-        else if(x > currentTarget.getX()) {
-            if(x - currentTarget.getX() < maintainSpeed) {
-                xDelta -= x - currentTarget.getX();
+        else if(x > targetX) {
+            if(x - targetX < maintainSpeed) {
+                xDelta -= x - targetX;
             }
             else {
                 xDelta -= maintainSpeed;
@@ -306,17 +285,17 @@ public class Predator extends SimulationObject implements LivingCreature{
         }
 
         // Y direction
-        if(y < currentTarget.getY()){
-            if(currentTarget.getY() - y < maintainSpeed) {
-                yDelta += currentTarget.getY() - y;
+        if(y < targetY){
+            if(targetY - y < maintainSpeed) {
+                yDelta += targetY - y;
             }
             else {
                 yDelta += maintainSpeed;
             }
         }
-        else if(y > currentTarget.getY()) {
-            if(y - currentTarget.getY() < maintainSpeed) {
-                yDelta -= y - currentTarget.getY();
+        else if(y > targetY) {
+            if(y - targetY < maintainSpeed) {
+                yDelta -= y - targetY;
             }
             else {
                 yDelta -= maintainSpeed;
@@ -326,6 +305,10 @@ public class Predator extends SimulationObject implements LivingCreature{
         if(x > 1000){x = 1000;} else if(x < 0) { x = 0;}
         y += yDelta;
         if(y > 750){y = 750;} else if(y < 0) {y = 0;}
+        
+        // Move the actual shape
+        this.collision.setCenterX(x);
+        this.collision.setCenterY(y);
     }
     
 }
