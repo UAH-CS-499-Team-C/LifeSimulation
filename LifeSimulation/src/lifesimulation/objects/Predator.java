@@ -42,6 +42,9 @@ public class Predator extends SimulationObject implements LivingCreature{
     // Variables used to give a smartish idle
     Random r;
     float idleX, idleY;
+    
+    // Variables used to see how much the object has moved since last update
+    float lastUpdateX, lastUpdateY;
 
     /**
      * Constructor for predator class
@@ -113,6 +116,9 @@ public class Predator extends SimulationObject implements LivingCreature{
      */
     @Override
     public void Update(Environment e) {
+        lastUpdateX = x;
+        lastUpdateY = y;
+        
         // Find all valid targets
         findTargets(e);
         
@@ -140,6 +146,17 @@ public class Predator extends SimulationObject implements LivingCreature{
                     currentTarget = null;
                 }
             }
+        }
+        
+        // Properly update energy usage
+        double dist = Point2D.distance(x, y, lastUpdateX, lastUpdateY);
+        // Delta energy is equal to
+        // DU * EU/DU
+        EU -= dist * (energyOutput / 5);
+        
+        // Delete self if no energy
+        if(EU <= 0) {
+            e.removePredator(this);
         }
     }
     
