@@ -138,10 +138,14 @@ public class Predator extends SimulationObject implements LivingCreature{
         if(currentTarget != null){
             if(x == currentTarget.getX() && y == currentTarget.getY()){
                 if(currentTarget.getClass() == Grazer.class){
+                    
+                    // Get their energy
+                    EU += 0.9f * ((Grazer)currentTarget).getEnergy();
                     e.removeGrazer((Grazer)currentTarget);
                     currentTarget = null;
                 }
                 else{
+                    EU += 0.9f * ((Predator)currentTarget).getEnergy();
                     e.removePredator((Predator)currentTarget);
                     currentTarget = null;
                 }
