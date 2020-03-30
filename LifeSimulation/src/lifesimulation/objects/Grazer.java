@@ -127,56 +127,64 @@ public class Grazer extends SimulationObject implements LivingCreature{
     private void moveToward(){
         
         // regular distance movement
-        if(this.x < target.x && Point2D.distance(this.x, this.y, target.x, target.y) >= 3.0){
-            this.collision.setX((float) collision.getX() + (float) 3.0);
-            this.x += 3.0;
+        if(this.x < target.x && Point2D.distance(this.x, this.y, target.x, target.y) >= maintainSpeed){
+            this.collision.setX((float) collision.getX() + maintainSpeed);
+            this.x += maintainSpeed;
             line = null;
+            System.gc();
             line = new Line(this.x, this.y, target.x, target.y);
         }
-        else if(this.x > target.x && Point2D.distance(this.x, this.y, target.x, target.y) >= 3.0){
-            this.collision.setX((float) collision.getX() - (float) 3.0);
-            this.x -= 3.0;
+        else if(this.x > target.x && Point2D.distance(this.x, this.y, target.x, target.y) >= maintainSpeed){
+            this.collision.setX((float) collision.getX() - maintainSpeed);
+            this.x -= maintainSpeed;
             line = null;
+            System.gc();
             line = new Line(this.x, this.y, target.x, target.y);
         }
         
-        if(this.y < target.y && Point2D.distance(this.x, this.y, target.x, target.y) >= 3.0){
-            this.collision.setY((float) collision.getY() + (float) 3.0);
-            this.y += 3.0;
+        if(this.y < target.y && Point2D.distance(this.x, this.y, target.x, target.y) >= maintainSpeed){
+            this.collision.setY((float) collision.getY() + maintainSpeed);
+            this.y += maintainSpeed;
             line = null;
+            System.gc();
             line = new Line(this.x, this.y, target.x, target.y);
         }
-        else if(this.y > target.y && Point2D.distance(this.x, this.y, target.x, target.y) >= 3.0){
-            this.collision.setY((float) collision.getY() - (float) 3.0);
-            this.y -= 3.0;
+        else if(this.y > target.y && Point2D.distance(this.x, this.y, target.x, target.y) >= maintainSpeed){
+            this.collision.setY((float) collision.getY() - maintainSpeed);
+            this.y -= maintainSpeed;
             line = null;
+            System.gc();
             line = new Line(this.x, this.y, target.x, target.y);
         }
         
         // closing in
-        if(this.x < target.x && Point2D.distance(this.x, this.y, target.x, target.y) < 3.0){
+        if(this.x < target.x && Point2D.distance(this.x, this.y, target.x, target.y) < maintainSpeed){
             this.collision.setX((float) collision.getX() + (float) 1.0);
             this.x += 1.0;
             line = null;
+            System.gc();
             line = new Line(this.x, this.y, target.x, target.y);
         }
-        else if(this.x > target.x && Point2D.distance(this.x, this.y, target.x, target.y) < 3.0){
+        else if(this.x > target.x && Point2D.distance(this.x, this.y, target.x, target.y) < maintainSpeed){
             this.collision.setX((float) collision.getX() - (float) 1.0);
             this.x -= 1.0;
             line = null;
+            System.gc();
             line = new Line(this.x, this.y, target.x, target.y);
         }
         
-        if(this.y < target.y && Point2D.distance(this.x, this.y, target.x, target.y) < 3.0){
+        if(this.y < target.y && Point2D.distance(this.x, this.y, target.x, target.y) < maintainSpeed){
             this.collision.setY((float) collision.getY() + (float) 1.0);
             this.y += 1.0;
             line = null;
+            System.gc();
             line = new Line(this.x, this.y, target.x, target.y);
         }
-        else if(this.y > target.y && Point2D.distance(this.x, this.y, target.x, target.y) < 3.0){
+        else if(this.y > target.y && Point2D.distance(this.x, this.y, target.x, target.y) < maintainSpeed){
             this.collision.setY((float) collision.getY() - (float) 1.0);
             this.y -= 1.0;
             line = null;
+            System.gc();
             line = new Line(this.x, this.y, target.x, target.y);
         }
         
@@ -220,17 +228,19 @@ public class Grazer extends SimulationObject implements LivingCreature{
         // moving left
         if(direction == 0){
             for(int i = 0; i < distance; i++){
+                for(int j = 0; j < e.getObstacles().size(); j++){
                 
-                if(this.x - 3.0 > 0){
-                    this.collision.setX((float) collision.getX() - (float) 3.0);
-                    this.x -= 3.0;
+                    if(this.x - maintainSpeed > 0 && Point2D.distance(this.x, this.y, e.getObstacles().get(j).collision.getX(), e.getObstacles().get(j).collision.getY()) >= maintainSpeed){
+                        this.collision.setX((float) collision.getX() - maintainSpeed);
+                        this.x -= maintainSpeed;
+                }
                     
                     // stop if grazer hits an object
-                    for(int j = 0; j < e.getObstacles().size(); j++){
-                        if(this.collision.intersects(e.getObstacles().get(j).collision)){
+                    /*for(int j = 0; j < e.getObstacles().size(); j++){
+                        if(Point2D.distance(this.x, this.y, e.getObstacles().get(j).collision.getX(), e.getObstacles().get(j).collision.getY()) <= maintainSpeed){
                             return;
                         }
-                    }
+                    }*/
                     
                     findFood(e);
 
@@ -244,17 +254,19 @@ public class Grazer extends SimulationObject implements LivingCreature{
         // moving right
         else if(direction == 1){
             for(int i = 0; i < distance; i++){
+                for(int j = 0; j < e.getObstacles().size(); j++){
                 
-                if(this.x + 3.0 < 1000){
-                    this.collision.setX((float) collision.getX() + (float) 3.0);
-                    this.x += 3.0;
+                    if(this.x + maintainSpeed < 1000 && Point2D.distance(this.x, this.y, e.getObstacles().get(j).collision.getX(), e.getObstacles().get(j).collision.getY()) >= maintainSpeed){
+                        this.collision.setX((float) collision.getX() + maintainSpeed);
+                        this.x += maintainSpeed;
+                }
                     
                     // stop if grazer hits an object
-                    for(int j = 0; j < e.getObstacles().size(); j++){
-                        if(this.collision.intersects(e.getObstacles().get(j).collision)){
+                    /*for(int j = 0; j < e.getObstacles().size(); j++){
+                        if(Point2D.distance(this.x, this.y, e.getObstacles().get(j).collision.getX(), e.getObstacles().get(j).collision.getY()) <= maintainSpeed){
                             return;
                         }
-                    }
+                    }*/
                     
                     findFood(e);
 
@@ -268,17 +280,19 @@ public class Grazer extends SimulationObject implements LivingCreature{
         // moving up
         else if(direction == 2){
             for(int i = 0; i < distance; i++){
+                for(int j = 0; j < e.getObstacles().size(); j++){
                 
-                if(this.y - 3.0 > 0){
-                    this.collision.setY((float) collision.getY() - (float) 3.0);
-                    this.y -= 3.0;
+                    if(this.y - maintainSpeed > 0 && Point2D.distance(this.x, this.y, e.getObstacles().get(j).collision.getX(), e.getObstacles().get(j).collision.getY()) >= maintainSpeed){
+                        this.collision.setY((float) collision.getY() - maintainSpeed);
+                        this.y -= maintainSpeed;
+                }
                     
                     // stop if grazer hits an object
-                    for(int j = 0; j < e.getObstacles().size(); j++){
-                        if(this.collision.intersects(e.getObstacles().get(j).collision)){
+                    /*for(int j = 0; j < e.getObstacles().size(); j++){
+                        if(Point2D.distance(this.x, this.y, e.getObstacles().get(j).collision.getX(), e.getObstacles().get(j).collision.getY()) <= maintainSpeed){
                             return;
                         }
-                    }
+                    }*/
                     
                     findFood(e);
 
@@ -292,23 +306,151 @@ public class Grazer extends SimulationObject implements LivingCreature{
         // moving down
         else if(direction == 3){
             for(int i = 0; i < distance; i++){
+                for(int j = 0; j < e.getObstacles().size(); j++){
                 
-                if(this.y + 3.0 < 750){
-                    this.collision.setY((float) collision.getY() + (float) 3.0);
-                    this.y += 3.0;
+                    if(this.y + maintainSpeed < 750 && Point2D.distance(this.x, this.y, e.getObstacles().get(j).collision.getX(), e.getObstacles().get(j).collision.getY()) >= maintainSpeed){
+                        this.collision.setY((float) collision.getY() + maintainSpeed);
+                        this.y += maintainSpeed;
+                }
                     
                     // stop if grazer hits an object
-                    for(int j = 0; j < e.getObstacles().size(); j++){
-                        if(this.collision.intersects(e.getObstacles().get(j).collision)){
+                    /*for(int j = 0; j < e.getObstacles().size(); j++){
+                        if(Point2D.distance(this.x, this.y, e.getObstacles().get(j).collision.getX(), e.getObstacles().get(j).collision.getY()) <= maintainSpeed){
                             return;
                         }
-                    }
+                    }*/
                     
                     findFood(e);
 
                     if(found == true){
                         break;
                     }
+                }
+            }
+        }
+        
+    }
+    
+    // replacement for wander
+    
+    private void Wander(Environment e){
+        
+        int direction = rand.nextInt(4) + 1;
+        int distance = rand.nextInt(5) + 1;
+        
+        // moving left
+        if(direction == 1){
+            line = null;
+            System.gc();
+            line = new Line(this.x, this.y, this.x - (distance * maintainSpeed), this.y);
+            
+            // ensure no obstacle collision
+            for(int i = 0; i < e.getObstacles().size(); i++){
+                if(line.intersects(e.getObstacles().get(i).collision)){
+                    return;
+                }
+            }
+            
+            // otherwise, start moving
+            for(int i = 0; i < distance; i++){
+               if(this.x - maintainSpeed > 0){
+                    collision.setX(collision.getX() - maintainSpeed);
+                    this.x -= maintainSpeed;
+               }
+               else{return;}
+                
+                findFood(e);
+                
+                if(found == true){
+                    return;
+                }
+                
+            }
+        }
+        
+        // moving right
+        if(direction == 2){
+            line = null;
+            System.gc();
+            line = new Line(this.x, this.y, this.x + (distance * maintainSpeed), this.y);
+            
+            // ensure no obstacle collision
+            for(int i = 0; i < e.getObstacles().size(); i++){
+                if(line.intersects(e.getObstacles().get(i).collision)){
+                    return;
+                }
+            }
+            
+            // otherwise, start moving
+            for(int i = 0; i < distance; i++){
+                if(this.x + maintainSpeed < 1000){
+                    collision.setX(collision.getX() + maintainSpeed);
+                    x += maintainSpeed;
+                }
+                else{return;}
+                
+                findFood(e);
+                
+                if(found == true){
+                    return;
+                }
+            }
+        }
+        
+        // moving up
+        if(direction == 3){
+            line = null;
+            System.gc();
+            line = new Line(this.x, this.y, this.x, this.y - (distance * maintainSpeed));
+            
+            // ensure no obstacle collision
+            for(int i = 0; i < e.getObstacles().size(); i++){
+                if(line.intersects(e.getObstacles().get(i).collision)){
+                    return;
+                }
+            }
+            
+            // otherwise, start moving
+            for(int i = 0; i < distance; i++){
+                if(this.y - maintainSpeed > 0){
+                    collision.setY(collision.getY() - maintainSpeed);
+                    this.y -= maintainSpeed;
+                }
+                else{return;}
+                
+                findFood(e);
+                
+                if(found == true){
+                    return;
+                }
+            }
+        }
+        
+        // moving down
+        if(direction == 4){
+            line = null;
+            System.gc();
+            line = new Line(this.x, this.y, this.x, this.y + (distance * maintainSpeed));
+            
+            // ensure no obstacle collision
+            for(int i = 0; i < e.getObstacles().size(); i++){
+                if(line.intersects(e.getObstacles().get(i).collision)){
+                    return;
+                }
+            }
+            
+            // otherwise, start moving
+            for(int i = 0; i < distance; i++){
+                if(this.y + maintainSpeed < 750){
+                    collision.setY(collision.getY() + maintainSpeed);
+                    this.y += maintainSpeed;
+                }
+                else{return;}
+                
+                findFood(e);
+                
+                if(found == true){
+                    return;
                 }
             }
         }
@@ -341,7 +483,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             eat(e);
         }
         else{
-            wander(e);
+            Wander(e);
         }
         
     }
