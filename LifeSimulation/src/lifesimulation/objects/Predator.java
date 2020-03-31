@@ -34,17 +34,24 @@ public class Predator extends SimulationObject implements LivingCreature{
     private float gestaion;
     private float offspringEnergy;
     
-    // Target finding
+    // ===== Variables used for target finding =====
     private HashMap<Double, SimulationObject> allTargets;
     private SimulationObject currentTarget;
     private Line line;
     
-    // Variables used to give a smartish idle
-    Random r;
-    float idleX, idleY;
+    // ===== Proper movement variables =====
+    private float properMaxSpeed;
+    private float currentMaxSpeed;
+    private int timeRunning;
+    private int timeCoolingDown;
+    private boolean coolingDown;
     
-    // Variables used to see how much the object has moved since last update
-    float lastUpdateX, lastUpdateY;
+    // ===== Used to give a smartish idle =====
+    private final Random r;
+    private float idleX, idleY;
+    
+    // ===== Used to see how much his has moved since last update =====
+    private float lastUpdateX, lastUpdateY;
 
     /**
      * Constructor for predator class
@@ -77,6 +84,23 @@ public class Predator extends SimulationObject implements LivingCreature{
         this.offspringEnergy = offspringEnergy;
         this.collision = new Circle(x, y, 7);
         
+        // Set speed variables
+        if(this.genotype.contains("FF")) {
+            // Use Homozygous Dominant speed
+            properMaxSpeed = this.maxSpeedHOD;
+        } else if(this.genotype.contains("Ff")) {
+            // Use Heterozygous Dominant speed
+            properMaxSpeed = this.maxSpeedHED;
+        } else {
+            // Use Homozygous Recessive speed
+            properMaxSpeed = this.maxSpeedHOR;
+        }
+        currentMaxSpeed = properMaxSpeed;
+        timeRunning = 0;
+        timeCoolingDown = 0;
+        coolingDown = false;
+        
+        // Set target finding and idle variables
         allTargets = new HashMap<>();
         currentTarget = null;
         r = new Random();
@@ -116,8 +140,24 @@ public class Predator extends SimulationObject implements LivingCreature{
      */
     @Override
     public void Update(Environment e) {
+        // Distance calculation stuff
         lastUpdateX = x;
         lastUpdateY = y;
+        
+        // Calculate movespeed
+        if(timeRunning >= maintainSpeed && !coolingDown){
+            coolingDown = true;
+            timeRunning = 0;
+            currentMaxSpeed = 1;
+        } else if (timeCoolingDown >= 15){
+            coolingDown = false;
+            timeCoolingDown = 0;
+            currentMaxSpeed = properMaxSpeed;
+        }
+        
+        if(coolingDown){ timeCoolingDown++; }
+        else{ timeRunning++; }
+        
         
         // Find all valid targets
         findTargets(e);
@@ -125,7 +165,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         // Out of those targets, select the closest as the target
         selectTarget();
         
-        // Move towards the current taget
+        // Move towards the current taget or idle
         if(currentTarget == null) {
             idle(e);
         }
@@ -135,6 +175,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         
         
         // Testing eat code
+        // TODO: Fix this code
         if(currentTarget != null){
             if(x == currentTarget.getX() && y == currentTarget.getY()){
                 if(currentTarget.getClass() == Grazer.class){
@@ -289,37 +330,37 @@ public class Predator extends SimulationObject implements LivingCreature{
         int yDelta = 0;
         // X direction
         if(x < targetX){
-            if(targetX - x < maintainSpeed) {
+            if(targetX - x < currentMaxSpeed) {
                 xDelta += targetX - x;
             }
             else {
-                xDelta += maintainSpeed;
+                xDelta += currentMaxSpeed;
             }
         }
         else if(x > targetX) {
-            if(x - targetX < maintainSpeed) {
+            if(x - targetX < currentMaxSpeed) {
                 xDelta -= x - targetX;
             }
             else {
-                xDelta -= maintainSpeed;
+                xDelta -= currentMaxSpeed;
             }
         }
 
         // Y direction
         if(y < targetY){
-            if(targetY - y < maintainSpeed) {
+            if(targetY - y < currentMaxSpeed) {
                 yDelta += targetY - y;
             }
             else {
-                yDelta += maintainSpeed;
+                yDelta += currentMaxSpeed;
             }
         }
         else if(y > targetY) {
-            if(y - targetY < maintainSpeed) {
+            if(y - targetY < currentMaxSpeed) {
                 yDelta -= y - targetY;
             }
             else {
-                yDelta -= maintainSpeed;
+                yDelta -= currentMaxSpeed;
             }
         }
         x += xDelta;
