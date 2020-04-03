@@ -58,6 +58,7 @@ public class Simulation extends BasicGameState{
     private GuiComponent playButton;
     private GuiComponent x1Button;
     private GuiComponent x10Button;
+    private GuiComponent x50Button;
     private GuiComponent x100Button;
     private GuiComponent printButton;
     
@@ -95,7 +96,8 @@ public class Simulation extends BasicGameState{
         playButton = new GuiComponent(10, 750, play);
         x1Button = new GuiComponent(50, 750, "images/x1.png");
         x10Button = new GuiComponent(90, 750, "images/x10.png");
-        x100Button = new GuiComponent(130, 750, "images/x100.png");
+        x50Button = new GuiComponent(130, 750, "images/x10.png");
+        x100Button = new GuiComponent(170, 750, "images/x100.png");
         printButton = new GuiComponent(950, 750, "images/print.png");
         
         // Highlight the 1x button since that's the default time scale
@@ -120,6 +122,7 @@ public class Simulation extends BasicGameState{
             x1Button.getImage().setImageColor(0.7f, 0f, 0f);
             x10Button.getImage().setImageColor(1f, 1f, 1f);
             x100Button.getImage().setImageColor(1f, 1f, 1f);
+            x50Button.getImage().setImageColor(1f, 1f, 1f);
         });
         
         x10Button.setListener((int button, int x, int y, int ClickCount) -> {
@@ -128,6 +131,18 @@ public class Simulation extends BasicGameState{
             
             // Update button highlights
             x10Button.getImage().setImageColor(0.7f, 0f, 0f);
+            x1Button.getImage().setImageColor(1f, 1f, 1f);
+            x100Button.getImage().setImageColor(1f, 1f, 1f);
+            x50Button.getImage().setImageColor(1f, 1f, 1f);
+        });
+        
+        x50Button.setListener((int button, int x, int y, int ClickCount) -> {
+            timeSpeed = 50;
+            logicNeedUpdate = true;
+            
+            // Update button highlights
+            x50Button.getImage().setImageColor(0.7f, 0f, 0f);
+            x10Button.getImage().setImageColor(1f, 1f, 1f);
             x1Button.getImage().setImageColor(1f, 1f, 1f);
             x100Button.getImage().setImageColor(1f, 1f, 1f);
         });
@@ -140,6 +155,7 @@ public class Simulation extends BasicGameState{
             x100Button.getImage().setImageColor(0.7f, 0f, 0f);
             x1Button.getImage().setImageColor(1f, 1f, 1f);
             x10Button.getImage().setImageColor(1f, 1f, 1f);
+            x50Button.getImage().setImageColor(1f, 1f, 1f);
         });
         
         printButton.setListener((int button, int x, int y, int ClickCount) -> {
@@ -150,6 +166,7 @@ public class Simulation extends BasicGameState{
         guiComps.add(playButton);
         guiComps.add(x1Button);
         guiComps.add(x10Button);
+        guiComps.add(x50Button);
         guiComps.add(x100Button);
         guiComps.add(printButton);
         
