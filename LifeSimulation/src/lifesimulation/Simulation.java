@@ -96,7 +96,7 @@ public class Simulation extends BasicGameState{
         playButton = new GuiComponent(10, 750, play);
         x1Button = new GuiComponent(50, 750, "images/x1.png");
         x10Button = new GuiComponent(90, 750, "images/x10.png");
-        x50Button = new GuiComponent(130, 750, "images/x10.png");
+        x50Button = new GuiComponent(130, 750, "images/x50.png");
         x100Button = new GuiComponent(170, 750, "images/x100.png");
         printButton = new GuiComponent(950, 750, "images/print.png");
         
