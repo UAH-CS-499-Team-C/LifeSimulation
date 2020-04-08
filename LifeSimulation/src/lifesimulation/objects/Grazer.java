@@ -21,7 +21,7 @@ import org.newdawn.slick.geom.Line;
  */
 public class Grazer extends SimulationObject implements LivingCreature{
     
-    protected final int EU;
+    protected int EU;
     
     private final float energyInput;
     private final float energyOutput;
@@ -39,6 +39,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
     private Line line = new Line(0, 0, 0, 0); // default line to be changed as needed
     private boolean reached = false;
     private boolean eating = false;
+    private float moved = 0;
     
     
     public Grazer(float x, float y, int EU, float energyInput, float energyOutput, float energyToReproduce, float maintainSpeed, float maxSpeed) {
@@ -51,6 +52,17 @@ public class Grazer extends SimulationObject implements LivingCreature{
         this.maxSpeed = maxSpeed;
         this.collision = new Circle(x, y, 7);
         
+    }
+    
+    // expend energy when moving
+    private void expend(){
+        moved += maintainSpeed;
+        
+        // reduce EU if moved 5 or more DU
+        if(moved >= 5.0){
+            this.EU -= (int) this.energyOutput;
+            moved -= 5.0;
+        }
     }
     
     // grazers attempt to find nearby food
@@ -69,7 +81,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             
             p = e.getPlants().get(i);
             
-            if(Point2D.distance(this.x, this.y, p.x, p.y) <= 5 + p.getDiameter()){
+            if(Point2D.distance(this.x, this.y, p.x, p.y) <= 150 + p.getDiameter()){
                 possibleTargets.add(p);
             }
             
@@ -219,6 +231,10 @@ public class Grazer extends SimulationObject implements LivingCreature{
         
         int direction = rand.nextInt(4) + 1;
         int distance = rand.nextInt(5) + 1;
+        
+        // DELETE THIS AFTER TESTING
+        System.out.println("maintainSpeed: " + maintainSpeed);
+        System.out.println("maxSpeed: " + maxSpeed);
         
         // moving left
         if(direction == 1){
