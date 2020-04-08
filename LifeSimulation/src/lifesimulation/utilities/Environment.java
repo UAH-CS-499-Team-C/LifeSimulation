@@ -220,4 +220,14 @@ public class Environment {
     public int getTime() {
         return t;
     }
+    
+    // get the world width
+    public double getWidth(){
+        return lsdp.getInstance().getWorldWidth();
+    }
+    
+    // get the world height
+    public double getHeight(){
+        return lsdp.getInstance().getWorldHeight();
+    }
 }
