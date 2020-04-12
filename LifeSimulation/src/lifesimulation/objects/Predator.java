@@ -48,6 +48,9 @@ public class Predator extends SimulationObject implements LivingCreature{
     private int timeCoolingDown;
     private boolean coolingDown;
     
+    // ===== Predator fighting variable =====
+    public boolean isFighting;
+    
     // ===== Used to give a smartish idle =====
     private final Random r;
     private float idleX, idleY;
@@ -111,6 +114,8 @@ public class Predator extends SimulationObject implements LivingCreature{
         
         idleX = r.nextInt(1001);
         idleY = r.nextInt(751);
+        
+        isFighting = false;
     }
 
     /**
@@ -196,6 +201,9 @@ public class Predator extends SimulationObject implements LivingCreature{
                     currentTarget = null;
                 }
             }
+            
+            // After every update, the predator should not be fighting
+            isFighting = false;
         }
         
         // Properly update energy usage

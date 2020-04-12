@@ -6,6 +6,7 @@
 package lifesimulation.utilities;
 
 import java.util.ArrayList;
+import java.util.Random;
 import lifesimulation.objects.Grazer;
 import lifesimulation.objects.Obstacle;
 import lifesimulation.objects.Plant;
@@ -66,6 +67,9 @@ public class Environment {
     
     private int t;
     
+    // Random used during predator fights
+    private Random r;
+    
     
 
     /**
@@ -87,6 +91,8 @@ public class Environment {
         LoadData();
         
         t = 0;
+        
+        r = new Random();
     }
     
     /**
@@ -183,6 +189,40 @@ public class Environment {
         predatorsToRemove.clear();
         
         t++;
+    }
+    
+    public void PredatorFight(Predator p1, Predator p2)
+    {
+        // Set both predators to fighting so this will not be called twice
+        p1.isFighting = true;
+        p2.isFighting = true;
+        
+        // Get strength value from genotype
+        String s1 = p1.getGenotype().substring(3, 5);
+        String s2 = p2.getGenotype().substring(3, 5);
+        
+        // ===== Case 1, both strengths are the same =====
+        if(s1.equals(s2))
+        {
+            // Should they fight?
+            if(r.nextBoolean())
+            {
+                // Should p1 win?
+                if(r.nextBoolean()){predatorsToRemove.add(p2);}
+                else {predatorsToRemove.add(p1);}
+            }
+            else // Not fight
+            {
+                p1.ignoreTargets.add(p2);
+                p2.ignoreTargets.add(p1);
+            }
+        }
+        
+        // ===== Case 2, p1 is SS =====
+        else if(s1.equals("SS"))
+        {
+            
+        }
     }
     
     /**
