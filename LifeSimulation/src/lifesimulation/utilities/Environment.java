@@ -208,8 +208,16 @@ public class Environment {
             if(r.nextBoolean())
             {
                 // Should p1 win?
-                if(r.nextBoolean()){predatorsToRemove.add(p2);}
-                else {predatorsToRemove.add(p1);}
+                if(r.nextBoolean())
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
             }
             else // Not fight
             {

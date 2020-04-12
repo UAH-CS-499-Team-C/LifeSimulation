@@ -227,6 +227,14 @@ public class Predator extends SimulationObject implements LivingCreature{
     }
     
     /**
+     * Set the predator's energy level
+     * @param e energy
+     */
+    public void setEnergy(int e) {
+        EU = e;
+    }
+    
+    /**
      * Get the predator's genotype
      * @return Genotype string
      */
