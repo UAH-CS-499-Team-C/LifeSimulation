@@ -44,10 +44,22 @@ public class Grazer extends SimulationObject implements LivingCreature{
     private float moved = 0;
     private float speed;
     private boolean running = false;
+    private boolean avoidingObstacle = false;
+    private boolean avoided = false;
     int currentTime;
     int maxRunTime;
     
-    
+    /**
+     * Constructor for Grazer class object
+     * @param x
+     * @param y
+     * @param EU
+     * @param energyInput
+     * @param energyOutput
+     * @param energyToReproduce
+     * @param maintainSpeed
+     * @param maxSpeed 
+     */
     public Grazer(float x, float y, int EU, float energyInput, float energyOutput, float energyToReproduce, float maintainSpeed, float maxSpeed) {
         super(x, y);
         this.EU = EU;
@@ -60,7 +72,10 @@ public class Grazer extends SimulationObject implements LivingCreature{
         
     }
     
-    // check to see if any predators are in line of sight
+    /**
+     * Grazer checks line of site for nearby predators
+     * @param e 
+     */
     private void checkForPredators(Environment e){
         
         // check all predators to see if any are in range
@@ -112,7 +127,10 @@ public class Grazer extends SimulationObject implements LivingCreature{
         
     }
     
-    // run away from threatening predator
+    /**
+     * Grazer runs away from predator
+     * @param e 
+     */
     private void run(Environment e){
         
         // only set these vaiables if the running sequence is beginning
@@ -129,6 +147,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             
             // if threat is to the left
             if(threat.x < this.x && this.x + speed < e.getWidth()){
+                
                 this.collision.setX((float) this.collision.getX() + speed);
                 this.x += speed;
                 expend(speed);
@@ -290,7 +309,10 @@ public class Grazer extends SimulationObject implements LivingCreature{
         
     }
     
-    // grazer reproduces after reaching target EU
+    /**
+     * Grazer will reproduce if energyToReproduce is met
+     * @param e 
+     */
     private void reproduce(Environment e){
         
         // first offspring
@@ -400,7 +422,9 @@ public class Grazer extends SimulationObject implements LivingCreature{
         
     }
     
-    // move toward the target
+    /**
+     * Grazer will move toward the target plant
+     */
     private void moveToward(){
         
         // set speed
@@ -443,26 +467,26 @@ public class Grazer extends SimulationObject implements LivingCreature{
         if(this.x < target.x && Point2D.distance(this.x, this.y, target.x, target.y) < speed){
             this.collision.setX((float) collision.getX() + (float) 1.0);
             this.x += 1.0;
-            expend(speed);
+            expend(1);
             line.set(this.x, this.y, target.x, target.y);
         }
         else if(this.x > target.x && Point2D.distance(this.x, this.y, target.x, target.y) < speed){
             this.collision.setX((float) collision.getX() - (float) 1.0);
             this.x -= 1.0;
-            expend(speed);
+            expend(1);
             line.set(this.x, this.y, target.x, target.y);
         }
         
         if(this.y < target.y && Point2D.distance(this.x, this.y, target.x, target.y) < speed){
             this.collision.setY((float) collision.getY() + (float) 1.0);
             this.y += 1.0;
-            expend(speed);
+            expend(1);
             line.set(this.x, this.y, target.x, target.y);
         }
         else if(this.y > target.y && Point2D.distance(this.x, this.y, target.x, target.y) < speed){
             this.collision.setY((float) collision.getY() - (float) 1.0);
             this.y -= 1.0;
-            expend(speed);
+            expend(1);
             line.set(this.x, this.y, target.x, target.y);
         }
         
@@ -473,7 +497,10 @@ public class Grazer extends SimulationObject implements LivingCreature{
         
     }
     
-    // eat the target plant
+    /**
+     * Grazer will eat the target plant when it is reached
+     * @param e 
+     */
     private void eat(Environment e){
         
         // keep eating until the plant is gone
@@ -500,8 +527,10 @@ public class Grazer extends SimulationObject implements LivingCreature{
         
     }
     
-    // wander the map in search of food
-    
+    /**
+     * Grazer will wander the map until food is found
+     * @param e 
+     */
     private void wander(Environment e){
         
         // set speed
@@ -686,7 +715,10 @@ public class Grazer extends SimulationObject implements LivingCreature{
     }
     
     
-    
+    /**
+     * Return the amount of energy units the Grazer currently has
+     * @return 
+     */
     public int getEnergy() {
         return EU;
     }
