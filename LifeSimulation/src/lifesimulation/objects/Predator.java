@@ -189,21 +189,12 @@ public class Predator extends SimulationObject implements LivingCreature{
         if(currentTarget != null){
             if(x == currentTarget.getX() && y == currentTarget.getY()){
                 if(currentTarget.getClass() == Grazer.class){
-                    
-                    // Get their energy
-                    EU += 0.9f * ((Grazer)currentTarget).getEnergy();
-                    e.removeGrazer((Grazer)currentTarget);
-                    currentTarget = null;
+                    e.PredatorFight(this, (Grazer)currentTarget);
                 }
                 else{
-                    EU += 0.9f * ((Predator)currentTarget).getEnergy();
-                    e.removePredator((Predator)currentTarget);
-                    currentTarget = null;
+                    e.PredatorFight(this, (Predator)currentTarget);
                 }
             }
-            
-            // After every update, the predator should not be fighting
-            isFighting = false;
         }
         
         // Properly update energy usage
@@ -216,6 +207,9 @@ public class Predator extends SimulationObject implements LivingCreature{
         if(EU <= 0) {
             e.removePredator(this);
         }
+        
+        // After every update, the predator should not be fighting
+        isFighting = false;
     }
     
     /**

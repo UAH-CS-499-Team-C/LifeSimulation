@@ -231,7 +231,7 @@ public class Environment {
         {
             if(s2.equals("Ss"))
             {
-                if(r.nextInt(100) >= 75)
+                if(r.nextInt(100) < 75)
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
@@ -244,7 +244,7 @@ public class Environment {
             }
             else
             {
-                if(r.nextInt(100) >= 95)
+                if(r.nextInt(100) < 95)
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
@@ -260,7 +260,7 @@ public class Environment {
         {
             if(s2.equals("SS"))
             {
-                if(r.nextInt(100) >= 25)
+                if(r.nextInt(100) < 25)
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
@@ -273,7 +273,7 @@ public class Environment {
             }
             else
             {
-                if(r.nextInt(100) >= 75)
+                if(r.nextInt(100) < 75)
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
@@ -289,7 +289,7 @@ public class Environment {
         {
             if(s2.equals("SS"))
             {
-                if(r.nextInt(100) >= 5)
+                if(r.nextInt(100) < 5)
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
@@ -302,7 +302,7 @@ public class Environment {
             }
             else
             {
-                if(r.nextInt(100) >= 25)
+                if(r.nextInt(100) < 25)
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
@@ -312,6 +312,37 @@ public class Environment {
                     predatorsToRemove.add(p1);
                     p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
                 }
+            }
+        }
+    }
+    
+    public void PredatorFight(Predator p, Grazer g)
+    {
+        // Find the predator's strength
+        String s = p.getGenotype().substring(3, 5);
+        
+        if(s.equals("SS"))
+        {
+            if(r.nextInt(100) < 95)
+            {
+                grazersToRemove.add(g);
+                p.setEnergy(p.getEnergy() + (int)(0.9 * g.getEnergy()));
+            }
+        }
+        else if(s.equals("Ss"))
+        {
+            if(r.nextInt(100) < 75)
+            {
+                grazersToRemove.add(g);
+                p.setEnergy(p.getEnergy() + (int)(0.9 * g.getEnergy()));
+            }
+        }
+        else
+        {
+            if(r.nextInt(100) < 50)
+            {
+                grazersToRemove.add(g);
+                p.setEnergy(p.getEnergy() + (int)(0.9 * g.getEnergy()));
             }
         }
     }
