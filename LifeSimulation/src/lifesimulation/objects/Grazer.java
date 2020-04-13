@@ -34,13 +34,18 @@ public class Grazer extends SimulationObject implements LivingCreature{
     private enum Direction {left, right, up, down};
     private Direction dir;
     private ArrayList <Plant> possibleTargets = new ArrayList <Plant> ();
+    private ArrayList <Predator> possibleThreats = new ArrayList <Predator> ();
     private Plant target;
+    private Predator threat;
     private boolean found;
     private Line line = new Line(0, 0, 0, 0); // default line to be changed as needed
     private boolean reached = false;
     private boolean eating = false;
     private float moved = 0;
     private float speed;
+    private boolean running = false;
+    int currentTime;
+    int maxRunTime;
     
     
     public Grazer(float x, float y, int EU, float energyInput, float energyOutput, float energyToReproduce, float maintainSpeed, float maxSpeed) {
@@ -52,6 +57,236 @@ public class Grazer extends SimulationObject implements LivingCreature{
         this.maintainSpeed = maintainSpeed;
         this.maxSpeed = maxSpeed;
         this.collision = new Circle(x, y, 7);
+        
+    }
+    
+    // check to see if any predators are in line of sight
+    private void checkForPredators(Environment e){
+        
+        // check all predators to see if any are in range
+        for(int i = 0; i < e.getPredators().size(); i++){
+            if(Point2D.distance(this.x, this.y, e.getPredators().get(i).x, e.getPredators().get(i).y) <= 25.0){
+                possibleThreats.add(e.getPredators().get(i));
+            }
+        }
+        
+        // exit subroutine if no threats are found
+        if(possibleThreats.size() == 0){
+            return;
+        }
+        
+        // sort out predators that are blocked my obstacles
+        for(int i = 0; i < possibleThreats.size(); i++){
+            line.set(this.x, this.y, possibleThreats.get(i).x, possibleThreats.get(i).y);
+            
+            for(int j = 0; j < e.getObstacles().size(); j++){
+                if(line.intersects(e.getObstacles().get(j).collision)){
+                    possibleThreats.remove(i);
+                    break;
+                }
+            }
+        }
+        
+        // exit subroutine if no theats are found
+        if(possibleTargets.size() == 0){
+            return;
+        }
+        
+        // find the closest threat
+        for(int i = 0; i < possibleThreats.size(); i++){
+            if(i + 1 <= possibleThreats.size() - 1){
+                if(Point2D.distance(this.x, this.y, possibleThreats.get(i).x, possibleThreats.get(i).y) > Point2D.distance(this.x, this.y, possibleThreats.get(i + 1).x, possibleThreats.get(i + 1).y)){
+                    Predator temp = possibleThreats.get(i);
+                    possibleThreats.set(i, possibleThreats.get(i + 1));
+                    possibleThreats.set(i + 1, temp);
+                }
+            }
+        }
+        
+        // set closest threat
+        threat = possibleThreats.get(0);
+        running = true;
+        
+        // clear the possibleThreats arraylist
+        possibleThreats.clear();
+        
+    }
+    
+    // run away from threatening predator
+    private void run(Environment e){
+        
+        // only set these vaiables if the running sequence is beginning
+        if(running == false){
+            currentTime = e.getTime();
+            maxRunTime = currentTime + ((int) maintainSpeed * 60);
+        }
+        
+        // maintain max speed within the alloted time frame
+        if(e.getTime() < maxRunTime && this.EU >= 25){
+            
+            // speed at maximum
+            speed = maxSpeed;
+            
+            // if threat is to the left
+            if(threat.x < this.x && this.x + speed < e.getWidth()){
+                this.collision.setX((float) this.collision.getX() + speed);
+                this.x += speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+            // if threat is to the right
+            else if(threat.x > this.x && this.x - speed > 0){
+                this.collision.setX((float) this.collision.getX() - speed);
+                this.x -= speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+            // if threat is above
+            else if(threat.y < this.y && this.y + speed < e.getHeight()){
+                this.collision.setY((float) this.collision.getY() + speed);
+                this.y += speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+            // if threat is below
+            else if(threat.y > this.y && this.y - speed > 0){
+                this.collision.setY((float) this.collision.getY() - speed);
+                this.y -= speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+        }
+        // back to normal speed if max run time is surpassed
+        else if( e.getTime() > maxRunTime && this.EU >= 25){
+            
+            // speed at maximum
+            speed = (float)(maxSpeed * 0.75);
+            
+            // if threat is to the left
+            if(threat.x < this.x && this.x + speed < e.getWidth()){
+                this.collision.setX((float) this.collision.getX() + speed);
+                this.x += speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+            // if threat is to the right
+            else if(threat.x > this.x && this.x - speed > 0){
+                this.collision.setX((float) this.collision.getX() - speed);
+                this.x -= speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+            // if threat is above
+            else if(threat.y < this.y && this.y + speed < e.getHeight()){
+                this.collision.setY((float) this.collision.getY() + speed);
+                this.y += speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+            // if threat is below
+            else if(threat.y > this.y && this.y - speed > 0){
+                this.collision.setY((float) this.collision.getY() - speed);
+                this.y -= speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+        }
+        // slow down if EU falls below 25
+        else if(this.EU < 25){
+            
+            // speed at maximum
+            speed = 10;
+            
+            // if threat is to the left
+            if(threat.x < this.x && this.x + speed < e.getWidth()){
+                this.collision.setX((float) this.collision.getX() + speed);
+                this.x += speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+            // if threat is to the right
+            else if(threat.x > this.x && this.x - speed > 0){
+                this.collision.setX((float) this.collision.getX() - speed);
+                this.x -= speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+            // if threat is above
+            else if(threat.y < this.y && this.y + speed < e.getHeight()){
+                this.collision.setY((float) this.collision.getY() + speed);
+                this.y += speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+            // if threat is below
+            else if(threat.y > this.y && this.y - speed > 0){
+                this.collision.setY((float) this.collision.getY() - speed);
+                this.y -= speed;
+                expend(speed);
+                
+                // exit subroutine if far enough away from threat
+                if(Point2D.distance(this.x,this.y, threat.x, threat.y) > 25){
+                    running = false;
+                    return;
+                }
+            }
+        }
+        
         
     }
     
@@ -420,6 +655,13 @@ public class Grazer extends SimulationObject implements LivingCreature{
         // grazer dies if energy falls to 0 or below
         if(this.EU <= 0){
             die(e);
+        }
+        
+        // run from predators if necessary
+        checkForPredators(e);
+        
+        if(running == true){
+            run(e);
         }
         
         // reproduce if able
