@@ -184,15 +184,17 @@ public class Predator extends SimulationObject implements LivingCreature{
         }
         
         
-        // Testing eat code
-        // TODO: Fix this code
+        // Eat code
         if(currentTarget != null){
             if(x == currentTarget.getX() && y == currentTarget.getY()){
                 if(currentTarget.getClass() == Grazer.class){
                     e.PredatorFight(this, (Grazer)currentTarget);
                 }
                 else{
-                    e.PredatorFight(this, (Predator)currentTarget);
+                    if(!isFighting)
+                    {
+                        e.PredatorFight(this, (Predator)currentTarget);
+                    }
                 }
             }
         }

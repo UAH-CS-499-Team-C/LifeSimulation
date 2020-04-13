@@ -191,6 +191,11 @@ public class Environment {
         t++;
     }
     
+    /**
+     * Calculates what happens when a predator fights a grazer
+     * @param p1 One of the predators
+     * @param p2 The other predator
+     */
     public void PredatorFight(Predator p1, Predator p2)
     {
         // Set both predators to fighting so this will not be called twice
@@ -316,6 +321,11 @@ public class Environment {
         }
     }
     
+    /**
+     * Calculates what happens when a predator fights a grazer
+     * @param p The predator
+     * @param g The grazer
+     */
     public void PredatorFight(Predator p, Grazer g)
     {
         // Find the predator's strength
