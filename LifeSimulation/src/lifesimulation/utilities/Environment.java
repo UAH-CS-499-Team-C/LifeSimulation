@@ -229,7 +229,90 @@ public class Environment {
         // ===== Case 2, p1 is SS =====
         else if(s1.equals("SS"))
         {
-            
+            if(s2.equals("Ss"))
+            {
+                if(r.nextInt(100) >= 75)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+            else
+            {
+                if(r.nextInt(100) >= 95)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+        }
+        else if(s1.equals("Ss"))
+        {
+            if(s2.equals("SS"))
+            {
+                if(r.nextInt(100) >= 25)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+            else
+            {
+                if(r.nextInt(100) >= 75)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+        }
+        else
+        {
+            if(s2.equals("SS"))
+            {
+                if(r.nextInt(100) >= 5)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+            else
+            {
+                if(r.nextInt(100) >= 25)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
         }
     }
     
