@@ -221,12 +221,15 @@ public class Predator extends SimulationObject implements LivingCreature{
                     }
                     else if(isMating)
                     {
+                        // ==== This is the mating process =====
                         ((Predator)currentTarget).mateGenotype = this.genotype;
                         this.mateGenotype = ((Predator)currentTarget).getGenotype();
                         ((Predator)currentTarget).isMating = false;
                         this.isMating = false;
                         ((Predator)currentTarget).isBearing = true;
                         this.isBearing = true;
+                        ((Predator)currentTarget).ignoreTargets.add(this);
+                        this.ignoreTargets.add(currentTarget);
                     }
                 }
             }
@@ -236,7 +239,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         if(isBearing)
         {
             tBearing++;
-            if(tBearing >= gestaion)
+            if(tBearing >= (gestaion * 24 * 60 * 60))
             {
                 GiveBirth(e);
                 tBearing = 0;
