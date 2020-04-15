@@ -216,6 +216,11 @@ public class Predator extends SimulationObject implements LivingCreature{
             e.removePredator(this);
         }
         
+        // Birth test code
+        mateGenotype = "AA SS FF";
+        GiveBirth(e);
+        // End Birth test code
+        
         // After every update, the predator should not be fighting
         isFighting = false;
     }
