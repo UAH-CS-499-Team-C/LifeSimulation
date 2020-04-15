@@ -489,7 +489,7 @@
 	</GRAZERS>
 	<PREDATORS>
 		<INITIAL_PREDATOR_COUNT>
-			1
+			5
 		</INITIAL_PREDATOR_COUNT>
 		<MAX_SPEED_HOD>
 			20.0
@@ -507,7 +507,7 @@
 			10
 		</P_ENERGY_OUTPUT>
 		<P_ENERGY_TO_REPRODUCE>
-			500
+			5
 		</P_ENERGY_TO_REPRODUCE>
 		<P_MAX_OFFSPRING>
 			3
@@ -530,6 +530,62 @@
 			</P_ENERGY_LEVEL>
 			<GENOTYPE>
 				AA SS FF
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				200
+			</X_POS>
+			<Y_POS>
+				575
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				425
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				Aa Ss Ff
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				475
+			</X_POS>
+			<Y_POS>
+				400
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				Aa Ss Ff
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				775
+			</X_POS>
+			<Y_POS>
+				225
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				450
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				Aa Ss Ff
+			</GENOTYPE>
+		</PREDATOR>
+		<PREDATOR>
+			<X_POS>
+				825
+			</X_POS>
+			<Y_POS>
+				600
+			</Y_POS>
+			<P_ENERGY_LEVEL>
+				475
+			</P_ENERGY_LEVEL>
+			<GENOTYPE>
+				aa ss ff
 			</GENOTYPE>
 		</PREDATOR>
 	</PREDATORS>
