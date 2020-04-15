@@ -6,6 +6,7 @@
 package lifesimulation.objects;
 
 import java.awt.geom.Point2D;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,6 +58,11 @@ public class Predator extends SimulationObject implements LivingCreature{
     
     // ===== Used to see how much his has moved since last update =====
     private float lastUpdateX, lastUpdateY;
+    
+    // ===== Birth variables =====
+    public String mateGenotype;
+    public boolean mating;
+    private int timeSinceMate;
 
     /**
      * Constructor for predator class
@@ -394,6 +400,38 @@ public class Predator extends SimulationObject implements LivingCreature{
         // Move the actual shape
         this.collision.setCenterX(x);
         this.collision.setCenterY(y);
+    }
+    
+    private void GiveBirth(Environment e)
+    {
+        int noChildren = r.nextInt(maxOffspring) + 1;
+        for(int i = 0; i < noChildren; i++)
+        {
+            // Figure out aggression of child
+            char tempArray1[] = {this.genotype.charAt(r.nextInt(2)), mateGenotype.charAt(r.nextInt(2))};
+            Arrays.sort(tempArray1);
+            String a = new String(tempArray1);
+
+            // Figure out strength of child
+            char tempArray2[] = {this.genotype.charAt(r.nextInt(2)+3), mateGenotype.charAt(r.nextInt(2)+3)};
+            Arrays.sort(tempArray2);
+            String s = new String(tempArray2);
+            
+            // Figure out speed of child
+            char tempArray3[] = {this.genotype.charAt(r.nextInt(2)+6), mateGenotype.charAt(r.nextInt(2)+6)};
+            Arrays.sort(tempArray3);
+            String f = new String(tempArray3);
+            
+            String childGeneString = a + " " + s + " " + f;
+            Predator myChild = new Predator(x, y, EU, childGeneString, maxSpeedHOD, maxSpeedHED, maxSpeedHOR, maintainSpeed, energyOutput, energyToReProduce, maxOffspring, gestaion, offspringEnergy);
+            myChild.ignoreTargets.add(this);
+            ignoreTargets.add(this);
+            e.addPredator(myChild);
+        }
+     
+        
+        // Turn off the mating boolean
+        mating = false;
     }
     
 }
