@@ -108,6 +108,7 @@ public class Plant extends SimulationObject implements LivingCreature {
             if(diameter > maxSize) {
                 diameter = maxSize;
             }
+            collision = new Circle(x, y, diameter/2);
         }
 
         // Wait for reproduction
@@ -121,7 +122,6 @@ public class Plant extends SimulationObject implements LivingCreature {
             Reproduce(e);
         }
 
-        collision = new Circle(x, y, diameter/2);
         height = diameter/2;
     }
     
