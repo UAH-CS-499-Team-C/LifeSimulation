@@ -200,7 +200,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         selectTarget();
         
         // Move towards the current taget or idle
-        if(currentTarget == null) {
+        if(currentTarget == null || (isBearing && tBearing<=20)) {
             idle(e);
         }
         else {
@@ -222,13 +222,9 @@ public class Predator extends SimulationObject implements LivingCreature{
                     else if(isMating)
                     {
                         // ==== This is the mating process =====
-                        ((Predator)currentTarget).mateGenotype = this.genotype;
                         this.mateGenotype = ((Predator)currentTarget).getGenotype();
-                        ((Predator)currentTarget).isMating = false;
                         this.isMating = false;
-                        ((Predator)currentTarget).isBearing = true;
                         this.isBearing = true;
-                        ((Predator)currentTarget).ignoreTargets.add(this);
                         this.ignoreTargets.add(currentTarget);
                     }
                 }
