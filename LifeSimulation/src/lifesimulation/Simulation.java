@@ -6,6 +6,13 @@
 package lifesimulation;
 
 
+import java.util.ArrayList;
+import lifesimulation.gui.GuiComponent;
+import lifesimulation.objects.Grazer;
+import lifesimulation.objects.LivingCreature;
+import lifesimulation.objects.Plant;
+import lifesimulation.objects.Predator;
+import lifesimulation.objects.SimulationObject;
 import lifesimulation.utilities.Environment;
 import lifesimulation.utilities.SimReportGenerator;
 import org.newdawn.slick.*;
@@ -13,12 +20,22 @@ import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.state.*;
 import lifesimulation.utilities.LifeSimDataParser;
+import org.newdawn.slick.geom.Shape;
+
+
 
 /**
  *
  * @author d4g0n
  */
 public class Simulation extends BasicGameState{
+    
+    /**
+     * Palette for UI
+     */
+    
+    static Color cBackground = new Color(0x121212);
+    static Color cText = new Color(0xFFFFFF);
     
     /**
      * Background image for simulation
@@ -31,16 +48,29 @@ public class Simulation extends BasicGameState{
     Image x100;
     Image printReport;
     
+    Image fontImage;
+    Font font;
+    
     /**
      * All objects in the simulation
      */
     Environment environment;
+    
+    private ArrayList<GuiComponent> guiComps;
+    private GuiComponent playButton;
+    private GuiComponent x1Button;
+    private GuiComponent x10Button;
+    private GuiComponent x50Button;
+    private GuiComponent x100Button;
+    private GuiComponent printButton;
     
     
     private boolean paused = true;
     private int timeSpeed = 1;
     private boolean logicNeedUpdate = false;
     private final SimReportGenerator simReportGenerator;
+    
+    private SimulationObject selection = null;
     
     // Temporary Keyboard Inputs
     private InputProvider provider;
@@ -51,16 +81,101 @@ public class Simulation extends BasicGameState{
     }
     
    
+   
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
         
+        guiComps = new ArrayList<>();
+        
         bg = new Image("images/grid.png");
-        pause = new Image("images/button_pause.png");
-        play = new Image("images/button_play.png");
+        pause = new Image("images/pauseBtn.png");
+        play = new Image("images/playBtn.png");
         x1 = new Image("images/button_1x-speed.png");
         x10 = new Image("images/button_10x-speed.png");
         x100 = new Image("images/button_100x-speed.png");
         printReport = new Image("images/button_print-report.png");
+        
+        // Create GUI components
+        playButton = new GuiComponent(10, 750, play);
+        x1Button = new GuiComponent(50, 750, "images/x1.png");
+        x10Button = new GuiComponent(90, 750, "images/x10.png");
+        x50Button = new GuiComponent(130, 750, "images/x50.png");
+        x100Button = new GuiComponent(170, 750, "images/x100.png");
+        printButton = new GuiComponent(950, 750, "images/print.png");
+        
+        // Highlight the 1x button since that's the default time scale
+        x1Button.getImage().setImageColor(0.7f, 0f, 0f);
+        
+        // Create event listeners for GUI components
+        playButton.setListener((int button, int x, int y, int ClickCount) -> {
+            if(paused) {
+                paused = false;
+                playButton.setImage(pause);
+            } else {
+                paused = true;
+                playButton.setImage(play);
+            }
+        });
+        
+        x1Button.setListener((int button, int x, int y, int ClickCount) -> {
+            timeSpeed = 1;
+            logicNeedUpdate = true;
+            
+            // Update button highlights
+            x1Button.getImage().setImageColor(0.7f, 0f, 0f);
+            x10Button.getImage().setImageColor(1f, 1f, 1f);
+            x100Button.getImage().setImageColor(1f, 1f, 1f);
+            x50Button.getImage().setImageColor(1f, 1f, 1f);
+        });
+        
+        x10Button.setListener((int button, int x, int y, int ClickCount) -> {
+            timeSpeed = 10;
+            logicNeedUpdate = true;
+            
+            // Update button highlights
+            x10Button.getImage().setImageColor(0.7f, 0f, 0f);
+            x1Button.getImage().setImageColor(1f, 1f, 1f);
+            x100Button.getImage().setImageColor(1f, 1f, 1f);
+            x50Button.getImage().setImageColor(1f, 1f, 1f);
+        });
+        
+        x50Button.setListener((int button, int x, int y, int ClickCount) -> {
+            timeSpeed = 50;
+            logicNeedUpdate = true;
+            
+            // Update button highlights
+            x50Button.getImage().setImageColor(0.7f, 0f, 0f);
+            x10Button.getImage().setImageColor(1f, 1f, 1f);
+            x1Button.getImage().setImageColor(1f, 1f, 1f);
+            x100Button.getImage().setImageColor(1f, 1f, 1f);
+        });
+        
+        x100Button.setListener((int button, int x, int y, int ClickCount) -> {
+            timeSpeed = 100;
+            logicNeedUpdate = true;
+            
+            // Update button highlights
+            x100Button.getImage().setImageColor(0.7f, 0f, 0f);
+            x1Button.getImage().setImageColor(1f, 1f, 1f);
+            x10Button.getImage().setImageColor(1f, 1f, 1f);
+            x50Button.getImage().setImageColor(1f, 1f, 1f);
+        });
+        
+        printButton.setListener((int button, int x, int y, int ClickCount) -> {
+            simReportGenerator.Generate(environment);
+        });
+        
+        // Add GUI components to our list
+        guiComps.add(playButton);
+        guiComps.add(x1Button);
+        guiComps.add(x10Button);
+        guiComps.add(x50Button);
+        guiComps.add(x100Button);
+        guiComps.add(printButton);
+        
+        // Set up our font
+        fontImage = new Image("images/roboto_0.tga");
+        font = new AngelCodeFont("images/roboto.fnt", fontImage);
         
         environment = new Environment();
         
@@ -81,18 +196,21 @@ public class Simulation extends BasicGameState{
         
         // ============================ UI Code ==================================
         // Draw background rect
-        g.setColor(Color.black);
+        g.setColor(cBackground);
         g.fillRect(1000, 0, 250, 750);
+        g.fillRect(0, 750, 1250, 50);
         
-        // Draw pause/play button
-        if(paused){
-            g.drawImage(play, 1000, 0);
-        } else {
-            g.drawImage(pause, 1000, 0);
-        }
+        // Draw frame rect
+        g.setLineWidth(12);
+        g.drawRoundRect(0, 0, 1000, 750, 4);
+        
+        // Draw all GUI components
+        guiComps.forEach(x -> x.draw(g));
+        
+        g.setFont(font);
         
         // Draw time
-        g.setColor(Color.white);
+        g.setColor(cText);
         g.drawString("Seconds passed: " + environment.getTime(), 1000, 75);
         
         // Draw number of each object
@@ -101,19 +219,40 @@ public class Simulation extends BasicGameState{
         g.drawString("Number of Grazers: " + environment.getNumGrazers(), 1000, 150);
         g.drawString("Number of Predators: " + environment.getNumPredators(), 1000, 175);
         
-        // Draw time controls
-        g.drawImage(x1, 1000, 250);
-        g.drawImage(x10, 1000, 305);
-        g.drawImage(x100, 1000, 360);
-        switch(timeSpeed){
-            case 1:
-                g.drawString("<-", 1155, 270);
-                break;
-            case 10:
-                g.drawString("<-", 1155, 325);
-                break;
-            case 100:
-                g.drawString("<-", 1155, 380);
+        // Draw selection info
+        
+        if(selection != null)
+        {
+            Shape baseShape = selection.getCollision();
+            float rad = baseShape.getBoundingCircleRadius();
+            
+            g.setLineWidth(2);
+            g.setColor(Color.black);
+            g.drawRect(baseShape.getMinX(), baseShape.getMinY(), baseShape.getWidth(), baseShape.getHeight());
+            
+            Class c = selection.getClass();
+            
+            g.setColor(Color.white);
+            g.drawString("Selected: " + c.getSimpleName(), 1000, 250);
+            g.drawString("Position: (" + selection.getX() + ", " + selection.getY() + ")", 1000, 275);
+            
+            // Class-specific information printed here
+            if(c == Plant.class)
+            {
+                Plant obj = (Plant)selection;
+                g.drawString("Diameter: " + obj.getDiameter(), 1000, 300);
+            }
+            else if(c == Grazer.class)
+            {
+                Grazer obj = (Grazer)selection;
+                g.drawString("Energy: " + obj.getEnergy(), 1000, 300);
+            }
+            else if(c == Predator.class)
+            {
+                Predator obj = (Predator)selection;
+                g.drawString("Energy: " + obj.getEnergy(), 1000, 300);
+                g.drawString("Genotype: " + obj.getGenotype(), 1000, 325);
+            }
         }
         
         // Draw key
@@ -126,9 +265,6 @@ public class Simulation extends BasicGameState{
         g.drawString("Predator:", 1000, 550);
         g.setColor(Color.red);
         g.fill(new Circle(1100, 560, 7, 7));
-        
-        g.drawImage(printReport, 1000, 650);
-        
     }
     
     @Override
@@ -159,32 +295,28 @@ public class Simulation extends BasicGameState{
     
     @Override
     public void mouseClicked(int button, int x, int y, int ClickCount){
+        java.util.function.Consumer<SimulationObject> selector;
         
-        if(button == Input.MOUSE_LEFT_BUTTON){
-            
-            if((x >1000 && x < 1000 + pause.getWidth()) && (y > 0 && y < 0 + pause.getHeight()) && !paused){
-                paused = true;
-            }
-            else if((x >1000 && x < 1000 + pause.getWidth()) && (y > 0 && y < 0 + pause.getHeight()) && paused){
-                paused = false;
-            }
-            else if((x > 1000 && x < 1000 + x1.getWidth()) && (y > 250 && y < 250 + x1.getHeight())){
-                timeSpeed = 1;
-                logicNeedUpdate = true;
-            }
-            else if((x > 1000 && x < 1000 + x10.getWidth()) && (y > 305 && y < 305 + x10.getHeight())){
-                timeSpeed = 10;
-                logicNeedUpdate = true;
-            }
-            else if((x > 1000 && x < 1000 + x100.getWidth()) && (y > 360 && y < 360 + x100.getHeight())){
-                timeSpeed = 100;
-                logicNeedUpdate = true;
-            }
-            else if((x > 1000 && x < 1000 + printReport.getWidth()) && (y > 650 && y < 650 + printReport.getHeight())){
-                simReportGenerator.Generate(environment);
-            }
-            
-        }
+        // Check all our GUI components to see if they've been clicked
+        guiComps.forEach(comp -> {
+            if(comp.pointCollide(x, y)) comp.click(button, x, y, ClickCount);
+        });
         
+        // Function to check if we're clicking a creature
+        selector = creature -> {
+            if(creature.getCollision().contains((float)x, (float)y)) selection = creature;
+        };
+        
+        // Clear out selection so we can deselect by clicking empty space,
+        // but save it in case we've clicked somewhere that's outside the simulation region.
+        SimulationObject s = selection;
+        selection = null;
+        
+        environment.getPlants().forEach(selector);
+        environment.getGrazers().forEach(selector);
+        environment.getPredators().forEach(selector);
+        
+        // Restore selection if we clicked over GUI regions
+        if(selection == null && (x >= 1000 || y >= 750)) selection = s; 
     }
 }

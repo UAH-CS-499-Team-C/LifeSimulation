@@ -25,6 +25,7 @@ public class LifeSimulation extends StateBasedGame{
     
     // Testing Code
     static int bonusWidth = 250;
+    static int bonusHeight = 50;
     // End Testing Code
     
     public LifeSimulation(String gameName, String s){
@@ -44,6 +45,7 @@ public class LifeSimulation extends StateBasedGame{
         //this.getState(gameState).init(gc, this);
         //this.enterState(gameState);
     }
+    
     
     /**
      * @param args the command line arguments
@@ -68,14 +70,13 @@ public class LifeSimulation extends StateBasedGame{
         
         
         
-        
         // Slick Game code
         try {
             // Create an app container
             AppGameContainer appgc = new AppGameContainer(new LifeSimulation(gameName, filePath));
             
             // Set the width/height to values from parser
-            appgc.setDisplayMode((int)lsdp.getWorldWidth() + bonusWidth, (int)lsdp.getWorldHeight(), false);
+            appgc.setDisplayMode((int)lsdp.getWorldWidth() + bonusWidth, (int)lsdp.getWorldHeight() + bonusHeight, false);
             
             appgc.setShowFPS(false); // Turn off FPS counter
             appgc.setMaximumLogicUpdateInterval(Integer.MAX_VALUE); // Max. 1000 miliseconds can pass

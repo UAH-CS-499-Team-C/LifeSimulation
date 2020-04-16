@@ -46,9 +46,15 @@ public class Environment {
     private ArrayList<Plant> plantsToRemove;
     
     /**
+
      * Grazers to be added to array
      */
     private ArrayList<Grazer> grazersToAdd;
+    
+    /**
+     * Grazers to be deleted
+     */
+    private ArrayList<Grazer> deadGrazers = new ArrayList<>();
     
     /**
      * Grazers to be removed from array
@@ -71,6 +77,7 @@ public class Environment {
     private Random r;
     
     
+    private LifeSimDataParser lsdp;
 
     /**
      * Constructor
@@ -80,13 +87,13 @@ public class Environment {
         plants = new ArrayList<>();
         grazers = new ArrayList<>();
         predators = new ArrayList<>();
-        
         plantsToAdd = new ArrayList<>();
         plantsToRemove = new ArrayList<>();
         grazersToAdd = new ArrayList<>();
         grazersToRemove = new ArrayList<>();
         predatorsToAdd = new ArrayList<>();
         predatorsToRemove = new ArrayList<>();
+
         
         LoadData();
         
@@ -175,6 +182,16 @@ public class Environment {
         predators.forEach(x -> x.Update(this));
         
         plants.addAll(plantsToAdd);
+
+        grazers.addAll(grazersToAdd);
+        
+        plantsToAdd.clear();
+        grazersToAdd.clear();
+        
+        if(!deadGrazers.isEmpty()){
+            deleteDeadGrazers();
+        }
+
         plants.removeAll(plantsToRemove);
         grazers.addAll(grazersToAdd);
         grazers.removeAll(grazersToRemove);
@@ -187,6 +204,7 @@ public class Environment {
         grazersToRemove.clear();
         predatorsToAdd.clear();
         predatorsToRemove.clear();
+
         
         t++;
     }
@@ -431,19 +449,21 @@ public class Environment {
     
     /**
      * 
-     * @param p Plant to be removed
+     * @param   Grazer to be added 
      */
-    public void removePlant(Plant p) {
-        plantsToRemove.add(p);
-    }
-    
-    /**
-     * 
-     * @param g Grazer to be added
-     */
-    public void addGrazer(Grazer g) {
+    public void addGrazer(Grazer g){
         grazersToAdd.add(g);
     }
+    
+    public void addDeadGrazer(Grazer g){
+        deadGrazers.add(g);
+    }
+    
+    private void deleteDeadGrazers(){
+        deadGrazers.forEach(g -> grazers.remove(g));
+    }
+    
+    
     
     /**
      * 
@@ -477,5 +497,13 @@ public class Environment {
         return t;
     }
     
+    // get the world width
+    public double getWidth(){
+        return lsdp.getInstance().getWorldWidth();
+    }
     
+    // get the world height
+    public double getHeight(){
+        return lsdp.getInstance().getWorldHeight();
+    }
 }
