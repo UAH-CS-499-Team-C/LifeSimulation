@@ -64,6 +64,7 @@ public class Predator extends SimulationObject implements LivingCreature{
     public boolean isMating;
     public boolean isBearing;
     public int tBearing;
+    public int tBirth;
 
     /**
      * Constructor for predator class
@@ -127,6 +128,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         isMating = false;
         isBearing = false;
         tBearing = 0;
+        tBirth = 0;
     }
 
     /**
@@ -199,8 +201,11 @@ public class Predator extends SimulationObject implements LivingCreature{
         // Out of those targets, select the closest as the target
         selectTarget();
         
+        // Update time since birth
+        tBirth++;
+        
         // Move towards the current taget or idle
-        if(currentTarget == null || (isBearing && tBearing<=20)) {
+        if(currentTarget == null || (isBearing && tBearing<=20) || tBirth <= 20) {
             idle(e);
         }
         else {
