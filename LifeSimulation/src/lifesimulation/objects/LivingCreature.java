@@ -5,7 +5,7 @@
  */
 package lifesimulation.objects;
 
-import java.util.ArrayList;
+import lifesimulation.utilities.Environment;
 
 /**
  * Interface that all living, breathing, and moving creatures must implement
@@ -14,9 +14,7 @@ import java.util.ArrayList;
 public interface LivingCreature{
     /**
      * 
-     * @param o All obstacle objects
-     * @param g All grazer object
-     * @param p All predator objects
+     * @param e 
      */
-    public void Update(ArrayList<Obstacle> o, ArrayList<Grazer> g, ArrayList<Predator> p);
+    public void Update(Environment e);
 }
