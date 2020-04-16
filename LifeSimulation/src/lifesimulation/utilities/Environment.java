@@ -469,6 +469,10 @@ public class Environment {
         predatorsToRemove.add(p);
     }
     
+    /**
+     * Gets the simulation time
+     * @return Current simulation time
+     */
     public int getTime() {
         return t;
     }

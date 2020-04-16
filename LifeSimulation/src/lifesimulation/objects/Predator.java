@@ -395,7 +395,7 @@ public class Predator extends SimulationObject implements LivingCreature{
     
     /**
      * Move towards the objects current target
-     * @param e 
+     * @param e The simulation environment variable
      */
     private void moveTowards(float targetX, float targetY){
         int xDelta = 0;
@@ -445,6 +445,10 @@ public class Predator extends SimulationObject implements LivingCreature{
         this.collision.setCenterY(y);
     }
     
+    /**
+     * Gives birth to the proper number of children with the correct genotype
+     * @param e The simulation environment variable
+     */
     private void GiveBirth(Environment e)
     {
         int noChildren = r.nextInt(maxOffspring) + 1;
@@ -477,6 +481,10 @@ public class Predator extends SimulationObject implements LivingCreature{
         isBearing = false;
     }
     
+    /**
+     * Find all possible mating targets
+     * @param e The simulation environment variable
+     */
     private void findMate(Environment e){
         // Clear the possible targets
         allTargets.clear();
