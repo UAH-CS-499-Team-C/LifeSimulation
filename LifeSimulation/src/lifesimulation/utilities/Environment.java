@@ -6,6 +6,7 @@
 package lifesimulation.utilities;
 
 import java.util.ArrayList;
+import java.util.Random;
 import lifesimulation.objects.Grazer;
 import lifesimulation.objects.Obstacle;
 import lifesimulation.objects.Plant;
@@ -72,6 +73,10 @@ public class Environment {
     
     private int t;
     
+    // Random used during predator fights
+    private Random r;
+    
+    
     private LifeSimDataParser lsdp;
 
     /**
@@ -93,6 +98,8 @@ public class Environment {
         LoadData();
         
         t = 0;
+        
+        r = new Random();
     }
     
     /**
@@ -200,6 +207,172 @@ public class Environment {
 
         
         t++;
+    }
+    
+    /**
+     * Calculates what happens when a predator fights a grazer
+     * @param p1 One of the predators
+     * @param p2 The other predator
+     */
+    public void PredatorFight(Predator p1, Predator p2)
+    {
+        // Set both predators to fighting so this will not be called twice
+        p1.isFighting = true;
+        p2.isFighting = true;
+        
+        // Get strength value from genotype
+        String s1 = p1.getGenotype().substring(3, 5);
+        String s2 = p2.getGenotype().substring(3, 5);
+        
+        // ===== Case 1, both strengths are the same =====
+        if(s1.equals(s2))
+        {
+            // Should they fight?
+            if(r.nextBoolean())
+            {
+                // Should p1 win?
+                if(r.nextBoolean())
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+            else // Not fight
+            {
+                p1.ignoreTargets.add(p2);
+                p2.ignoreTargets.add(p1);
+            }
+        }
+        
+        // ===== Case 2, p1 is SS =====
+        else if(s1.equals("SS"))
+        {
+            if(s2.equals("Ss"))
+            {
+                if(r.nextInt(100) < 75)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+            else
+            {
+                if(r.nextInt(100) < 95)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+        }
+        else if(s1.equals("Ss"))
+        {
+            if(s2.equals("SS"))
+            {
+                if(r.nextInt(100) < 25)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+            else
+            {
+                if(r.nextInt(100) < 75)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+        }
+        else
+        {
+            if(s2.equals("SS"))
+            {
+                if(r.nextInt(100) < 5)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+            else
+            {
+                if(r.nextInt(100) < 25)
+                {
+                    predatorsToRemove.add(p2);
+                    p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                }
+                else
+                {
+                    predatorsToRemove.add(p1);
+                    p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                }
+            }
+        }
+    }
+    
+    /**
+     * Calculates what happens when a predator fights a grazer
+     * @param p The predator
+     * @param g The grazer
+     */
+    public void PredatorFight(Predator p, Grazer g)
+    {
+        // Find the predator's strength
+        String s = p.getGenotype().substring(3, 5);
+        
+        if(s.equals("SS"))
+        {
+            if(r.nextInt(100) < 95)
+            {
+                grazersToRemove.add(g);
+                p.setEnergy(p.getEnergy() + (int)(0.9 * g.getEnergy()));
+            }
+        }
+        else if(s.equals("Ss"))
+        {
+            if(r.nextInt(100) < 75)
+            {
+                grazersToRemove.add(g);
+                p.setEnergy(p.getEnergy() + (int)(0.9 * g.getEnergy()));
+            }
+        }
+        else
+        {
+            if(r.nextInt(100) < 50)
+            {
+                grazersToRemove.add(g);
+                p.setEnergy(p.getEnergy() + (int)(0.9 * g.getEnergy()));
+            }
+        }
     }
     
     /**
@@ -316,6 +489,10 @@ public class Environment {
         predatorsToRemove.add(p);
     }
     
+    /**
+     * Gets the simulation time
+     * @return Current simulation time
+     */
     public int getTime() {
         return t;
     }

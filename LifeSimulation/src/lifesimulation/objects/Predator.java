@@ -6,8 +6,10 @@
 package lifesimulation.objects;
 
 import java.awt.geom.Point2D;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import lifesimulation.utilities.Environment;
@@ -38,6 +40,7 @@ public class Predator extends SimulationObject implements LivingCreature{
     private HashMap<Double, SimulationObject> allTargets;
     private SimulationObject currentTarget;
     private Line line;
+    public HashSet<SimulationObject> ignoreTargets;
     
     // ===== Proper movement variables =====
     private float properMaxSpeed;
@@ -46,12 +49,22 @@ public class Predator extends SimulationObject implements LivingCreature{
     private int timeCoolingDown;
     private boolean coolingDown;
     
+    // ===== Predator fighting variable =====
+    public boolean isFighting;
+    
     // ===== Used to give a smartish idle =====
     private final Random r;
     private float idleX, idleY;
     
     // ===== Used to see how much his has moved since last update =====
     private float lastUpdateX, lastUpdateY;
+    
+    // ===== Birth variables =====
+    public String mateGenotype;
+    public boolean isMating;
+    public boolean isBearing;
+    public int tBearing;
+    public int tBirth;
 
     /**
      * Constructor for predator class
@@ -103,9 +116,19 @@ public class Predator extends SimulationObject implements LivingCreature{
         // Set target finding and idle variables
         allTargets = new HashMap<>();
         currentTarget = null;
+        ignoreTargets = new HashSet<>();
+        
         r = new Random();
+        
         idleX = r.nextInt(1001);
         idleY = r.nextInt(751);
+        
+        isFighting = false;
+        
+        isMating = false;
+        isBearing = false;
+        tBearing = 0;
+        tBirth = 0;
     }
 
     /**
@@ -158,15 +181,31 @@ public class Predator extends SimulationObject implements LivingCreature{
         if(coolingDown){ timeCoolingDown++; }
         else{ timeRunning++; }
         
+        // Is mating the thing that should be done
+        if(!isMating && !isBearing && EU >= energyToReProduce)
+        {
+            isMating = true;
+        }
+        
         
         // Find all valid targets
-        findTargets(e);
+        if(isMating)
+        {
+            findMate(e);
+        }
+        else
+        {
+            findTargets(e);
+        }
         
         // Out of those targets, select the closest as the target
         selectTarget();
         
+        // Update time since birth
+        tBirth++;
+        
         // Move towards the current taget or idle
-        if(currentTarget == null) {
+        if(currentTarget == null || (isBearing && tBearing<=20) || tBirth <= 20) {
             idle(e);
         }
         else {
@@ -174,24 +213,40 @@ public class Predator extends SimulationObject implements LivingCreature{
         }
         
         
-        // Testing eat code
-        // TODO: Fix this code
+        // Eat / mate code
         if(currentTarget != null){
             if(x == currentTarget.getX() && y == currentTarget.getY()){
                 if(currentTarget.getClass() == Grazer.class){
-                    
-                    // Get their energy
-                    EU += 0.9f * ((Grazer)currentTarget).getEnergy();
-                    e.removeGrazer((Grazer)currentTarget);
-                    currentTarget = null;
+                    e.PredatorFight(this, (Grazer)currentTarget);
                 }
                 else{
-                    EU += 0.9f * ((Predator)currentTarget).getEnergy();
-                    e.removePredator((Predator)currentTarget);
-                    currentTarget = null;
+                    if(!isMating && !isFighting)
+                    {
+                        e.PredatorFight(this, (Predator)currentTarget);
+                    }
+                    else if(isMating)
+                    {
+                        // ==== This is the mating process =====
+                        this.mateGenotype = ((Predator)currentTarget).getGenotype();
+                        this.isMating = false;
+                        this.isBearing = true;
+                        this.ignoreTargets.add(currentTarget);
+                    }
                 }
             }
         }
+        
+        // Birth code
+        if(isBearing)
+        {
+            tBearing++;
+            if(tBearing >= (gestaion * 24 * 60 * 60))
+            {
+                GiveBirth(e);
+                tBearing = 0;
+            }
+        }
+        
         
         // Properly update energy usage
         double dist = Point2D.distance(x, y, lastUpdateX, lastUpdateY);
@@ -203,6 +258,9 @@ public class Predator extends SimulationObject implements LivingCreature{
         if(EU <= 0) {
             e.removePredator(this);
         }
+        
+        // After every update, the predator should not be fighting
+        isFighting = false;
     }
     
     /**
@@ -211,6 +269,14 @@ public class Predator extends SimulationObject implements LivingCreature{
      */
     public int getEnergy() {
         return EU;
+    }
+    
+    /**
+     * Set the predator's energy level
+     * @param e energy
+     */
+    public void setEnergy(int e) {
+        EU = e;
     }
     
     /**
@@ -231,35 +297,12 @@ public class Predator extends SimulationObject implements LivingCreature{
         
         // For all grazers
         e.getGrazers().forEach(g -> {
-            // If within the visibile distance
-            if(Point2D.distance(x, y, g.getX(), g.getY()) <= 150) {
-                // Make the tmp line of sight from pred to possbile target
-                line = new Line(x, y, g.getX(), g.getY());
-                // Save blocked flag
-                boolean flag = true;
-                
-                // See if line of sight blocked by an obstacle
-                for(int i = 0; i < e.getNumObstacles(); i++) {
-                    if(line.intersects(e.getObstacles().get(i).collision)){
-                        flag = false;
-                        break;
-                    }
-                }
-                line = null;
-                
-                // If not blocked by anything, add to possible targets
-                if(flag || Point2D.distance(x, y, g.getX(), g.getY()) <= 25){ allTargets.put(Point2D.distance(x, y, g.getX(), g.getY()), g); }
-            }
-        });
-        
-        // If aggressive
-        if(genotype.charAt(0) == 'A'){
-            // For all predators
-            e.getPredators().forEach(p -> {
+            if(!ignoreTargets.contains(g))
+            {
                 // If within the visibile distance
-                if(p != this && Point2D.distance(x, y, p.getX(), p.getY()) <= 150) {
+                if(Point2D.distance(x, y, g.getX(), g.getY()) <= 150) {
                     // Make the tmp line of sight from pred to possbile target
-                    line = new Line(x, y, p.getX(), p.getY());
+                    line = new Line(x, y, g.getX(), g.getY());
                     // Save blocked flag
                     boolean flag = true;
 
@@ -270,11 +313,40 @@ public class Predator extends SimulationObject implements LivingCreature{
                             break;
                         }
                     }
-                    
                     line = null;
 
                     // If not blocked by anything, add to possible targets
-                    if(flag || Point2D.distance(x, y, p.getX(), p.getY()) <= 25){ allTargets.put(Point2D.distance(x, y, p.getX(), p.getY()), p); }
+                    if(flag || Point2D.distance(x, y, g.getX(), g.getY()) <= 25){ allTargets.put(Point2D.distance(x, y, g.getX(), g.getY()), g); }
+                }
+            }
+        });
+        
+        // If aggressive
+        if(genotype.charAt(0) == 'A'){
+            // For all predators
+            e.getPredators().forEach(p -> {
+                if(!ignoreTargets.contains(p))
+                {
+                    // If within the visibile distance
+                    if(p != this && Point2D.distance(x, y, p.getX(), p.getY()) <= 150) {
+                        // Make the tmp line of sight from pred to possbile target
+                        line = new Line(x, y, p.getX(), p.getY());
+                        // Save blocked flag
+                        boolean flag = true;
+
+                        // See if line of sight blocked by an obstacle
+                        for(int i = 0; i < e.getNumObstacles(); i++) {
+                            if(line.intersects(e.getObstacles().get(i).collision)){
+                                flag = false;
+                                break;
+                            }
+                        }
+
+                        line = null;
+
+                        // If not blocked by anything, add to possible targets
+                        if(flag || Point2D.distance(x, y, p.getX(), p.getY()) <= 25){ allTargets.put(Point2D.distance(x, y, p.getX(), p.getY()), p); }
+                    }
                 }
             });
         }
@@ -323,7 +395,7 @@ public class Predator extends SimulationObject implements LivingCreature{
     
     /**
      * Move towards the objects current target
-     * @param e 
+     * @param e The simulation environment variable
      */
     private void moveTowards(float targetX, float targetY){
         int xDelta = 0;
@@ -371,6 +443,78 @@ public class Predator extends SimulationObject implements LivingCreature{
         // Move the actual shape
         this.collision.setCenterX(x);
         this.collision.setCenterY(y);
+    }
+    
+    /**
+     * Gives birth to the proper number of children with the correct genotype
+     * @param e The simulation environment variable
+     */
+    private void GiveBirth(Environment e)
+    {
+        int noChildren = r.nextInt(maxOffspring) + 1;
+        for(int i = 0; i < noChildren; i++)
+        {
+            // Figure out aggression of child
+            char tempArray1[] = {this.genotype.charAt(r.nextInt(2)), mateGenotype.charAt(r.nextInt(2))};
+            Arrays.sort(tempArray1);
+            String a = new String(tempArray1);
+
+            // Figure out strength of child
+            char tempArray2[] = {this.genotype.charAt(r.nextInt(2)+3), mateGenotype.charAt(r.nextInt(2)+3)};
+            Arrays.sort(tempArray2);
+            String s = new String(tempArray2);
+            
+            // Figure out speed of child
+            char tempArray3[] = {this.genotype.charAt(r.nextInt(2)+6), mateGenotype.charAt(r.nextInt(2)+6)};
+            Arrays.sort(tempArray3);
+            String f = new String(tempArray3);
+            
+            String childGeneString = a + " " + s + " " + f;
+            Predator myChild = new Predator(x, y, EU, childGeneString, maxSpeedHOD, maxSpeedHED, maxSpeedHOR, maintainSpeed, energyOutput, energyToReProduce, maxOffspring, gestaion, offspringEnergy);
+            myChild.ignoreTargets.add(this);
+            ignoreTargets.add(this);
+            e.addPredator(myChild);
+        }
+     
+        
+        // Turn off the mating boolean
+        isBearing = false;
+    }
+    
+    /**
+     * Find all possible mating targets
+     * @param e The simulation environment variable
+     */
+    private void findMate(Environment e){
+        // Clear the possible targets
+        allTargets.clear();
+        
+        // For all predators
+        e.getPredators().forEach(p -> {
+            if(!ignoreTargets.contains(p))
+            {
+                // If within the visibile distance
+                if(p != this && Point2D.distance(x, y, p.getX(), p.getY()) <= 150) {
+                    // Make the tmp line of sight from pred to possbile target
+                    line = new Line(x, y, p.getX(), p.getY());
+                    // Save blocked flag
+                    boolean flag = true;
+
+                    // See if line of sight blocked by an obstacle
+                    for(int i = 0; i < e.getNumObstacles(); i++) {
+                        if(line.intersects(e.getObstacles().get(i).collision)){
+                            flag = false;
+                            break;
+                        }
+                    }
+
+                    line = null;
+
+                    // If not blocked by anything, add to possible targets
+                    if(flag || Point2D.distance(x, y, p.getX(), p.getY()) <= 25){ allTargets.put(Point2D.distance(x, y, p.getX(), p.getY()), p); }
+                }
+            }
+        });
     }
     
 }
