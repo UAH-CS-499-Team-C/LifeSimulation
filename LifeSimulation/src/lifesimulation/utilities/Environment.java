@@ -39,9 +39,19 @@ public class Environment {
      */
     private ArrayList<Plant> plantsToAdd;
     
+    /**
+     * Grazers to be added to array
+     */
+    private ArrayList<Grazer> grazersToAdd;
+    
+    /**
+     * Grazers to be deleted
+     */
+    private ArrayList<Grazer> deadGrazers = new ArrayList<>();
+    
     private int t;
     
-    
+    private LifeSimDataParser lsdp;
 
     /**
      * Constructor
@@ -53,6 +63,7 @@ public class Environment {
         predators = new ArrayList<>();
         
         plantsToAdd = new ArrayList<>();
+        grazersToAdd = new ArrayList<>();
         
         LoadData();
         
@@ -139,8 +150,14 @@ public class Environment {
         predators.forEach(x -> x.Update(this));
         
         plants.addAll(plantsToAdd);
+        grazers.addAll(grazersToAdd);
         
         plantsToAdd.clear();
+        grazersToAdd.clear();
+        
+        if(!deadGrazers.isEmpty()){
+            deleteDeadGrazers();
+        }
         
         t++;
     }
@@ -217,9 +234,33 @@ public class Environment {
         plantsToAdd.add(p);
     }
     
+    /**
+     * 
+     * @param   Grazer to be added 
+     */
+    public void addGrazer(Grazer g){
+        grazersToAdd.add(g);
+    }
+    
+    public void addDeadGrazer(Grazer g){
+        deadGrazers.add(g);
+    }
+    
+    private void deleteDeadGrazers(){
+        deadGrazers.forEach(g -> grazers.remove(g));
+    }
+    
     public int getTime() {
         return t;
     }
     
+    // get the world width
+    public double getWidth(){
+        return lsdp.getInstance().getWorldWidth();
+    }
     
+    // get the world height
+    public double getHeight(){
+        return lsdp.getInstance().getWorldHeight();
+    }
 }

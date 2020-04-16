@@ -54,6 +54,16 @@ public class Plant extends SimulationObject implements LivingCreature {
     private final float seedViability;
     
     /**
+     * Determines if the plant is being eaten
+     */
+    private boolean beingEaten = false;
+    
+    /**
+     * Determines if the plant has been eaten has needs to be deleted
+     */
+    private boolean toBeDeleted = false;
+    
+    /**
      * Used to keep track of how much time has passed since last action
      */
     private int secondsElapsed;
@@ -103,12 +113,24 @@ public class Plant extends SimulationObject implements LivingCreature {
         }
         
         // Growth
-        if(diameter < maxSize) {
+        if(diameter < maxSize && beingEaten == false) {
             diameter += growthRate * maxSize;
             if(diameter > maxSize) {
                 diameter = maxSize;
             }
             collision = new Circle(x, y, diameter/2);
+        }
+        
+        // Reduction from being eaten
+        else if(diameter <= maxSize && beingEaten == true){
+            
+            if(diameter - growthRate > 0){
+                diameter -= growthRate * maxSize;
+            }
+            else{
+                toBeDeleted = true;
+            }
+            
         }
 
         // Wait for reproduction
@@ -165,6 +187,20 @@ public class Plant extends SimulationObject implements LivingCreature {
                 // Add the new plant
                 e.addPlant(new Plant(tmpX, tmpY, 0.01f, growthRate, maxSize, maxSeedNumber, maxSeedCastDistance, seedViability));
             }
+        }
+    }
+    
+    // lets the plant know that it's being eaten
+    public void isBeingEaten(){
+        beingEaten = true;
+    }
+    
+    public boolean needsDeleting(){
+        if(toBeDeleted == true){
+            return true;
+        }
+        else{
+            return false;
         }
     }
     

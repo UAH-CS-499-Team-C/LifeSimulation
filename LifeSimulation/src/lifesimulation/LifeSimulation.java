@@ -70,7 +70,6 @@ public class LifeSimulation extends StateBasedGame{
         
         
         
-        
         // Slick Game code
         try {
             // Create an app container
