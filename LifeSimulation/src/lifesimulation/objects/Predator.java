@@ -34,13 +34,24 @@ public class Predator extends SimulationObject implements LivingCreature{
     private float gestaion;
     private float offspringEnergy;
     
+    // ===== Variables used for target finding =====
     private HashMap<Double, SimulationObject> allTargets;
     private SimulationObject currentTarget;
+    private Line line;
     
-    // Variables used to give a smartish idle
-    private int lastXDelta;
-    private int lastYDelta;
+    // ===== Proper movement variables =====
+    private float properMaxSpeed;
+    private float currentMaxSpeed;
+    private int timeRunning;
+    private int timeCoolingDown;
+    private boolean coolingDown;
+    
+    // ===== Used to give a smartish idle =====
     private final Random r;
+    private float idleX, idleY;
+    
+    // ===== Used to see how much his has moved since last update =====
+    private float lastUpdateX, lastUpdateY;
 
     /**
      * Constructor for predator class
@@ -73,12 +84,28 @@ public class Predator extends SimulationObject implements LivingCreature{
         this.offspringEnergy = offspringEnergy;
         this.collision = new Circle(x, y, 7);
         
+        // Set speed variables
+        if(this.genotype.contains("FF")) {
+            // Use Homozygous Dominant speed
+            properMaxSpeed = this.maxSpeedHOD;
+        } else if(this.genotype.contains("Ff")) {
+            // Use Heterozygous Dominant speed
+            properMaxSpeed = this.maxSpeedHED;
+        } else {
+            // Use Homozygous Recessive speed
+            properMaxSpeed = this.maxSpeedHOR;
+        }
+        currentMaxSpeed = properMaxSpeed;
+        timeRunning = 0;
+        timeCoolingDown = 0;
+        coolingDown = false;
+        
+        // Set target finding and idle variables
         allTargets = new HashMap<>();
         currentTarget = null;
-        
-        lastXDelta = 0;
-        lastYDelta = 0;
         r = new Random();
+        idleX = r.nextInt(1001);
+        idleY = r.nextInt(751);
     }
 
     /**
@@ -113,27 +140,68 @@ public class Predator extends SimulationObject implements LivingCreature{
      */
     @Override
     public void Update(Environment e) {
+        // Distance calculation stuff
+        lastUpdateX = x;
+        lastUpdateY = y;
+        
+        // Calculate movespeed
+        if(timeRunning >= maintainSpeed && !coolingDown){
+            coolingDown = true;
+            timeRunning = 0;
+            currentMaxSpeed = 1;
+        } else if (timeCoolingDown >= 15){
+            coolingDown = false;
+            timeCoolingDown = 0;
+            currentMaxSpeed = properMaxSpeed;
+        }
+        
+        if(coolingDown){ timeCoolingDown++; }
+        else{ timeRunning++; }
+        
+        
         // Find all valid targets
         findTargets(e);
         
         // Out of those targets, select the closest as the target
         selectTarget();
         
-        // Move towards the current taget
-        moveTowards();
+        // Move towards the current taget or idle
+        if(currentTarget == null) {
+            idle(e);
+        }
+        else {
+            moveTowards(currentTarget.getX(), currentTarget.getY());
+        }
         
-        // Move the actual shape
-        this.collision.setCenterX(x);
-        this.collision.setCenterY(y);
         
         // Testing eat code
+        // TODO: Fix this code
         if(currentTarget != null){
             if(x == currentTarget.getX() && y == currentTarget.getY()){
                 if(currentTarget.getClass() == Grazer.class){
-                    e.getGrazers().remove((Grazer)currentTarget);
+                    
+                    // Get their energy
+                    EU += 0.9f * ((Grazer)currentTarget).getEnergy();
+                    e.removeGrazer((Grazer)currentTarget);
+                    currentTarget = null;
+                }
+                else{
+                    EU += 0.9f * ((Predator)currentTarget).getEnergy();
+                    e.removePredator((Predator)currentTarget);
                     currentTarget = null;
                 }
             }
+        }
+        
+        // Properly update energy usage
+        double dist = Point2D.distance(x, y, lastUpdateX, lastUpdateY);
+        // Delta energy is equal to
+        // DU * EU/DU
+        EU -= dist * (energyOutput / 5);
+        
+        // Delete self if no energy
+        if(EU <= 0) {
+            e.removePredator(this);
         }
     }
     
@@ -166,20 +234,21 @@ public class Predator extends SimulationObject implements LivingCreature{
             // If within the visibile distance
             if(Point2D.distance(x, y, g.getX(), g.getY()) <= 150) {
                 // Make the tmp line of sight from pred to possbile target
-                Line tmp = new Line(x, y, g.getX(), g.getY());
+                line = new Line(x, y, g.getX(), g.getY());
                 // Save blocked flag
                 boolean flag = true;
                 
                 // See if line of sight blocked by an obstacle
                 for(int i = 0; i < e.getNumObstacles(); i++) {
-                    if(tmp.intersects(e.getObstacles().get(i).collision)){
+                    if(line.intersects(e.getObstacles().get(i).collision)){
                         flag = false;
                         break;
                     }
                 }
+                line = null;
                 
                 // If not blocked by anything, add to possible targets
-                if(flag){ allTargets.put(Point2D.distance(x, y, g.getX(), g.getY()), g); }
+                if(flag || Point2D.distance(x, y, g.getX(), g.getY()) <= 25){ allTargets.put(Point2D.distance(x, y, g.getX(), g.getY()), g); }
             }
         });
         
@@ -190,20 +259,22 @@ public class Predator extends SimulationObject implements LivingCreature{
                 // If within the visibile distance
                 if(p != this && Point2D.distance(x, y, p.getX(), p.getY()) <= 150) {
                     // Make the tmp line of sight from pred to possbile target
-                    Line tmp = new Line(x, y, p.getX(), p.getY());
+                    line = new Line(x, y, p.getX(), p.getY());
                     // Save blocked flag
                     boolean flag = true;
 
                     // See if line of sight blocked by an obstacle
                     for(int i = 0; i < e.getNumObstacles(); i++) {
-                        if(tmp.intersects(e.getObstacles().get(i).collision)){
+                        if(line.intersects(e.getObstacles().get(i).collision)){
                             flag = false;
                             break;
                         }
                     }
+                    
+                    line = null;
 
                     // If not blocked by anything, add to possible targets
-                    if(flag){ allTargets.put(Point2D.distance(x, y, p.getX(), p.getY()), p); }
+                    if(flag || Point2D.distance(x, y, p.getX(), p.getY()) <= 25){ allTargets.put(Point2D.distance(x, y, p.getX(), p.getY()), p); }
                 }
             });
         }
@@ -223,80 +294,83 @@ public class Predator extends SimulationObject implements LivingCreature{
     }
     
     /**
+     * Semi-random movement if there is not target
+     */
+    private void idle(Environment e) {
+        float prevX = x;
+        float prevY = y;
+        
+        moveTowards(idleX, idleY);
+        
+        boolean flag = false;
+        
+        for(int i = 0; i < e.getNumObstacles(); i++) {
+            if(collision.intersects(e.getObstacles().get(i).collision)){
+                flag = true;
+                x = prevX;
+                y = prevY;
+                this.collision.setCenterX(x);
+                this.collision.setCenterY(y);
+                break;
+            }
+        }
+        
+        if((x==idleX && y==idleY) || flag){
+            idleX = r.nextInt(1001);
+            idleY = r.nextInt(751);
+        }
+    }
+    
+    /**
      * Move towards the objects current target
      * @param e 
      */
-    private void moveTowards(){
+    private void moveTowards(float targetX, float targetY){
         int xDelta = 0;
         int yDelta = 0;
-        
-        // If no target, move semi-randomly
-        if(currentTarget == null) {
-            int coin = r.nextInt(100) + 1;
-            // Only 20% chance to change
-            if(coin > 80){
-                coin = r.nextInt(3);
-                switch(coin){
-                    case 0:
-                        lastXDelta = -1 * lastXDelta;
-                        break;
-                    case 1:
-                        lastYDelta = -1 * lastYDelta;
-                        break;
-                    case 2:
-                        lastXDelta = -1 * lastXDelta;
-                        lastYDelta = -1 * lastYDelta;
-                }
+        // X direction
+        if(x < targetX){
+            if(targetX - x < currentMaxSpeed) {
+                xDelta += targetX - x;
             }
-            x += lastXDelta * maintainSpeed;
-            y += lastYDelta * maintainSpeed;
-        }
-        
-        // If there is a target
-        else {
-            // X direction
-            if(x < currentTarget.getX()){
-                if(currentTarget.getX() - x < maintainSpeed) {
-                    xDelta += currentTarget.getX() - x;
-                }
-                else {
-                    xDelta += maintainSpeed;
-                }
-                lastXDelta = 1;
-            }
-            else if(x > currentTarget.getX()) {
-                if(x - currentTarget.getX() < maintainSpeed) {
-                    xDelta -= x - currentTarget.getX();
-                }
-                else {
-                    xDelta -= maintainSpeed;
-                }
-                lastXDelta = -1;
-            }
-            
-            // Y direction
-            if(y < currentTarget.getY()){
-                if(currentTarget.getY() - y < maintainSpeed) {
-                    yDelta += currentTarget.getY() - y;
-                }
-                else {
-                    yDelta += maintainSpeed;
-                }
-                lastYDelta = 1;
-            }
-            else if(y > currentTarget.getY()) {
-                if(y - currentTarget.getY() < maintainSpeed) {
-                    yDelta -= y - currentTarget.getY();
-                }
-                else {
-                    yDelta -= maintainSpeed;
-                }
-                lastYDelta = -1;
+            else {
+                xDelta += currentMaxSpeed;
             }
         }
-        
+        else if(x > targetX) {
+            if(x - targetX < currentMaxSpeed) {
+                xDelta -= x - targetX;
+            }
+            else {
+                xDelta -= currentMaxSpeed;
+            }
+        }
+
+        // Y direction
+        if(y < targetY){
+            if(targetY - y < currentMaxSpeed) {
+                yDelta += targetY - y;
+            }
+            else {
+                yDelta += currentMaxSpeed;
+            }
+        }
+        else if(y > targetY) {
+            if(y - targetY < currentMaxSpeed) {
+                yDelta -= y - targetY;
+            }
+            else {
+                yDelta -= currentMaxSpeed;
+            }
+        }
         x += xDelta;
+        if(x > 1000){x = 1000;} else if(x < 0) { x = 0;}
         y += yDelta;
+        if(y > 750){y = 750;} else if(y < 0) {y = 0;}
+        
+        // Move the actual shape
+        this.collision.setCenterX(x);
+        this.collision.setCenterY(y);
     }
     
 }

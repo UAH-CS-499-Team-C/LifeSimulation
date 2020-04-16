@@ -40,6 +40,12 @@ public class Environment {
     private ArrayList<Plant> plantsToAdd;
     
     /**
+     * Plants to be removed from array
+     */
+    private ArrayList<Plant> plantsToRemove;
+    
+    /**
+
      * Grazers to be added to array
      */
     private ArrayList<Grazer> grazersToAdd;
@@ -48,6 +54,21 @@ public class Environment {
      * Grazers to be deleted
      */
     private ArrayList<Grazer> deadGrazers = new ArrayList<>();
+    
+    /**
+     * Grazers to be removed from array
+     */
+    private ArrayList<Grazer> grazersToRemove;
+    
+    /**
+     * Predators to be added to array
+     */
+    private ArrayList<Predator> predatorsToAdd;
+    
+    /**
+     * Predators to be removed from array
+     */
+    private ArrayList<Predator> predatorsToRemove;
     
     private int t;
     
@@ -61,9 +82,13 @@ public class Environment {
         plants = new ArrayList<>();
         grazers = new ArrayList<>();
         predators = new ArrayList<>();
-        
         plantsToAdd = new ArrayList<>();
+        plantsToRemove = new ArrayList<>();
         grazersToAdd = new ArrayList<>();
+        grazersToRemove = new ArrayList<>();
+        predatorsToAdd = new ArrayList<>();
+        predatorsToRemove = new ArrayList<>();
+
         
         LoadData();
         
@@ -150,6 +175,7 @@ public class Environment {
         predators.forEach(x -> x.Update(this));
         
         plants.addAll(plantsToAdd);
+
         grazers.addAll(grazersToAdd);
         
         plantsToAdd.clear();
@@ -158,6 +184,20 @@ public class Environment {
         if(!deadGrazers.isEmpty()){
             deleteDeadGrazers();
         }
+
+        plants.removeAll(plantsToRemove);
+        grazers.addAll(grazersToAdd);
+        grazers.removeAll(grazersToRemove);
+        predators.addAll(predatorsToAdd);
+        predators.removeAll(predatorsToRemove);
+        
+        plantsToAdd.clear();
+        plantsToRemove.clear();
+        grazersToAdd.clear();
+        grazersToRemove.clear();
+        predatorsToAdd.clear();
+        predatorsToRemove.clear();
+
         
         t++;
     }
@@ -248,6 +288,32 @@ public class Environment {
     
     private void deleteDeadGrazers(){
         deadGrazers.forEach(g -> grazers.remove(g));
+    }
+    
+    
+    
+    /**
+     * 
+     * @param g Grazer to be removed
+     */
+    public void removeGrazer(Grazer g) {
+        grazersToRemove.add(g);
+    }
+    
+    /**
+     * 
+     * @param p Predator to be added
+     */
+    public void addPredator(Predator p) {
+        predatorsToAdd.add(p);
+    }
+    
+    /**
+     * 
+     * @param p Predator to be removed
+     */
+    public void removePredator(Predator p) {
+        predatorsToRemove.add(p);
     }
     
     public int getTime() {
