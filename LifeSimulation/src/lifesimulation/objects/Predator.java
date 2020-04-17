@@ -209,7 +209,7 @@ public class Predator extends SimulationObject implements LivingCreature{
             idle(e);
         }
         else {
-            moveTowards(currentTarget.getX(), currentTarget.getY());
+            moveTowards(currentTarget.getX(), currentTarget.getY(), e);
         }
         
         
@@ -372,7 +372,7 @@ public class Predator extends SimulationObject implements LivingCreature{
         float prevX = x;
         float prevY = y;
         
-        moveTowards(idleX, idleY);
+        moveTowards(idleX, idleY, e);
         
         boolean flag = false;
         
@@ -397,7 +397,7 @@ public class Predator extends SimulationObject implements LivingCreature{
      * Move towards the objects current target
      * @param e The simulation environment variable
      */
-    private void moveTowards(float targetX, float targetY){
+    private void moveTowards(float targetX, float targetY, Environment e){
         int xDelta = 0;
         int yDelta = 0;
         // X direction
@@ -436,9 +436,9 @@ public class Predator extends SimulationObject implements LivingCreature{
             }
         }
         x += xDelta;
-        if(x > 1000){x = 1000;} else if(x < 0) { x = 0;}
+        if(x > e.getWidth()){x = (float) e.getWidth();} else if(x < 0) { x = 0;}
         y += yDelta;
-        if(y > 750){y = 750;} else if(y < 0) {y = 0;}
+        if(y > e.getHeight()){y = (float) e.getHeight();} else if(y < 0) {y = 0;}
         
         // Move the actual shape
         this.collision.setCenterX(x);

@@ -143,8 +143,10 @@ public class Plant extends SimulationObject implements LivingCreature {
             secondsElapsed = 0;
             Reproduce(e);
         }
-
+        
         height = diameter/2;
+        
+        collision = new Circle(x, y, height);
     }
     
     /**
