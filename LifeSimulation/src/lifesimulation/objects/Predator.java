@@ -143,18 +143,6 @@ public class Predator extends SimulationObject implements LivingCreature{
         g.setLineWidth(2);
         g.setColor(Color.black);
         g.draw(collision);
-        
-        // Draw a black line to each valid target
-        g.setColor(Color.black);
-        allTargets.values().forEach(t -> {
-            g.drawLine(x, y, t.getX(), t.getY());
-        });
-        
-        // If there is a current target, draw a red line to it
-        if(currentTarget != null){
-            g.setColor(Color.red);
-            g.drawLine(x,y, currentTarget.getX(), currentTarget.getY());
-        }
     }
 
     /**
