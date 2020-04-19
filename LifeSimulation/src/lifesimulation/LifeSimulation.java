@@ -17,7 +17,7 @@ import lifesimulation.utilities.LifeSimDataParser;
  */
 public class LifeSimulation extends StateBasedGame{
 
-    public static String gameName = "Coleman's Game of Life";
+    public static String gameName = "Life Simulation - Team C";
     public int gameState = 0;
     
     
