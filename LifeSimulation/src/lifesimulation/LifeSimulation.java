@@ -6,6 +6,7 @@
 package lifesimulation;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 import lifesimulation.utilities.LifeSimDataParser;
@@ -17,7 +18,7 @@ import lifesimulation.utilities.LifeSimDataParser;
  */
 public class LifeSimulation extends StateBasedGame{
 
-    public static String gameName = "Coleman's Game of Life";
+    public static String gameName = "Life Simulation - Team C";
     public int gameState = 0;
     
     
@@ -56,6 +57,9 @@ public class LifeSimulation extends StateBasedGame{
         
         // Create a file chooser window
         final JFileChooser fc = new JFileChooser(System.getProperty("user.dir") + "/..");
+        FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter("XML Files", "xml");
+        fc.setFileFilter(xmlFilter);
+        
         String filePath = ""; // xml filePath to be recorded shortly
         int returnVal = fc.showDialog(fc, "Open");
         if (returnVal == JFileChooser.APPROVE_OPTION) { // If we selected a file

@@ -11,7 +11,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
 import java.util.Random;
-import java.lang.Math;
 import java.util.ArrayList;
 import org.newdawn.slick.geom.Line;
 
@@ -671,11 +670,6 @@ public class Grazer extends SimulationObject implements LivingCreature{
         g.setLineWidth(2);
         g.setColor(Color.black);
         g.draw(collision);
-        
-        
-        if(found == true){
-            g.drawLine(this.x, this.y, target.x, target.y);
-        }
     }
 
     @Override

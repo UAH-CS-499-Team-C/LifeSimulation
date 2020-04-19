@@ -9,7 +9,6 @@ package lifesimulation;
 import java.util.ArrayList;
 import lifesimulation.gui.GuiComponent;
 import lifesimulation.objects.Grazer;
-import lifesimulation.objects.LivingCreature;
 import lifesimulation.objects.Plant;
 import lifesimulation.objects.Predator;
 import lifesimulation.objects.SimulationObject;
@@ -19,7 +18,6 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.state.*;
-import lifesimulation.utilities.LifeSimDataParser;
 import org.newdawn.slick.geom.Shape;
 
 
