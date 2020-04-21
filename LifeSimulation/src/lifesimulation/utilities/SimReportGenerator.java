@@ -37,7 +37,7 @@ public class SimReportGenerator {
             String timeNow = dtf.format(now);
             
             // Make the file with proper name
-            FileWriter writer = new FileWriter("../Reports/SimReport_" + timeNow + ".txt", true);
+            FileWriter writer = new FileWriter("Reports/SimReport_" + timeNow + ".txt", true);
             
             // Write info to file
             writer.write("=============== General Info ===============\n");

@@ -56,7 +56,7 @@ public class LifeSimulation extends StateBasedGame{
         
         
         // Create a file chooser window
-        final JFileChooser fc = new JFileChooser(System.getProperty("user.dir") + "/..");
+        final JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
         FileNameExtensionFilter xmlFilter = new FileNameExtensionFilter("XML Files", "xml");
         fc.setFileFilter(xmlFilter);
         
@@ -80,7 +80,7 @@ public class LifeSimulation extends StateBasedGame{
             AppGameContainer appgc = new AppGameContainer(new LifeSimulation(gameName, filePath));
             
             // Set the width/height to values from parser
-            appgc.setDisplayMode((int)lsdp.getWorldWidth() + bonusWidth, (int)lsdp.getWorldHeight() + bonusHeight, false);
+            appgc.setDisplayMode(1000 + bonusWidth, 750 + bonusHeight, false);
             
             appgc.setShowFPS(false); // Turn off FPS counter
             appgc.setMaximumLogicUpdateInterval(Integer.MAX_VALUE); // Max. 1000 miliseconds can pass

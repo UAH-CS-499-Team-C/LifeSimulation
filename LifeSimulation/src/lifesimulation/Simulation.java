@@ -85,21 +85,21 @@ public class Simulation extends BasicGameState{
         
         guiComps = new ArrayList<>();
         
-        bg = new Image("images/grid.png");
-        pause = new Image("images/pauseBtn.png");
-        play = new Image("images/playBtn.png");
-        x1 = new Image("images/button_1x-speed.png");
-        x10 = new Image("images/button_10x-speed.png");
-        x100 = new Image("images/button_100x-speed.png");
-        printReport = new Image("images/button_print-report.png");
+        bg = new Image("src/images/grid.png");
+        pause = new Image("src/images/pauseBtn.png");
+        play = new Image("src/images/playBtn.png");
+        x1 = new Image("src/images/button_1x-speed.png");
+        x10 = new Image("src/images/button_10x-speed.png");
+        x100 = new Image("src/images/button_100x-speed.png");
+        printReport = new Image("src/images/button_print-report.png");
         
         // Create GUI components
         playButton = new GuiComponent(10, 750, play);
-        x1Button = new GuiComponent(50, 750, "images/x1.png");
-        x10Button = new GuiComponent(90, 750, "images/x10.png");
-        x50Button = new GuiComponent(130, 750, "images/x50.png");
-        x100Button = new GuiComponent(170, 750, "images/x100.png");
-        printButton = new GuiComponent(950, 750, "images/print.png");
+        x1Button = new GuiComponent(50, 750, "src/images/x1.png");
+        x10Button = new GuiComponent(90, 750, "src/images/x10.png");
+        x50Button = new GuiComponent(130, 750, "src/images/x50.png");
+        x100Button = new GuiComponent(170, 750, "src/images/x100.png");
+        printButton = new GuiComponent(950, 750, "src/images/print.png");
         
         // Highlight the 1x button since that's the default time scale
         x1Button.getImage().setImageColor(0.7f, 0f, 0f);
@@ -172,8 +172,8 @@ public class Simulation extends BasicGameState{
         guiComps.add(printButton);
         
         // Set up our font
-        fontImage = new Image("images/roboto_0.tga");
-        font = new AngelCodeFont("images/roboto.fnt", fontImage);
+        fontImage = new Image("src/images/roboto_0.tga");
+        font = new AngelCodeFont("src/images/roboto.fnt", fontImage);
         
         environment = new Environment();
         
@@ -184,7 +184,7 @@ public class Simulation extends BasicGameState{
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException{
         
         // Draw background
-        g.drawImage(bg, 0, 0);
+        bg.draw(0, 0, (float)environment.getWidth(), (float)environment.getHeight());
         // Draw each obstacle
         environment.getObstacles().forEach(x -> x.draw(g));
         environment.getPlants().forEach(x -> x.draw(g));

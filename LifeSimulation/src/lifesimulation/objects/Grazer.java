@@ -117,6 +117,11 @@ public class Grazer extends SimulationObject implements LivingCreature{
             }
         }
         
+        // exit subroutine if no theats are found
+        if(possibleTargets.size() == 0){
+            return;
+        }
+        
         // set closest threat
         threat = possibleThreats.get(0);
         running = true;
@@ -402,6 +407,7 @@ public class Grazer extends SimulationObject implements LivingCreature{
             for(int j = 0; j < e.getObstacles().size(); j++){
                 if(line.intersects(e.getObstacles().get(j).collision) && !possibleTargets.isEmpty()){
                     possibleTargets.remove(i); // remove the target from the list
+                    i--;
                 }
             }
         }

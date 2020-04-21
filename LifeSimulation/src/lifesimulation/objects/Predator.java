@@ -120,15 +120,15 @@ public class Predator extends SimulationObject implements LivingCreature{
         
         r = new Random();
         
-        idleX = r.nextInt(1001);
-        idleY = r.nextInt(751);
+        idleX = -1;
+        idleY = -1;
         
         isFighting = false;
         
         isMating = false;
         isBearing = false;
         tBearing = 0;
-        tBirth = 0;
+        tBirth = 100;
     }
 
     /**
@@ -151,6 +151,9 @@ public class Predator extends SimulationObject implements LivingCreature{
      */
     @Override
     public void Update(Environment e) {
+        if(idleX == -1){idleX = r.nextInt((int)e.getWidth());}
+        if(idleY == -1){idleY = r.nextInt((int)e.getHeight());}
+        
         // Distance calculation stuff
         lastUpdateX = x;
         lastUpdateY = y;
@@ -376,8 +379,8 @@ public class Predator extends SimulationObject implements LivingCreature{
         }
         
         if((x==idleX && y==idleY) || flag){
-            idleX = r.nextInt(1001);
-            idleY = r.nextInt(751);
+            idleX = r.nextInt((int)e.getWidth());
+            idleY = r.nextInt((int)e.getHeight());
         }
     }
     

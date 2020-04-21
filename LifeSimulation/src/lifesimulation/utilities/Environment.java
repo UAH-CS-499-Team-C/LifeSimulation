@@ -258,11 +258,13 @@ public class Environment {
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                    System.out.println(p1 + " ate " + p2);
                 }
                 else
                 {
                     predatorsToRemove.add(p1);
                     p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                    System.out.println(p2 + " ate " + p1);
                 }
             }
             else
@@ -271,11 +273,13 @@ public class Environment {
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                    System.out.println(p1 + " ate " + p2);
                 }
                 else
                 {
                     predatorsToRemove.add(p1);
                     p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                    System.out.println(p2 + " ate " + p1);
                 }
             }
         }
@@ -287,11 +291,13 @@ public class Environment {
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                    System.out.println(p1 + " ate " + p2);
                 }
                 else
                 {
                     predatorsToRemove.add(p1);
                     p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                    System.out.println(p2 + " ate " + p1);
                 }
             }
             else
@@ -300,11 +306,14 @@ public class Environment {
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                    System.out.println(p1 + " ate " + p2);
+                    
                 }
                 else
                 {
                     predatorsToRemove.add(p1);
                     p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                    System.out.println(p2 + " ate " + p1);
                 }
             }
         }
@@ -316,11 +325,13 @@ public class Environment {
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                    System.out.println(p1 + " ate " + p2);
                 }
                 else
                 {
                     predatorsToRemove.add(p1);
                     p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                    System.out.println(p2 + " ate " + p1);
                 }
             }
             else
@@ -329,11 +340,13 @@ public class Environment {
                 {
                     predatorsToRemove.add(p2);
                     p1.setEnergy(p1.getEnergy() + (int)(0.9 * p2.getEnergy()));
+                    System.out.println(p1 + " ate " + p2);
                 }
                 else
                 {
                     predatorsToRemove.add(p1);
                     p2.setEnergy(p2.getEnergy() + (int)(0.9 * p1.getEnergy()));
+                    System.out.println(p2 + " ate " + p1);
                 }
             }
         }
@@ -355,6 +368,7 @@ public class Environment {
             {
                 grazersToRemove.add(g);
                 p.setEnergy(p.getEnergy() + (int)(0.9 * g.getEnergy()));
+                System.out.println(p + " ate " + g);
             }
         }
         else if(s.equals("Ss"))
@@ -363,6 +377,7 @@ public class Environment {
             {
                 grazersToRemove.add(g);
                 p.setEnergy(p.getEnergy() + (int)(0.9 * g.getEnergy()));
+                System.out.println(p + " ate " + g);
             }
         }
         else
@@ -371,6 +386,7 @@ public class Environment {
             {
                 grazersToRemove.add(g);
                 p.setEnergy(p.getEnergy() + (int)(0.9 * g.getEnergy()));
+                System.out.println(p + " ate " + g);
             }
         }
     }
